@@ -61,7 +61,7 @@ func (m *rideMetrics) observe(name string, value float64) {
 
 func (m *rideMetrics) export(values map[string]any) {
 	values["ride_metrics_epoch"] = m.epoch
-	values["ride_metrics_version"] = 1
+	values["ride_metrics_version"] = 2
 	values["eval_payment_ok_retries"] = m.paymentRetries[0]
 	values["eval_payment_fail_retries"] = m.paymentRetries[1]
 	for name, h := range m.series {

@@ -1,4 +1,6 @@
--- Fixed application metric vocabulary, units and histogram boundaries.
+-- Fixed v1/v2 application vocabulary, units and histogram boundaries.
+-- v1 pickup_b9_64 covers 9..64; v2 pickup_b9_plus covers every batch >8.
+-- The existing dispatch_batch infinity bucket includes plans larger than 64.
 create or replace view ride_histogram_definitions as
 select * from (values
  ('dispatch_wait', 'created_to_assignment', 'ok', 'all', 'ms', 10,100,1000,3000),
@@ -6,6 +8,7 @@ select * from (values
  ('pickup_b1', 'estimated_pickup', 'known', '1', 'ms', 10,100,1000,3000),
  ('pickup_b2_8', 'estimated_pickup', 'known', '2_8', 'ms', 10,100,1000,3000),
  ('pickup_b9_64', 'estimated_pickup', 'known', '9_64', 'ms', 10,100,1000,3000),
+ ('pickup_b9_plus', 'estimated_pickup', 'known', '9_plus', 'ms', 10,100,1000,3000),
  ('assign_flush_chair', 'assignment_to_flush', 'ok', 'chair', 'ms', 10,100,1000,3000),
  ('assign_flush_app', 'assignment_to_flush', 'ok', 'app', 'ms', 10,100,1000,3000),
  ('eval_total_ok', 'evaluation_total', 'ok', 'all', 'ms', 10,100,1000,3000),
@@ -37,6 +40,7 @@ from (values
  ('pickup_b1_unknown','estimated_pickup','unknown','1','rides','counter'),
  ('pickup_b2_8_unknown','estimated_pickup','unknown','2_8','rides','counter'),
  ('pickup_b9_64_unknown','estimated_pickup','unknown','9_64','rides','counter'),
+ ('pickup_b9_plus_unknown','estimated_pickup','unknown','9_plus','rides','counter'),
  ('eval_payment_ok_retries','payment_retries','ok','all','retries','counter'),
  ('eval_payment_fail_retries','payment_retries','fail','all','retries','counter'),
  ('ride_metrics_epoch','epoch','current','all','unix_us','metadata'),
@@ -74,9 +78,9 @@ with observed as (
 )
 select o.*,s.epoch,s.previous_ts as interval_start,
        epoch_ms(o.ts)-epoch_ms(s.previous_ts) as interval_ms,
-       s.ready=1 and s.version=1 and s.epoch is not null as sample_valid,
+       s.ready=1 and s.version in (1,2) and s.epoch is not null as sample_valid,
        case when kind='counter' and s.ready=1 and s.previous_ready=1
-             and s.version=1 and s.previous_version=1 and s.epoch=s.previous_epoch
+             and s.version in (1,2) and s.previous_version=s.version and s.epoch=s.previous_epoch
              and o.metric_previous_ts=s.previous_ts and o.ts>s.previous_ts
              and o.value>=o.previous_value
             then o.value-o.previous_value end as delta

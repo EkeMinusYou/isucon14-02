@@ -85,7 +85,7 @@ func TestMatching(t *testing.T) {
 		previous := runtimeState
 		runtimeState = s
 		t.Cleanup(func() { notifications.reset(); runtimeState = previous })
-		for i := 0; i < 260; i++ {
+		for i := 0; i < 2*matchingPlanLimit+2; i++ {
 			id := fmt.Sprintf("chair-%03d", i)
 			s.addChair(Chair{ID: id, IsActive: true})
 			seedMemoryRide(s, fmt.Sprintf("ride-%03d", i), "", time.Unix(1700000000+int64(i), 0))
@@ -100,9 +100,9 @@ func TestMatching(t *testing.T) {
 		if code := request(); code != http.StatusNoContent {
 			t.Fatal(code)
 		}
-		for i := 0; i < 260; i++ {
+		for i := 0; i < 2*matchingPlanLimit+2; i++ {
 			assigned := s.rides[fmt.Sprintf("ride-%03d", i)].ChairID.Valid
-			if assigned != (i < 2*matchingBatchSize) {
+			if assigned != (i < 2*matchingPlanLimit) {
 				t.Fatal("batch must match oldest rides first")
 			}
 		}

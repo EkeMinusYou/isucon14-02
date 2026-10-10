@@ -3,6 +3,7 @@ package main
 import (
 	"container/heap"
 	"math"
+	"sort"
 )
 
 type matchingChair struct {
@@ -63,116 +64,203 @@ func (h *matchingCandidates) Pop() any {
 	return x
 }
 
-// Rides arrive in FIFO order; never skip an older ride to favor a short trip.
-// This function only plans assignments. Its caller validates and persists them.
+// FIFO selects the rides, independently of trip length. Each row retains its
+// best n chairs: at most n-1 can be occupied, so an omitted chair can always
+// be replaced without increasing cost. Pruning preserves a global optimum.
+// Candidate extraction costs O(n*C*log(n)); the sparse graph has E <= n*n
+// assignment edges instead of a dense n-by-union matrix.
 func assignMatchingChairs(rides []Ride, chairs []matchingChair) []matchingAssignment {
 	n := min(len(rides), len(chairs))
 	if n == 0 {
 		return nil
 	}
-	rides = rides[:n]
-
-	// For n rides, the union of each ride's best n chairs contains an optimum:
-	// at most n-1 of those chairs can be occupied by other assignments. A worse
-	// chair can therefore always be replaced without increasing total cost.
-	// Bound the solver to at most n*n chairs while scanning the full pool once
-	// per ride, in O(n * chairs * log(n)) time.
+	rows := make([]matchingCandidates, n)
 	selected := make([]bool, len(chairs))
-	for _, ride := range rides {
+	maxKnownCost := 0.0
+	for i, ride := range rides[:n] {
 		best := make(matchingCandidates, 0, n)
 		for j, chair := range chairs {
 			candidate := matchingCandidate{chairIndex: j, cost: matchingTravelTime(ride, chair)}
 			if len(best) < n {
-				heap.Push(&best, candidate)
+				best = append(best, candidate)
+				if len(best) == n {
+					heap.Init(&best)
+				}
 			} else if candidate.cost < best[0].cost {
 				best[0] = candidate
 				heap.Fix(&best, 0)
 			}
 		}
+		// Stable adjacency order also makes equal-cost assignments reproducible.
+		sort.Slice(best, func(a, b int) bool { return best[a].chairIndex < best[b].chairIndex })
+		rows[i] = best
 		for _, candidate := range best {
 			selected[candidate.chairIndex] = true
+			if !math.IsInf(candidate.cost, 1) {
+				maxKnownCost = math.Max(maxKnownCost, candidate.cost)
+			}
 		}
 	}
 	indices := make([]int, 0, min(n*n, len(chairs)))
+	vertices := make([]int, len(chairs))
 	for j, included := range selected {
 		if included {
+			vertices[j] = n + len(indices)
 			indices = append(indices, j)
 		}
 	}
-	m := len(indices)
-	costs := make([][]float64, n)
-	maxKnownCost := 0.0
-	for i, ride := range rides {
-		costs[i] = make([]float64, m)
-		for j, chairIndex := range indices {
-			costs[i][j] = matchingTravelTime(ride, chairs[chairIndex])
-			if !math.IsInf(costs[i][j], 1) {
-				maxKnownCost = math.Max(maxKnownCost, costs[i][j])
-			}
+	source, sink := n+len(indices), n+len(indices)+1
+	g := make(matchingGraph, sink+1)
+	degrees := make([]int, len(g))
+	degrees[source], degrees[sink] = n, len(indices)
+	for j := range indices {
+		degrees[n+j] = 1
+	}
+	for i, candidates := range rows {
+		degrees[i] = len(candidates) + 1
+		for _, candidate := range candidates {
+			degrees[vertices[candidate.chairIndex]]++
 		}
 	}
-	// A finite penalty keeps augmenting paths valid when every remaining
-	// chair has unknown metadata. Prefer fewer fallback chairs before time:
-	// the penalty exceeds the entire known-cost range of this batch.
+	for v, degree := range degrees {
+		g[v] = make([]matchingEdge, 0, degree)
+	}
+	// Minimize fallback count first, then total known pickup + travel time.
 	fallbackCost := float64(n+1) * (maxKnownCost + 1)
-	for _, row := range costs {
-		for j, cost := range row {
+	for i, candidates := range rows {
+		g.add(source, i, 0)
+		for _, candidate := range candidates {
+			cost := candidate.cost
 			if math.IsInf(cost, 1) {
-				row[j] = fallbackCost
+				cost = fallbackCost
 			}
+			g.add(i, vertices[candidate.chairIndex], cost)
 		}
 	}
-
-	// Rectangular Hungarian assignment, O(n*n*m). Each augmenting path may
-	// replace earlier choices, unlike a greedy nearest-chair matcher.
-	u, v := make([]float64, n+1), make([]float64, m+1)
-	p, way := make([]int, m+1), make([]int, m+1)
-	minimum, used := make([]float64, m+1), make([]bool, m+1)
-	for i := 1; i <= n; i++ {
-		p[0] = i
-		j0 := 0
-		for j := 0; j <= m; j++ {
-			minimum[j], used[j] = math.Inf(1), false
-		}
-		for {
-			used[j0] = true
-			i0, j1, delta := p[j0], 0, math.Inf(1)
-			for j := 1; j <= m; j++ {
-				if used[j] {
-					continue
-				}
-				cur := costs[i0-1][j-1] - u[i0] - v[j]
-				if cur < minimum[j] {
-					minimum[j], way[j] = cur, j0
-				}
-				if minimum[j] < delta {
-					delta, j1 = minimum[j], j
-				}
-			}
-			for j := 0; j <= m; j++ {
-				if used[j] {
-					u[p[j]] += delta
-					v[j] -= delta
-				} else {
-					minimum[j] -= delta
-				}
-			}
-			j0 = j1
-			if p[j0] == 0 {
+	for j := range indices {
+		g.add(n+j, sink, 0)
+	}
+	g.assign(source, sink, n)
+	assignments := make([]matchingAssignment, n)
+	for i := range rows {
+		for _, edge := range g[i] {
+			if edge.to >= n && edge.to < source && !edge.available {
+				assignments[i] = matchingAssignment{rideIndex: i, chairIndex: indices[edge.to-n]}
 				break
 			}
 		}
-		for j0 != 0 {
-			j1 := way[j0]
-			p[j0] = p[j1]
-			j0 = j1
-		}
-	}
-	assignments := make([]matchingAssignment, n)
-	for j := 1; j <= m; j++ {
-		if p[j] != 0 {
-			assignments[p[j]-1] = matchingAssignment{rideIndex: p[j] - 1, chairIndex: indices[j-1]}
-		}
 	}
 	return assignments
+}
+
+type matchingEdge struct {
+	to, reverse int
+	cost        float64
+	available   bool
+}
+
+type matchingGraph [][]matchingEdge
+
+func (g matchingGraph) add(from, to int, cost float64) {
+	forward := matchingEdge{to: to, reverse: len(g[to]), cost: cost, available: true}
+	backward := matchingEdge{to: from, reverse: len(g[from]), cost: -cost}
+	g[from] = append(g[from], forward)
+	g[to] = append(g[to], backward)
+}
+
+// Successive shortest augmenting paths with potentials. Reverse edges can
+// change assignments across the entire plan. O(n*(E+V)*log(V)) time and
+// O(E+V) solver memory; V <= n + min(C,n*n) + 2. No shared state is accessed.
+func (g matchingGraph) assign(source, sink, count int) {
+	potential := make([]float64, len(g))
+	distance := make([]float64, len(g))
+	previous, via := make([]int, len(g)), make([]int, len(g))
+	queue := make(matchingPathHeap, 0, len(g))
+	for flow := 0; flow < count; flow++ {
+		for v := range g {
+			distance[v] = math.Inf(1)
+		}
+		distance[source] = 0
+		queue = queue[:0]
+		queue.push(matchingPath{vertex: source})
+		for len(queue) > 0 {
+			path := queue.pop()
+			v := path.vertex
+			if path.cost != distance[v] {
+				continue
+			}
+			if v == sink {
+				break
+			}
+			for j, edge := range g[v] {
+				if !edge.available {
+					continue
+				}
+				// Roundoff can make a theoretically nonnegative reduced cost tiny and negative.
+				cost := path.cost + math.Max(0, edge.cost+potential[v]-potential[edge.to])
+				if cost < distance[edge.to] {
+					distance[edge.to], previous[edge.to], via[edge.to] = cost, v, j
+					queue.push(matchingPath{vertex: edge.to, cost: cost})
+				}
+			}
+		}
+		// Every row has n distinct neighbors, so all n rows have a matching.
+		for v := range g {
+			potential[v] += math.Min(distance[v], distance[sink])
+		}
+		for v := sink; v != source; v = previous[v] {
+			edge := &g[previous[v]][via[v]]
+			edge.available = false
+			g[v][edge.reverse].available = true
+		}
+	}
+}
+
+type matchingPath struct {
+	vertex int
+	cost   float64
+}
+
+// Typed heap avoids allocating an interface value for every relaxed edge.
+type matchingPathHeap []matchingPath
+
+func (a matchingPath) before(b matchingPath) bool {
+	return a.cost < b.cost || (a.cost == b.cost && a.vertex < b.vertex)
+}
+
+func (h *matchingPathHeap) push(path matchingPath) {
+	*h = append(*h, path)
+	i := len(*h) - 1
+	for i > 0 {
+		parent := (i - 1) / 2
+		if !path.before((*h)[parent]) {
+			break
+		}
+		(*h)[i] = (*h)[parent]
+		i = parent
+	}
+	(*h)[i] = path
+}
+
+func (h *matchingPathHeap) pop() matchingPath {
+	result := (*h)[0]
+	last := (*h)[len(*h)-1]
+	*h = (*h)[:len(*h)-1]
+	if len(*h) == 0 {
+		return result
+	}
+	i := 0
+	for 2*i+1 < len(*h) {
+		child := 2*i + 1
+		if child+1 < len(*h) && (*h)[child+1].before((*h)[child]) {
+			child++
+		}
+		if !(*h)[child].before(last) {
+			break
+		}
+		(*h)[i] = (*h)[child]
+		i = child
+	}
+	(*h)[i] = last
+	return result
 }

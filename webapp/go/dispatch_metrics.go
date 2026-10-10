@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+// Version 2 names the >8 pickup cohort b9_plus; dispatch_batch still keeps
+// its <=64 boundary, with larger plans in the existing infinity bucket.
 // These indexes are observational only; matching still uses its existing rules.
 type dispatchMetrics struct {
 	waiting            waitingHeap
@@ -73,7 +75,7 @@ func (s *rideState) resetDispatchMetrics() {
 		d.available += a
 		d.blocked += b
 	}
-	for _, name := range []string{"dispatch_wait", "assign_flush_chair", "assign_flush_app", "pickup_b1", "pickup_b2_8", "pickup_b9_64"} {
+	for _, name := range []string{"dispatch_wait", "assign_flush_chair", "assign_flush_app", "pickup_b1", "pickup_b2_8", "pickup_b9_plus"} {
 		s.metrics.register(name, durationLimits)
 	}
 	s.metrics.register("dispatch_batch", [4]float64{1, 8, 32, 64})
@@ -105,7 +107,7 @@ func (s *rideState) observeAssignments(rows []Ride, candidates []matchingChair, 
 	m.observe("dispatch_batch", float64(len(rows)))
 	group, name := 0, "pickup_b1"
 	if len(rows) > 8 {
-		group, name = 2, "pickup_b9_64"
+		group, name = 2, "pickup_b9_plus"
 	} else if len(rows) > 1 {
 		group, name = 1, "pickup_b2_8"
 	}
@@ -163,7 +165,7 @@ func (s *rideState) exportDispatch(values map[string]any) {
 	values["dispatch_oldest_ms"] = oldest
 	values["dispatch_available"] = d.available
 	values["dispatch_notify_blocked"] = d.blocked
-	for i, name := range []string{"pickup_b1_unknown", "pickup_b2_8_unknown", "pickup_b9_64_unknown"} {
+	for i, name := range []string{"pickup_b1_unknown", "pickup_b2_8_unknown", "pickup_b9_plus_unknown"} {
 		values[name] = d.unknown[i]
 	}
 }

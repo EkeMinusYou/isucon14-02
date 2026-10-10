@@ -30,16 +30,18 @@ func TestMatchingBatchSaturation(t *testing.T) {
 	for _, test := range []struct {
 		rides, chairs, assigned, batches int
 	}{
-		{0, 192, 0, 0},
-		{192, 0, 0, 0},
-		{63, 192, 63, 1},
-		{64, 192, 64, 1},
-		{127, 192, 64, 1},
-		{192, 63, 63, 1},
-		{192, 64, 64, 1},
-		{192, 127, 64, 1},
-		{128, 128, 128, 2},
-		{192, 192, 128, 2},
+		{0, 3 * matchingPlanLimit, 0, 0},
+		{3 * matchingPlanLimit, 0, 0, 0},
+		{63, 3 * matchingPlanLimit, 63, 1},
+		{127, 3 * matchingPlanLimit, 127, 1},
+		{matchingPlanLimit - 1, 3 * matchingPlanLimit, matchingPlanLimit - 1, 1},
+		{matchingPlanLimit, 3 * matchingPlanLimit, matchingPlanLimit, 1},
+		{2*matchingPlanLimit - 1, 3 * matchingPlanLimit, matchingPlanLimit, 1},
+		{3 * matchingPlanLimit, matchingPlanLimit - 1, matchingPlanLimit - 1, 1},
+		{3 * matchingPlanLimit, matchingPlanLimit, matchingPlanLimit, 1},
+		{3 * matchingPlanLimit, 2*matchingPlanLimit - 1, matchingPlanLimit, 1},
+		{2 * matchingPlanLimit, 2 * matchingPlanLimit, 2 * matchingPlanLimit, 2},
+		{3 * matchingPlanLimit, 3 * matchingPlanLimit, 2 * matchingPlanLimit, 2},
 	} {
 		t.Run(fmt.Sprintf("Rides%dChairs%d", test.rides, test.chairs), func(t *testing.T) {
 			s := matchingBatchTestState(t, test.rides, test.chairs)
@@ -57,7 +59,7 @@ func TestMatchingBatchSaturation(t *testing.T) {
 				}
 			}
 			batch := s.metrics.series["dispatch_batch"]
-			if batch.count != uint64(test.batches) || batch.sum != float64(test.assigned) || batch.buckets[3] != batch.count || s.metrics.series["dispatch_wait"].count != uint64(test.assigned) {
+			if batch.count != uint64(test.batches) || batch.sum != float64(test.assigned) || batch.buckets[4] != batch.count || s.metrics.series["dispatch_wait"].count != uint64(test.assigned) {
 				t.Fatalf("metrics must count each batch separately: %+v", batch)
 			}
 			if len(readTestWAL(t, s)) != test.batches || len(s.waitingRides) != test.rides-test.assigned || len(s.matchingChairs) != test.chairs-test.assigned {
@@ -70,15 +72,12 @@ func TestMatchingBatchSaturation(t *testing.T) {
 func TestMatchingAdditionalBatchRevalidates(t *testing.T) {
 	for _, change := range []string{"inactive", "ack-pending", "waiting-drained", "generation", "not-ready", "failed-wal", "coordinate"} {
 		t.Run(change, func(t *testing.T) {
-			chairs := 128
+			chairs := 2 * matchingPlanLimit
 			if change == "coordinate" {
 				chairs++
 			}
-			s := matchingBatchTestState(t, 128, chairs)
-			s.mu.Lock()
-			generation := s.generation
-			err := s.matchBatchLocked()
-			s.mu.Unlock()
+			s := matchingBatchTestState(t, 2*matchingPlanLimit, chairs)
+			generation, err := s.matchBatch("", 0)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -115,20 +114,20 @@ func TestMatchingAdditionalBatchRevalidates(t *testing.T) {
 					t.Fatal(err)
 				}
 			case "coordinate":
-				if _, available := s.matchingChairs["chair-128"]; !available {
+				if _, available := s.matchingChairs[fmt.Sprintf("chair-%03d", 2*matchingPlanLimit)]; !available {
 					t.Fatal("fixture did not leave the last candidate unused")
 				}
-				if _, err := s.coordinate("chair-128", Coordinate{10, 20}); err != nil {
+				if _, err := s.coordinate(fmt.Sprintf("chair-%03d", 2*matchingPlanLimit), Coordinate{10, 20}); err != nil {
 					t.Fatal(err)
 				}
 			}
 			sequence, batches := s.sequence, s.metrics.series["dispatch_batch"].count
-			err = s.matchAdditionalBatch(generation)
+			_, err = s.matchBatch(generation, matchingPlanLimit)
 			if wantError := change == "not-ready" || change == "failed-wal"; (err != nil) != wantError {
 				t.Fatalf("additional batch error: %v", err)
 			}
 			if change == "coordinate" {
-				if s.sequence != sequence+1 || len(s.waitingRides) != 0 || len(s.chairRides["chair-128"]) != 1 {
+				if s.sequence != sequence+1 || len(s.waitingRides) != 0 || len(s.chairRides[fmt.Sprintf("chair-%03d", 2*matchingPlanLimit)]) != 1 {
 					t.Fatal("additional batch did not use the updated coordinate")
 				}
 			} else if s.sequence != sequence || s.metrics.series["dispatch_batch"].count != batches {
@@ -139,7 +138,7 @@ func TestMatchingAdditionalBatchRevalidates(t *testing.T) {
 }
 
 func TestMatchingTwoBatchesRecoverWAL(t *testing.T) {
-	s := matchingBatchTestState(t, 192, 192)
+	s := matchingBatchTestState(t, 3*matchingPlanLimit, 3*matchingPlanLimit)
 	if err := s.match(); err != nil {
 		t.Fatal(err)
 	}
@@ -147,7 +146,7 @@ func TestMatchingTwoBatchesRecoverWAL(t *testing.T) {
 	if err := s.wal.Close(); err != nil {
 		t.Fatal(err)
 	}
-	restored := matchingBatchTestState(t, 192, 192)
+	restored := matchingBatchTestState(t, 3*matchingPlanLimit, 3*matchingPlanLimit)
 	restored.wal.Close()
 	wal, err := os.OpenFile(path, os.O_RDWR, 0600)
 	if err != nil {
@@ -158,7 +157,7 @@ func TestMatchingTwoBatchesRecoverWAL(t *testing.T) {
 	if err := restored.recoverWAL(); err != nil {
 		t.Fatal(err)
 	}
-	if restored.sequence != 2 || len(restored.waitingRides) != 64 || len(restored.matchingChairs) != 64 {
+	if restored.sequence != 2 || len(restored.waitingRides) != matchingPlanLimit || len(restored.matchingChairs) != matchingPlanLimit {
 		t.Fatal("two committed batches were not recovered")
 	}
 	for id, ride := range s.rides {

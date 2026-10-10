@@ -5,7 +5,8 @@ import (
 	"net/http"
 )
 
-const matchingBatchSize = 64
+// Bound both the FIFO planning horizon and one atomic WAL assignment record.
+const matchingPlanLimit = 256
 
 func internalGetMatching(w http.ResponseWriter, r *http.Request) {
 	if err := matchWaitingRides(r.Context()); err != nil {

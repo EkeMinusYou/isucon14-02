@@ -55,6 +55,7 @@ type rideState struct {
 	metrics         *rideMetrics
 	dispatch        *dispatchMetrics
 	mu              sync.RWMutex
+	matchingMu      sync.Mutex
 	userLocks       sync.Map
 	database        *sqlx.DB
 	wal             *os.File
@@ -567,77 +568,6 @@ func (s *rideState) nearbyAvailable(chairID string, at time.Time) (bool, error) 
 	}
 	current := s.chairCurrent[chairID]
 	return current.completionPending == 0 && !at.Before(current.nearbyAvailableAt), nil
-}
-
-func (s *rideState) match() error {
-	s.mu.Lock()
-	generation := s.generation
-	err := s.matchBatchLocked()
-	saturated := len(s.waitingRides) >= matchingBatchSize && len(s.matchingChairs) >= matchingBatchSize
-	s.mu.Unlock()
-	if err != nil || !saturated {
-		return err
-	}
-	// Let coordinates, ACKs and other matching calls progress between batches.
-	return s.matchAdditionalBatch(generation)
-}
-
-func (s *rideState) matchAdditionalBatch(generation string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	// Recheck the current FIFO and ACK-gated chair pool under the same lock
-	// used by the solver and WAL publication. Never cross an initialize epoch.
-	if s.generation != generation || len(s.waitingRides) < matchingBatchSize || len(s.matchingChairs) < matchingBatchSize {
-		return nil
-	}
-	return s.matchBatchLocked()
-}
-
-// Called with s.mu held; each batch retains its own WAL record and metrics.
-func (s *rideState) matchBatchLocked() error {
-	waiting := s.waitingRides[:min(len(s.waitingRides), matchingBatchSize)]
-	var candidates []matchingChair
-	for id := range s.matchingChairs {
-		chair := s.chairs[id]
-		d := s.distances[id]
-		speed := s.modelSpeeds[chair.Model]
-		if !d.Latitude.Valid || !d.Longitude.Valid {
-			speed = 0
-		}
-		candidates = append(candidates, matchingChair{ID: id, Latitude: int(d.Latitude.Int64), Longitude: int(d.Longitude.Int64), Speed: speed})
-	}
-	sort.Slice(candidates, func(i, j int) bool { return candidates[i].ID < candidates[j].ID })
-	rows := make([]Ride, len(waiting))
-	for i, ride := range waiting {
-		rows[i] = ride.Ride
-	}
-	assignments := assignMatchingChairs(rows, candidates)
-	if len(assignments) == 0 {
-		return nil
-	}
-	record := stateRecord{}
-	for _, assignment := range assignments {
-		row := waiting[assignment.rideIndex].Ride
-		chairID := candidates[assignment.chairIndex].ID
-		at := time.Now().UTC().Truncate(time.Microsecond)
-		previous := s.chairRides[chairID]
-		if len(previous) > 0 {
-			last := s.rides[previous[len(previous)-1]].UpdatedAt
-			if !at.After(last) {
-				at = last.Add(time.Microsecond)
-			}
-		}
-		row.ChairID, row.UpdatedAt = sql.NullString{String: chairID, Valid: true}, at
-		record.Rides = append(record.Rides, row)
-	}
-	if err := s.commit(record); err != nil {
-		return err
-	}
-	s.observeAssignments(record.Rides, candidates, assignments, time.Now())
-	for _, row := range record.Rides {
-		notifyRide(&row)
-	}
-	return nil
 }
 
 func (s *rideState) completionCandidate(rideID, userID string) (Ride, int, string, error) {
