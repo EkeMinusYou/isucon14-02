@@ -640,20 +640,21 @@ func (s *rideState) matchBatchLocked() error {
 	return nil
 }
 
-func (s *rideState) completionCandidate(rideID, userID string) (Ride, int, error) {
+func (s *rideState) completionCandidate(rideID, userID string) (Ride, int, string, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	ride := s.rides[rideID]
 	if ride == nil {
-		return Ride{}, 0, stateError(http.StatusNotFound, "ride not found")
+		return Ride{}, 0, "", stateError(http.StatusNotFound, "ride not found")
 	}
 	if ride.UserID != userID {
-		return Ride{}, 0, stateError(http.StatusNotFound, "ride not found")
+		return Ride{}, 0, "", stateError(http.StatusNotFound, "ride not found")
 	}
 	if s.latest(ride) != "ARRIVED" {
-		return Ride{}, 0, stateError(http.StatusBadRequest, "not arrived yet")
+		return Ride{}, 0, "", stateError(http.StatusBadRequest, "not arrived yet")
 	}
-	return ride.Ride, ride.Fare, nil
+	// The persisted generation survives restarts and changes on initialize.
+	return ride.Ride, ride.Fare, s.generation + ":" + ride.ID, nil
 }
 
 func (s *rideState) complete(rideID string, evaluation int) (time.Time, error) {

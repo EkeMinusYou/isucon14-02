@@ -475,7 +475,7 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 	measurement.elapsed[evalLock] = time.Since(stageStarted)
 	measurement.visited[evalLock], measurement.success[evalLock] = true, true
 	defer lock.Unlock()
-	ride, fare, err := runtimeState.completionCandidate(rideID, user.ID)
+	ride, fare, paymentKey, err := runtimeState.completionCandidate(rideID, user.ID)
 	if err != nil {
 		writeStateError(w, err)
 		return
@@ -504,15 +504,7 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 	measurement.success[evalSQL] = true
 	measurement.visited[evalPayment] = true
 	stageStarted = time.Now()
-	retries, paymentErr := requestPaymentGatewayPostPayment(ctx, paymentGatewayURL, paymentToken.Token, &paymentGatewayPostPaymentRequest{Amount: fare}, func() ([]Ride, error) {
-		runtimeState.mu.RLock()
-		defer runtimeState.mu.RUnlock()
-		rides := []Ride{}
-		for _, id := range runtimeState.userRides[user.ID] {
-			rides = append(rides, runtimeState.rides[id].Ride)
-		}
-		return rides, nil
-	})
+	retries, paymentErr := requestPaymentGatewayPostPayment(ctx, paymentGatewayURL, paymentToken.Token, paymentKey, &paymentGatewayPostPaymentRequest{Amount: fare})
 	measurement.elapsed[evalPayment] = time.Since(stageStarted)
 	measurement.retries = retries
 	measurement.success[evalPayment] = paymentErr == nil

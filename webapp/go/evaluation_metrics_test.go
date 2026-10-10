@@ -16,50 +16,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func TestPaymentRetryCountPreservesBehavior(t *testing.T) {
-	for _, tc := range []struct {
-		name      string
-		failures  int
-		ambiguous bool
-		retries   int
-		failed    bool
-	}{
-		{name: "success"}, {name: "ambiguous success", ambiguous: true}, {name: "two retries", failures: 2, retries: 2}, {name: "exhausted", failures: 6, retries: 5, failed: true},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			posts, gets := 0, 0
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.Header.Get("Authorization") != "Bearer token" {
-					t.Error("changed payment token")
-				}
-				if r.Method == http.MethodGet {
-					gets++
-					if tc.ambiguous {
-						io.WriteString(w, `[{"amount":500,"status":"success"}]`)
-					} else {
-						io.WriteString(w, `[]`)
-					}
-					return
-				}
-				posts++
-				if posts <= tc.failures || tc.ambiguous {
-					w.WriteHeader(500)
-				} else {
-					w.WriteHeader(204)
-				}
-			}))
-			defer server.Close()
-			retries, err := requestPaymentGatewayPostPayment(context.Background(), server.URL, "token", &paymentGatewayPostPaymentRequest{Amount: 500}, func() ([]Ride, error) { return []Ride{{ID: "r"}}, nil })
-			if retries != tc.retries || (err != nil) != tc.failed || posts != tc.retries+1 {
-				t.Fatalf("retries=%d posts=%d err=%v", retries, posts, err)
-			}
-			if tc.ambiguous && gets != 1 {
-				t.Fatal("payment reconciliation changed")
-			}
-		})
-	}
-}
-
 type evaluationTestDriver struct{}
 type evaluationTestConn struct {
 	url  string
@@ -106,13 +62,27 @@ func (r *evaluationTestRows) Next(v []driver.Value) error {
 func init() { sql.Register("evaluation-metrics-fixture", evaluationTestDriver{}) }
 
 func TestEvaluationMetricsHandlerStages(t *testing.T) {
-	for _, failSQL := range []bool{false, true} {
-		t.Run(map[bool]string{false: "success", true: "SQL failure"}[failSQL], func(t *testing.T) {
+	for _, tc := range []struct {
+		name          string
+		failSQL       bool
+		paymentStatus int
+		retries       int
+	}{
+		{name: "success", paymentStatus: 204},
+		{name: "SQL failure", failSQL: true, paymentStatus: 204},
+		{name: "invalid payment", paymentStatus: 400},
+		{name: "expired key", paymentStatus: 422},
+		{name: "still processing", paymentStatus: 409, retries: 5},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
 			var payments atomic.Int32
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { payments.Add(1); w.WriteHeader(204) }))
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				payments.Add(1)
+				w.WriteHeader(tc.paymentStatus)
+			}))
 			defer server.Close()
 			dsn := server.URL
-			if failSQL {
+			if tc.failSQL {
 				dsn = "fail:" + dsn
 			}
 			database, err := sqlx.Open("evaluation-metrics-fixture", dsn)
@@ -143,9 +113,16 @@ func TestEvaluationMetricsHandlerStages(t *testing.T) {
 			if h := s.metrics.series["eval_lock_ok"]; h.count != 1 || h.sum < 10 {
 				t.Fatalf("mutex wait: %+v", h)
 			}
-			if failSQL {
+			if tc.failSQL {
 				if response.Code != 500 || payments.Load() != 0 || s.metrics.series["eval_sql_fail"].count != 1 || s.metrics.series["eval_total_fail"].count != 1 || s.metrics.series["eval_payment_ok"].count != 0 {
 					t.Fatal("SQL failure metrics")
+				}
+			} else if tc.paymentStatus != 204 {
+				if response.Code != 502 || int(payments.Load()) != tc.retries+1 || s.latest(s.rides["r"]) != "ARRIVED" || s.stats["c"].Count != 0 {
+					t.Fatalf("payment failure completed ride: %d %s", response.Code, response.Body)
+				}
+				if s.metrics.series["eval_payment_fail"].count != 1 || s.metrics.series["eval_total_fail"].count != 1 || s.metrics.series["eval_complete_fail"].count != 0 || s.metrics.series["eval_complete_ok"].count != 0 || s.metrics.paymentRetries[1] != uint64(tc.retries) {
+					t.Fatal("payment failure metrics")
 				}
 			} else {
 				if response.Code != 200 || payments.Load() != 1 || s.latest(s.rides["r"]) != "COMPLETED" {
