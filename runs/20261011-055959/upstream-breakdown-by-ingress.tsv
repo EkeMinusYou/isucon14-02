@@ -1,0 +1,6 @@
+ingress_host	upstream_addr	upstream_status	cache_status	requests	status_2xx	status_3xx	status_4xx	status_5xx	status_other	response_time_sum_ms	response_time_avg_ms	upstream_time_sum_ms	upstream_time_avg_ms
+isucon-1	172.31.0.126:8080	200	NONE	103087	103087	0	0	0	0	57859836.000	561.272	57859094.000	561.265
+isucon-1	172.31.0.126:8080	201	NONE	1899	1899	0	0	0	0	88261.000	46.478	88233.000	46.463
+isucon-1	172.31.0.126:8080	202	NONE	4633	4633	0	0	0	0	285588.000	61.642	285541.000	61.632
+isucon-1	172.31.0.126:8080	204	NONE	9201	9201	0	0	0	0	270327.000	29.380	270253.000	29.372
+isucon-1	NONE	NONE	NONE	322367	44477	277890	0	0	0	2.000	0.000	0.000	0.000
