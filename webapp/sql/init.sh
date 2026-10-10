@@ -10,6 +10,9 @@ fi
 if test -f /home/isucon/env.sh; then
 	. /home/isucon/env.sh
 fi
+if test -f /home/isucon/database.env; then
+	. /home/isucon/database.env
+fi
 
 ISUCON_DB_HOST=${ISUCON_DB_HOST:-127.0.0.1}
 ISUCON_DB_PORT=${ISUCON_DB_PORT:-3306}

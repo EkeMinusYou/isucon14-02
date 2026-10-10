@@ -1,19 +1,14 @@
 [Unit]
 Description=isuride-matcher
-After=isuride-go.service
-After=isuride-node.service
-After=isuride-perl.service
-After=isuride-php.service
-After=isuride-python.service
-After=isuride-ruby.service
-After=isuride-rust.service
+After=nginx.service
+Requires=nginx.service
 
 [Service]
 User=isucon
 Group=isucon
 EnvironmentFile=/home/isucon/env.sh
 
-ExecStart=/bin/sh -c "while true; do curl -s https://isuride.xiv.isucon.net/api/internal/matching; sleep $ISUCON_MATCHING_INTERVAL; done"
+ExecStart=/bin/sh -c "while true; do curl -s --resolve isuride.xiv.isucon.net:443:127.0.0.1 https://isuride.xiv.isucon.net/api/internal/matching; sleep $ISUCON_MATCHING_INTERVAL; done"
 ExecStop=/bin/kill -s QUIT $MAINPID
 
 Restart=on-failure

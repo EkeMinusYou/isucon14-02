@@ -61,14 +61,22 @@ vars:
       isucon-3: 172.31.5.116
   APP_HOSTS: isucon-1
   APP_TRAFFIC_HOSTS: isucon-1
-  NGINX_HOSTS: isucon-1
+  NGINX_HOSTS: isucon-2
   # MYSQL_HOST is the detailed measurement source and default DB connection.
-  MYSQL_HOST: isucon-1
-  # Deployment and service enable/disable targets; preserve the single-host default.
+  MYSQL_HOST: isucon-3
+  # Deployment and service enable/disable targets.
   MYSQL_HOSTS: '{{.MYSQL_HOST}}'
+  MATCHER_HOSTS: '{{.NGINX_HOSTS}}'
+  PAYMENT_MOCK_HOSTS: '{{.APP_HOSTS}}'
   CONF_SRC: isucon-1
   # Extra deployctl roles and vars for contest-specific deployments.
-  DEPLOYCTL_FLAGS: '-var extra_service_roles=isuride-matcher:app,isuride-payment_mock:app'
+  DEPLOYCTL_FLAGS: >-
+    -role matcher={{splitList " " .MATCHER_HOSTS | join ","}}
+    -role payment_mock={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
+    -var matcher_hosts={{splitList " " .MATCHER_HOSTS | join ","}}
+    -var payment_mock_hosts={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
+    -var app_ip={{index .IP (splitList " " .APP_HOSTS | first)}}
+    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock
   # Arguments passed to the contest smoke binary on ENTRY_HOST.
   SMOKE_ARGS: '-base https://isuride.xiv.isucon.net'
   # <<< contest values <<<
@@ -769,6 +777,7 @@ tasks:
         cmd: '{{.SSH}} {{.SSH_USER}}@{{.ITEM}} "for ip in {{.APP_IPS}}; do timeout 2 bash -c \"</dev/tcp/\$ip/{{.LISTEN_PORT}}\"; done" && echo "[{{.ITEM}}] app OK"'
       - for: { var: APP_HOSTS }
         cmd: '{{.SSH}} {{.SSH_USER}}@{{.ITEM}} "timeout 2 bash -c \"</dev/tcp/{{if has .ITEM (splitList " " .MYSQL_HOSTS)}}127.0.0.1{{else}}{{.MYSQL_IP}}{{end}}/3306\"" && echo "[{{.ITEM}}] mysql OK"'
+      - task: check-contest-network
 
   check-roles:
     desc: service状態がTaskfileの役割定義と一致することを確認
@@ -1059,7 +1068,7 @@ tasks:
 
   db-recreate-dry:
     desc: DB再作成の対象とactivationを実行せず表示
-    deps: [build-deployctl]
+    deps: [gen, build-deployctl]
     cmds:
       - '{{.DEPLOYCTL_DIR}}/deployctl apply-plan db-recreate -dry-run -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
 

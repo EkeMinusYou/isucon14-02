@@ -2,6 +2,103 @@ include:
   - ../deployctl/deployments.yaml
 
 deployments:
+  app-unit:
+    uploads:
+      - &go-unit
+        label: Go systemd unit
+        role: app
+        local: 'etc/systemd/system/{var:service}.service'
+        remote: '/etc/systemd/system/{var:service}.service'
+        validate: 'sudo systemd-analyze verify /etc/systemd/system/{var:service}.service'
+      - &database-env
+        label: shared Go and official initialization DB connection
+        role: app
+        local: tools/contest/generated/database.env
+        remote: '{var:remote_home}/database.env'
+    activations:
+      - label: reload unit and start stopped application
+        role: app
+        script: |
+          set -eu
+          sudo systemctl daemon-reload
+          sudo systemctl start {var:service}
+          sudo systemctl is-active --quiet {var:service}
+
+  app:
+    uploads:
+      - label: Go application
+        role: app
+        local: '{var:app_dir}/'
+        remote: '{var:remote_home}/{var:app_dir}/'
+        delete: true
+        excludes: ['node_modules', '*.pprof', 'default.pgo']
+      - *go-unit
+      - *database-env
+    activations:
+      - label: restart Go with the remote primary and existing local WAL
+        role: app
+        script: |
+          set -eu
+          sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/{var:app_dir}
+          sudo systemctl daemon-reload
+          sudo systemctl restart {var:service}
+          sudo systemctl is-active --quiet {var:service}
+
+  nginx:
+    uploads:
+      - label: public static assets
+        role: nginx
+        local: webapp/public/
+        remote: '{var:remote_home}/webapp/public/'
+        delete: true
+      - label: nginx configuration preserving the installed TLS certificates
+        role: nginx
+        local: nginx/
+        remote: /etc/nginx/
+        excludes: [tls/]
+        delete: true
+        validate: sudo nginx -t
+    activations:
+      - label: reload the entry nginx
+        role: nginx
+        script: |
+          set -eu
+          sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/webapp/public
+          if sudo systemctl is-active --quiet nginx; then
+            sudo systemctl reload nginx
+          else
+            sudo systemctl enable --now nginx
+          fi
+          sudo systemctl is-active --quiet nginx
+
+  mysql:
+    uploads:
+      - label: MySQL configuration
+        role: mysql
+        local: mysql/
+        remote: /etc/mysql/
+        excludes: [debian.cnf]
+        delete: true
+        validate: sudo mysqld --validate-config
+      - label: MySQL systemd limits
+        role: mysql
+        local: etc/systemd/system/mysql.service.d/
+        remote: /etc/systemd/system/mysql.service.d/
+    activations:
+      - label: restart the primary and grant the single application host access
+        role: mysql
+        script: |
+          set -eu
+          sudo systemctl daemon-reload
+          sudo systemctl restart mysql
+          sudo systemctl is-active --quiet mysql
+          # Official credentials were checked against the application's env.sh.
+          sudo mysql <<'SQL'
+          CREATE USER IF NOT EXISTS 'isucon'@'{var:app_ip}' IDENTIFIED BY 'isucon';
+          ALTER USER 'isucon'@'{var:app_ip}' IDENTIFIED BY 'isucon';
+          GRANT ALL PRIVILEGES ON `{var:db_name}`.* TO 'isucon'@'{var:app_ip}';
+          SQL
+
   db-schema:
     uploads:
       - label: official SQL schema and initialization data
@@ -32,27 +129,37 @@ deployments:
           set -eu
           sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/{var:sql_dir}
 
-  dependencies:
+  matcher:
     uploads:
       - label: matcher unit
-        role: app
+        role: matcher
         local: etc/systemd/system/isuride-matcher.service
         remote: /etc/systemd/system/isuride-matcher.service
         validate: sudo systemd-analyze verify /etc/systemd/system/isuride-matcher.service
+    activations:
+      - label: restart the single matcher on the entry host
+        role: matcher
+        script: |
+          set -eu
+          sudo systemctl daemon-reload
+          sudo systemctl restart isuride-matcher
+          sudo systemctl is-active --quiet isuride-matcher
+
+  payment-mock:
+    uploads:
       - label: payment mock unit
-        role: app
+        role: payment_mock
         local: etc/systemd/system/isuride-payment_mock.service
         remote: /etc/systemd/system/isuride-payment_mock.service
         validate: sudo systemd-analyze verify /etc/systemd/system/isuride-payment_mock.service
     activations:
-      - label: reload and start application dependencies
-        role: app
+      - label: restart the installed payment mock beside Go
+        role: payment_mock
         script: |
           set -eu
           sudo systemctl daemon-reload
-          sudo systemctl restart isuride-payment_mock isuride-matcher
+          sudo systemctl restart isuride-payment_mock
           sudo systemctl is-active --quiet isuride-payment_mock
-          sudo systemctl is-active --quiet isuride-matcher
 
   matcher-stop:
     activations:
@@ -63,21 +170,14 @@ deployments:
           sudo systemctl stop isuride-matcher
           test "$(sudo systemctl show isuride-matcher -p MainPID --value)" = 0
 
-  matcher-start:
-    activations:
-      - label: restore matcher after initialization
-        role: app
-        script: |
-          set -eu
-          sudo systemctl start isuride-matcher
-          sudo systemctl is-active --quiet isuride-matcher
-
   app-initialize:
     activations:
       - label: initialize with the supplied payment mock
         role: app_init
         script: |
           set -eu
+          # Go opens its listener after restoring the remote DB and local WAL.
+          timeout 30 bash -c 'until (: </dev/tcp/127.0.0.1/{var:listen_port}) 2>/dev/null; do sleep 0.1; done'
           curl --fail-with-body --silent --show-error --max-time 30 \
             -H 'Content-Type: application/json' \
             -d '{"payment_server":"http://127.0.0.1:12345"}' \
@@ -85,42 +185,66 @@ deployments:
 
   dependency-roles-off:
     activations:
-      - label: stop dependencies outside application hosts
+      - label: stop dependencies outside their assigned hosts
         role: all
         script: |
           set -eu
-          case ',{var:app_hosts},' in
+          case ',{var:matcher_hosts},' in
             *',{host},'*) ;;
-            *) sudo systemctl disable --now isuride-matcher isuride-payment_mock ;;
+            *) sudo systemctl disable --now isuride-matcher ;;
+          esac
+          case ',{var:payment_mock_hosts},' in
+            *',{host},'*) ;;
+            *) sudo systemctl disable --now isuride-payment_mock ;;
           esac
 
   dependency-roles-on:
     activations:
-      - label: enable dependencies on application hosts
-        role: app
+      - label: enable the matcher on the entry host
+        role: matcher
         script: |
           set -eu
-          sudo systemctl enable --now isuride-payment_mock isuride-matcher
-          sudo systemctl is-active --quiet isuride-payment_mock
+          sudo systemctl enable --now isuride-matcher
           sudo systemctl is-active --quiet isuride-matcher
+      - label: enable the payment mock on the application host
+        role: payment_mock
+        script: |
+          set -eu
+          sudo systemctl enable --now isuride-payment_mock
+          sudo systemctl is-active --quiet isuride-payment_mock
 
 plans:
   deploy-all:
     deployments:
       sysctl: {}
-      mysql: {}
-      sql-assets: {}
-      app: {needs: [mysql, sql-assets]}
+      matcher-stop: {}
+      app-stop: {needs: [matcher-stop]}
+      mysql: {needs: [app-stop]}
+      sql-assets: {needs: [app-stop]}
+      payment-mock: {needs: [app-stop]}
+      app: {needs: [mysql, sql-assets, payment-mock]}
       nginx: {needs: [app]}
-      dependencies: {needs: [nginx]}
+      matcher: {needs: [nginx]}
+      dependency-roles-off: {needs: [matcher]}
+      roles-off: {needs: [dependency-roles-off]}
+      roles-on: {needs: [roles-off]}
+      dependency-roles-on: {needs: [roles-on]}
   db-recreate:
     deployments:
       matcher-stop: {}
       app-stop: {needs: [matcher-stop]}
-      db-schema: {needs: [app-stop]}
-      app-start: {needs: [db-schema]}
-      app-initialize: {needs: [app-start]}
-      matcher-start: {needs: [app-initialize]}
+      mysql: {needs: [app-stop]}
+      sql-assets: {needs: [app-stop]}
+      payment-mock: {needs: [app-stop]}
+      db-schema: {needs: [mysql]}
+      app-unit: {needs: [db-schema, sql-assets]}
+      app-initialize: {needs: [app-unit, payment-mock]}
+      nginx: {needs: [app-initialize]}
+      matcher: {needs: [nginx]}
+      dependency-roles-off: {needs: [matcher]}
+      roles-off: {needs: [dependency-roles-off]}
+      roles-on: {needs: [roles-off]}
+      dependency-roles-on: {needs: [roles-on]}
   roles:
     deployments:
       dependency-roles-off: {}
