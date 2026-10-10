@@ -1,0 +1,172 @@
+2026-10-10T19:33:45.292728335Z	BENCHMARK_START
+time=04:33:45.667 level=INFO msg=負荷走行を開始します
+time=04:33:45.667 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.0.126:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=04:33:51.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=04:33:51.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=0 score="[0 0 0 0 0]" criteria="[0 0 0 0]"
+time=04:33:52.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=04:33:52.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3 score="[0 0 0 3 0]" criteria="[3 0 3 3]"
+time=04:33:54.677 level=INFO msg=これまでに地域内の評判によって2人、既存ユーザーの招待経由で4人が新規登録しました
+time=04:33:54.677 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、100.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=04:33:54.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=04:33:54.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 4 0]" criteria="[4 0 4 4]"
+time=04:33:56.473 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:33:56.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=04:33:56.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6 score="[0 0 0 6 0]" criteria="[6 0 6 6]"
+time=04:33:58.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=04:33:58.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7 score="[0 0 0 7 0]" criteria="[7 0 7 7]"
+time=04:34:00.077 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で7人が新規登録しました
+time=04:34:00.077 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、100.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、11.1%のライドは椅子の実移動時間に不満がありました
+time=04:34:00.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=04:34:00.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9 score="[0 0 2 7 0]" criteria="[9 0 9 7]"
+time=04:34:00.095 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:00.095 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:01.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=04:34:01.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=14 score="[0 5 2 7 0]" criteria="[14 0 9 7]"
+time=04:34:01.895 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:03.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=04:34:03.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=21 score="[0 11 3 7 0]" criteria="[21 0 10 7]"
+time=04:34:03.692 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:03.700 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=04:34:03.700 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:05.477 level=INFO msg=これまでに地域内の評判によって14人、既存ユーザーの招待経由で7人が新規登録しました
+time=04:34:05.477 level=INFO msg=これまでに低評価なライドによって9人が利用をやめました
+time=04:34:05.477 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、100.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、64.8%のライドは椅子の実移動時間に不満がありました
+time=04:34:05.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=04:34:05.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=27 score="[0 15 5 7 0]" criteria="[27 0 12 7]"
+time=04:34:05.496 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:05.500 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:07.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=04:34:07.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=31 score="[0 19 5 7 0]" criteria="[31 0 12 7]"
+time=04:34:07.300 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:09.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=04:34:09.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=37 score="[0 24 6 7 0]" criteria="[37 0 12 8]"
+time=04:34:09.097 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:09.103 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=04:34:10.877 level=INFO msg=これまでに地域内の評判によって23人、既存ユーザーの招待経由で7人が新規登録しました
+time=04:34:10.877 level=INFO msg=これまでに低評価なライドによって18人が利用をやめました
+time=04:34:10.877 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、100.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、76.1%のライドは椅子の実移動時間に不満がありました
+time=04:34:10.878 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:10.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=04:34:10.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=44 score="[0 30 7 7 0]" criteria="[44 0 13 8]"
+time=04:34:10.879 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:12.668 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:12.677 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=04:34:12.677 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:12.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=04:34:12.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=48 score="[0 32 8 8 0]" criteria="[48 1 15 8]"
+time=04:34:14.475 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=04:34:14.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=04:34:14.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=53 score="[0 35 10 8 0]" criteria="[53 1 17 8]"
+time=04:34:16.275 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:16.277 level=INFO msg=これまでに地域内の評判によって33人、既存ユーザーの招待経由で8人が新規登録しました
+time=04:34:16.277 level=INFO msg=これまでに低評価なライドによって24人が利用をやめました
+time=04:34:16.277 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、96.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、78.0%のライドは椅子の実移動時間に不満がありました
+time=04:34:16.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=04:34:16.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=59 score="[0 40 10 9 0]" criteria="[59 2 18 8]"
+time=04:34:16.328 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:18.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=04:34:18.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=63 score="[0 43 10 10 0]" criteria="[63 3 19 8]"
+time=04:34:18.135 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:18.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:19.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=04:34:19.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=67 score="[0 46 10 11 0]" criteria="[67 4 20 8]"
+time=04:34:19.910 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:19.911 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:21.677 level=INFO msg=これまでに地域内の評判によって42人、既存ユーザーの招待経由で12人が新規登録しました
+time=04:34:21.677 level=INFO msg=これまでに低評価なライドによって31人が利用をやめました
+time=04:34:21.677 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、93.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、80.1%のライドは椅子の実移動時間に不満がありました
+time=04:34:21.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=04:34:21.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=73 score="[0 51 10 12 0]" criteria="[73 5 21 8]"
+time=04:34:21.711 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=04:34:23.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=04:34:23.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=84 score="[0 59 11 14 0]" criteria="[84 7 23 9]"
+time=04:34:23.499 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:23.503 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:23.526 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:23.555 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:25.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=04:34:25.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=91 score="[0 63 12 16 0]" criteria="[91 9 25 10]"
+time=04:34:25.308 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:25.335 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:25.351 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:27.077 level=INFO msg=これまでに地域内の評判によって51人、既存ユーザーの招待経由で18人が新規登録しました
+time=04:34:27.077 level=INFO msg=これまでに低評価なライドによって39人が利用をやめました
+time=04:34:27.077 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、87.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、79.9%のライドは椅子の実移動時間に不満がありました
+time=04:34:27.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=04:34:27.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=97 score="[0 66 12 18 1]" criteria="[97 12 28 11]"
+time=04:34:27.206 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:28.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=04:34:28.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=100 score="[0 68 12 19 1]" criteria="[100 13 29 11]"
+time=04:34:28.942 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=04:34:30.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=04:34:30.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=106 score="[0 72 12 21 1]" criteria="[106 15 31 11]"
+time=04:34:30.756 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:30.799 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:32.477 level=INFO msg=これまでに地域内の評判によって60人、既存ユーザーの招待経由で22人が新規登録しました
+time=04:34:32.477 level=INFO msg=これまでに低評価なライドによって44人が利用をやめました
+time=04:34:32.477 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、84.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、81.6%のライドは椅子の実移動時間に不満がありました
+time=04:34:32.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=04:34:32.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=114 score="[0 77 15 21 1]" criteria="[114 18 31 11]"
+time=04:34:32.620 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:32.629 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:32.652 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=04:34:34.278 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=04:34:34.278 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=120 score="[0 80 17 22 1]" criteria="[120 20 31 13]"
+time=04:34:36.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=04:34:36.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=130 score="[0 87 18 24 1]" criteria="[130 22 32 15]"
+time=04:34:36.183 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:36.295 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=04:34:37.878 level=INFO msg=これまでに地域内の評判によって69人、既存ユーザーの招待経由で25人が新規登録しました
+time=04:34:37.878 level=INFO msg=これまでに低評価なライドによって53人が利用をやめました
+time=04:34:37.878 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、82.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、82.6%のライドは椅子の実移動時間に不満がありました
+time=04:34:37.878 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=04:34:37.878 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=138 score="[0 92 21 24 1]" criteria="[138 24 32 16]"
+time=04:34:37.968 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=2
+time=04:34:37.968 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:39.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=04:34:39.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=147 score="[0 98 23 25 1]" criteria="[147 26 33 17]"
+time=04:34:39.811 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:39.955 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=04:34:41.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=04:34:41.477 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=154 score="[0 103 25 25 1]" criteria="[154 27 33 18]"
+time=04:34:41.639 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:41.716 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:43.277 level=INFO msg=これまでに地域内の評判によって78人、既存ユーザーの招待経由で26人が新規登録しました
+time=04:34:43.277 level=INFO msg=これまでに低評価なライドによって58人が利用をやめました
+time=04:34:43.277 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、82.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、83.9%のライドは椅子の実移動時間に不満がありました
+time=04:34:43.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=04:34:43.277 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=158 score="[0 107 25 25 1]" criteria="[158 27 33 18]"
+time=04:34:43.420 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=04:34:43.423 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:45.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=04:34:45.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=167 score="[0 114 27 25 1]" criteria="[167 28 33 19]"
+time=04:34:45.283 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:45.417 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:46.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=04:34:46.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=173 score="[0 119 27 26 1]" criteria="[173 29 33 20]"
+time=04:34:47.070 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=04:34:47.167 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=04:34:48.677 level=INFO msg=これまでに地域内の評判によって88人、既存ユーザーの招待経由で27人が新規登録しました
+time=04:34:48.677 level=INFO msg=これまでに低評価なライドによって66人が利用をやめました
+time=04:34:48.677 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、83.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、84.9%のライドは椅子の実移動時間に不満がありました
+time=04:34:48.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=04:34:48.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=179 score="[0 123 29 26 1]" criteria="[179 30 33 21]"
+time=04:34:48.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=04:34:48.835 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子やいちば 増加数=1
+time=04:34:54.278 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=89 アクティブユーザー数=39
+time=04:34:54.278 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=39 アクティブユーザー数=22
+time=04:34:54.278 level=INFO msg=最終オーナー情報 名前=椅子のめぐりや 売上=216200 椅子数=16
+time=04:34:54.278 level=INFO msg=最終オーナー情報 名前=椅子やいちば 売上=114800 椅子数=11
+time=04:34:54.278 level=INFO msg=最終オーナー情報 名前="Timeless Seats" 売上=456000 椅子数=27
+time=04:34:54.278 level=INFO msg=最終オーナー情報 名前="Artisan Seats" 売上=133700 椅子数=12
+time=04:34:54.278 level=INFO msg=最終オーナー情報 名前="CraftChair Co., Ltd." 売上=190600 椅子数=14
+time=04:34:54.278 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、83.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、85.3%のライドは椅子の実移動時間に不満がありました
+time=04:34:54.278 level=INFO msg=結果 pass=true スコア=16687 種別エラー数=map[]
+time=04:34:54.278 level=INFO msg=負荷走行が終了しました
+
+SCORE: 16687
+BENCHMARK_PASS
+2026-10-10T19:34:54.445487050Z	BENCHMARK_END
+
+SCORE: 16687
+BENCHMARK_PASS

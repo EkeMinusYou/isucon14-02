@@ -10,6 +10,14 @@
 version: '3'
 
 tasks:
+  test-matching:
+    desc: 一時的なローカルMySQLコンテナで一括配車の正当性を確認（競技サーバーは使用しない）
+    dir: '{{.APP_DIR}}'
+    env:
+      ISURIDE_TEST_MYSQL_IMAGE: '{{.MATCHING_TEST_MYSQL_IMAGE | default "mysql:8.0.46"}}'
+    cmds:
+      - go test -race -count=1 -v -run '^TestMatching$' .
+
   test-app:
     desc: Goアプリの通知・統計を検証（MYSQL_TEST_DSN指定時はローカルMySQLで統合テスト）
     dir: '{{.APP_DIR}}'
