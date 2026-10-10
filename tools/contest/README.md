@@ -24,6 +24,37 @@ templateに置いてあるのは`bench-patterns.json`、`user-transition-routes.
 `analysis-schema/`のviewは、dashboardとREADMEが名前と列で参照する契約である。書式に合わせて
 本体を書き換えるときも、view名と列は変えない。書き換えなければ0行を返す。
 
+## ISURIDEの参加者向けログ
+
+`task q-sync`で保存済みRUNの`bench.log`全文と以下のビューを分析DBへ反映する。
+各行には`run_id`・`source_artifact`・`line_number`があり、RUN間の比較と原文への照合ができる。
+最終情報は負荷窓で除外しない。`reported_at`は報告時刻であり、売上やエラーの個々の発生時刻ではない。
+
+| ビュー | 分析用カラム |
+| --- | --- |
+| `bench_final_regions` | `region_name`、`registered_users`、`active_users` |
+| `bench_final_owners` | `owner_name`、`sales`、`chairs` |
+| `bench_registrations` | `registrations_reputation`、`registrations_invitation`（累計） |
+| `bench_dissatisfaction` | `matching_pct`、`pickup_pct`、`travel_pct`（百分率）、`elapsed_s` |
+| `bench_latest_dissatisfaction` | 上記不満率のRUNごとの最終報告行。途中終了でも「完走」とはみなさない |
+| `bench_completion` | `passed`、`score`、`error_types`（種別→件数のMAP）、`reported_error_count` |
+| `bench_error_types` | `error_type`、`reported_count`（完了時の種別集計を1種別1行に展開） |
+| `bench_info_coverage` | `record_type`、`parsed`。不明なINFO書式と既知書式の解析失敗を検出 |
+
+地域・オーナーの名前は引用符とescapeを解釈済み。数値はBIGINT、不満率はDOUBLEとして取得できる。
+既知の情報行には`parsed`と`raw_line`も残し、不正・欠損を0として補わない。
+明示的な`map[]`だけを0件のエラーとして扱い、不満率の母数は未出力のためNULL。
+負荷窓がなくても最終情報を取得でき、経過秒はNULLになる。
+既存の`bench_progress`は負荷窓内の指標を1指標1行で返す契約を維持する。
+DEBUGの内部情報は`bench_log_lines`や`bench_error_logs.content`の原文として保持する。
+
+```shell
+task q -- "SELECT run_id, region_name, registered_users, active_users FROM bench_final_regions ORDER BY run_id, region_name"
+task q -- "SELECT run_id, owner_name, sales, chairs FROM bench_final_owners ORDER BY run_id, owner_name"
+task q -- "SELECT run_id, matching_pct, pickup_pct, travel_pct FROM bench_latest_dissatisfaction ORDER BY run_id"
+task q -- "SELECT run_id, line_number, record_type, raw_line FROM bench_info_coverage WHERE NOT parsed"
+```
+
 ## ここへ置けないもの
 
 - Goのテストは対象パッケージと同じディレクトリに置く必要がある。競技固有のテストは

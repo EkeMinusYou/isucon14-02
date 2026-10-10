@@ -138,3 +138,84 @@ time=00:00:10.000 level=INFO msg=結果 pass=true スコア=671 種別エラー�
 		}
 	}
 }
+
+func checkISURIDESummarySQL(t *testing.T, fixtures, query string) {
+	t.Helper()
+	var sql strings.Builder
+	result, err := os.ReadFile("../contest/analysis-schema/bench-errors-semantic.sql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sql.Write(result)
+	sql.WriteString("create table load_windows(run_id varchar, started_at timestamptz, ended_at timestamptz, status varchar);\n")
+	sql.WriteString(fixtures)
+	for _, path := range []string{"bench-progress.sql", "bench-summary.sql"} {
+		data, err := os.ReadFile("../contest/analysis-schema/" + path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		sql.Write(data)
+	}
+	sql.WriteString(query)
+	cmd := exec.Command("duckdb", "-json", "-batch")
+	cmd.Stdin = strings.NewReader(sql.String())
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("%v\n%s", err, output)
+	}
+	var rows []map[string]bool
+	if err := json.Unmarshal(output, &rows); err != nil || len(rows) != 1 {
+		t.Fatalf("%v\n%s", err, output)
+	}
+	for name, ok := range rows[0] {
+		if !ok {
+			t.Fatalf("%s failed: %s", name, output)
+		}
+	}
+}
+
+func TestISURIDETypedSummaries(t *testing.T) {
+	fixtures := `insert into load_windows values ('night', '2026-10-10T23:59:58+09:00', '2026-10-11T00:00:01+09:00', 'ok');
+insert into bench_error_logs values ('night', 'time=00:00:02.000 level=INFO msg=最終地域情報 名前="Region East" ユーザー登録数=0 アクティブユーザー数=0
+time=00:00:03.000 level=INFO msg=最終オーナー情報 名前="椅子 \"研究\" 社" 売上=3000000000 椅子数=4
+time=00:00:04.000 level=INFO msg=100.0%のライドは椅子がマッチされるまでの時間、66.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=00:00:05.000 level=INFO msg=結果 pass=false スコア=0 種別エラー数=map[correctness:1 network timeout:2]', 'bench.log'),
+('20261011-050000', 'time=05:00:01.000 level=INFO msg=最終地域情報 名前=地域 ユーザー登録数=5 アクティブユーザー数=3
+time=05:00:02.000 level=INFO msg=最終オーナー情報 名前=椅子工藝舎 売上=0 椅子数=4
+time=05:00:03.000 level=INFO msg=結果 pass=true スコア=12 種別エラー数=map[]', 'bench.log'),
+('bad', 'time=00:00:02.000 level=INFO msg=最終地域情報 名前=地域 ユーザー登録数=unknown アクティブユーザー数=3
+time=00:00:03.000 level=INFO msg=結果 pass=true スコア=12 種別エラー数=map[broken]
+time=00:00:04.000 level=INFO msg=unknown format', 'bench.log');`
+	query := `select
+(select count(*) = 1 and bool_and(parsed and region_name = 'Region East' and registered_users = 0 and active_users = 0 and elapsed_s = 4 and reported_at = '2026-10-11T00:00:02+09:00'::timestamptz) from bench_final_regions where run_id='night') as midnight_region,
+(select count(*) = 1 and bool_and(parsed and owner_name = '椅子 "研究" 社' and sales = 3000000000 and chairs = 4) from bench_final_owners where run_id='night') as quoted_owner,
+(select count(*) = 1 and bool_and(parsed and matching_pct=100 and pickup_pct=66.7 and travel_pct=0 and not in_load_window and denominator is null) from bench_latest_dissatisfaction where run_id='night') as outside_ratios,
+(select parsed and not passed and score=0 and reported_error_count=3 and error_types['network timeout']=2 from bench_completion where run_id='night') as failure_counts,
+(select count(*)=2 and sum(reported_count)=3 from bench_error_types where run_id='night') as error_types,
+(select count(*)=1 and bool_and(parsed and reported_at is not null and elapsed_s is null) from bench_final_regions where run_id='20261011-050000') as missing_window,
+(select parsed and reported_error_count=0 and cardinality(error_types)=0 from bench_completion where run_id='20261011-050000') as empty_errors,
+(select count(*)=1 and bool_and(not parsed and registered_users is null) from bench_final_regions where run_id='bad') as malformed_region,
+(select not parsed and reported_error_count is null and error_types is null from bench_completion where run_id='bad') as malformed_errors,
+(select count(*)=3 and count(*) filter (where not parsed)=3 from bench_info_coverage where run_id='bad') as unknown_visible;`
+	checkISURIDESummarySQL(t, fixtures, query)
+}
+
+func TestISURIDESavedRunTypedSummaries(t *testing.T) {
+	log, err := os.ReadFile("../../runs/20261011-035537/bench.log")
+	if os.IsNotExist(err) {
+		t.Skip("saved participant RUN is absent")
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixtures := "insert into bench_error_logs values ('20261011-035537', '" + strings.ReplaceAll(string(log), "'", "''") + "', 'bench.log');\n"
+	query := `select
+(select count(*)=2 and sum(registered_users)=10 and sum(active_users)=10 and bool_and(parsed) from bench_final_regions) as regions,
+(select count(*)=5 and sum(sales)=25700 and sum(chairs)=20 and bool_and(parsed) from bench_final_owners) as owners,
+(select count(*)=1 and bool_and(owner_name='Skyline Taxis' and sales=0 and chairs=4) from bench_final_owners where owner_name='Skyline Taxis') as spaced_name,
+(select matching_pct=100 and pickup_pct=66.7 and travel_pct=100 and parsed from bench_latest_dissatisfaction) as latest_ratios,
+(select count(*)=11 and bool_and(parsed) from bench_registrations) as registrations,
+(select score=671 and passed and reported_error_count=0 and parsed from bench_completion) as completion,
+(select count(*)=31 and bool_and(parsed) from bench_info_coverage) as all_info_decoded;`
+	checkISURIDESummarySQL(t, fixtures, query)
+}

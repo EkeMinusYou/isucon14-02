@@ -2,15 +2,18 @@
 -- internal fields with unknown semantics and are deliberately not decoded.
 -- This log uses JST clock times without a date. Resolve the closest date to
 -- the load window start, including runs crossing midnight.
-create or replace view bench_progress_lines as
+create or replace view bench_log_lines as
 with lines as (
-    select b.run_id, b.source_artifact, l.line_number, l.line, w.started_at, w.ended_at,
-        try_cast(strftime(w.started_at at time zone 'Asia/Tokyo', '%Y-%m-%d') || 'T' ||
+    select b.run_id, b.source_artifact, l.line_number, l.line,
+        case when w.status = 'ok' then w.started_at end as started_at,
+        case when w.status = 'ok' then w.ended_at end as ended_at,
+        try_cast(strftime(coalesce(w.started_at,
+            try_strptime(b.run_id, '%Y%m%d-%H%M%S') at time zone 'Asia/Tokyo')
+            at time zone 'Asia/Tokyo', '%Y-%m-%d') || 'T' ||
             regexp_extract(l.line, '^time=([0-9:.]+)', 1) || '+09:00' as timestamptz) as clock_at
     from bench_error_logs b
-    join load_windows w using (run_id),
+    left join load_windows w using (run_id),
     unnest(string_split(b.content, chr(10))) with ordinality as l(line, line_number)
-    where w.status = 'ok' and regexp_matches(l.line, '^time=\S+ level=INFO ')
 ), dated as (
     select *, case
         when clock_at < started_at - interval '12 hours' then clock_at + interval '1 day'
@@ -20,8 +23,12 @@ with lines as (
 )
 select run_id, source_artifact, line_number, line, reported_at,
     date_diff('millisecond', started_at, reported_at) / 1000.0 as elapsed_s,
-    reported_at >= started_at and reported_at < ended_at as in_load_window
-from dated where reported_at is not null;
+    coalesce(reported_at >= started_at and reported_at < ended_at, false) as in_load_window
+from dated;
+
+create or replace view bench_progress_lines as
+select * from bench_log_lines
+where reported_at is not null and regexp_matches(line, '^time=\S+ level=INFO ');
 
 -- Counts are cumulative people; dissatisfaction values are percentages.
 -- The output provides no denominator for these ratios, so it stays unknown.
