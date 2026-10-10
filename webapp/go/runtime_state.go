@@ -571,7 +571,30 @@ func (s *rideState) nearbyAvailable(chairID string, at time.Time) (bool, error) 
 
 func (s *rideState) match() error {
 	s.mu.Lock()
+	generation := s.generation
+	err := s.matchBatchLocked()
+	saturated := len(s.waitingRides) >= matchingBatchSize && len(s.matchingChairs) >= matchingBatchSize
+	s.mu.Unlock()
+	if err != nil || !saturated {
+		return err
+	}
+	// Let coordinates, ACKs and other matching calls progress between batches.
+	return s.matchAdditionalBatch(generation)
+}
+
+func (s *rideState) matchAdditionalBatch(generation string) error {
+	s.mu.Lock()
 	defer s.mu.Unlock()
+	// Recheck the current FIFO and ACK-gated chair pool under the same lock
+	// used by the solver and WAL publication. Never cross an initialize epoch.
+	if s.generation != generation || len(s.waitingRides) < matchingBatchSize || len(s.matchingChairs) < matchingBatchSize {
+		return nil
+	}
+	return s.matchBatchLocked()
+}
+
+// Called with s.mu held; each batch retains its own WAL record and metrics.
+func (s *rideState) matchBatchLocked() error {
 	waiting := s.waitingRides[:min(len(s.waitingRides), matchingBatchSize)]
 	var candidates []matchingChair
 	for id := range s.matchingChairs {
