@@ -1,0 +1,2 @@
+SQL pool metrics poll: Get "http://127.0.0.1:6060/debug/sql-pools": context deadline exceeded
+SQL pool metrics poll: Get "http://127.0.0.1:6060/debug/sql-pools": context deadline exceeded
