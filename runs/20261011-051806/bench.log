@@ -1,0 +1,250 @@
+2026-10-10T20:18:11.436747504Z	BENCHMARK_START
+time=05:18:11.768 level=INFO msg=負荷走行を開始します
+time=05:18:11.768 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.0.126:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=05:18:17.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=05:18:17.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3 score="[0 0 0 2 1]" criteria="[3 1 3 3]"
+time=05:18:18.930 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:18.931 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:18.931 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=05:18:18.931 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=18 score="[0 0 0 10 8]" criteria="[18 8 18 18]"
+time=05:18:20.728 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:20.731 level=INFO msg=これまでに地域内の評判によって6人、既存ユーザーの招待経由で28人が新規登録しました
+time=05:18:20.731 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、71.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、3.1%のライドは椅子の実移動時間に不満がありました
+time=05:18:20.734 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:20.742 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:20.742 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:20.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=05:18:20.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=32 score="[0 0 2 21 9]" criteria="[32 9 32 30]"
+time=05:18:22.543 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=3
+time=05:18:22.543 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:22.544 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:22.544 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:22.544 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:22.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=05:18:22.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=45 score="[0 0 3 27 15]" criteria="[45 16 45 41]"
+time=05:18:24.332 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=05:18:24.332 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=62 score="[0 0 8 36 18]" criteria="[62 26 62 46]"
+time=05:18:24.366 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:24.370 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:24.380 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:24.380 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:26.131 level=INFO msg=これまでに地域内の評判によって18人、既存ユーザーの招待経由で57人が新規登録しました
+time=05:18:26.131 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=05:18:26.131 level=INFO msg=1.3%のライドは椅子がマッチされるまでの時間、60.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、20.0%のライドは椅子の実移動時間に不満がありました
+time=05:18:26.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=05:18:26.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=75 score="[0 3 14 39 19]" criteria="[74 30 72 48]"
+time=05:18:26.151 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:26.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=05:18:26.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:26.162 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:26.354 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=05:18:27.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=05:18:27.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=91 score="[1 8 16 47 19]" criteria="[85 39 84 49]"
+time=05:18:27.960 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=05:18:27.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:27.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:18:27.983 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:29.784 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:29.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=05:18:29.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=104 score="[5 13 18 49 19]" criteria="[91 43 89 49]"
+time=05:18:29.795 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:29.817 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:31.532 level=INFO msg=これまでに地域内の評判によって30人、既存ユーザーの招待経由で66人が新規登録しました
+time=05:18:31.532 level=INFO msg=これまでに低評価なライドによって12人が利用をやめました
+time=05:18:31.532 level=INFO msg=21.8%のライドは椅子がマッチされるまでの時間、59.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、39.1%のライドは椅子の実移動時間に不満がありました
+time=05:18:31.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=05:18:31.532 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=119 score="[12 16 22 50 19]" criteria="[93 48 94 51]"
+time=05:18:31.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:31.580 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:31.604 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:31.617 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:33.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=05:18:33.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=137 score="[23 18 26 51 19]" criteria="[94 53 98 54]"
+time=05:18:33.384 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:33.384 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:33.385 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:33.401 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:18:35.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=05:18:35.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=154 score="[30 22 32 51 19]" criteria="[95 60 104 56]"
+time=05:18:35.203 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:35.218 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:35.219 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:35.263 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=3
+time=05:18:35.264 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:36.931 level=INFO msg=これまでに地域内の評判によって42人、既存ユーザーの招待経由で66人が新規登録しました
+time=05:18:36.931 level=INFO msg=これまでに低評価なライドによって29人が利用をやめました
+time=05:18:36.931 level=INFO msg=44.1%のライドは椅子がマッチされるまでの時間、57.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、52.1%のライドは椅子の実移動時間に不満がありました
+time=05:18:36.931 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=05:18:36.931 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=170 score="[34 31 35 51 19]" criteria="[95 72 107 56]"
+time=05:18:37.060 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:37.101 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:37.116 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:38.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=05:18:38.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=186 score="[41 34 40 52 19]" criteria="[99 79 111 57]"
+time=05:18:38.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:38.835 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:38.844 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:38.952 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:40.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=05:18:40.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=208 score="[50 44 42 53 19]" criteria="[108 86 112 57]"
+time=05:18:40.725 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:40.832 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:40.870 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:18:40.903 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=05:18:42.331 level=INFO msg=これまでに地域内の評判によって54人、既存ユーザーの招待経由で71人が新規登録しました
+time=05:18:42.331 level=INFO msg=これまでに低評価なライドによって46人が利用をやめました
+time=05:18:42.331 level=INFO msg=46.8%のライドは椅子がマッチされるまでの時間、58.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、61.3%のライドは椅子の実移動時間に不満がありました
+time=05:18:42.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=05:18:42.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=222 score="[54 48 45 56 19]" criteria="[118 92 115 57]"
+time=05:18:42.493 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=05:18:42.521 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:42.541 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:42.621 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:43.525 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=05:18:44.132 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=05:18:44.132 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=244 score="[60 54 52 59 19]" criteria="[133 103 118 57]"
+time=05:18:44.256 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:44.272 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:44.272 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:44.323 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:44.371 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:45.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=05:18:45.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=270 score="[61 63 67 60 19]" criteria="[158 119 119 57]"
+time=05:18:46.140 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:46.180 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:46.181 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:46.289 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:46.321 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:18:47.731 level=INFO msg=これまでに地域内の評判によって66人、既存ユーザーの招待経由で76人が新規登録しました
+time=05:18:47.731 level=INFO msg=これまでに低評価なライドによって57人が利用をやめました
+time=05:18:47.731 level=INFO msg=39.1%のライドは椅子がマッチされるまでの時間、54.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、69.6%のライドは椅子の実移動時間に不満がありました
+time=05:18:47.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=05:18:47.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=294 score="[64 69 79 63 19]" criteria="[179 134 122 57]"
+time=05:18:48.033 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:48.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:48.096 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:48.274 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:48.313 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:18:49.532 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=05:18:49.532 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=319 score="[65 73 99 63 19]" criteria="[203 154 122 57]"
+time=05:18:49.757 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=05:18:49.780 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:49.780 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:49.795 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:51.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=05:18:51.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=342 score="[67 81 111 64 19]" criteria="[224 167 123 57]"
+time=05:18:51.778 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=05:18:51.925 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:51.973 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:18:53.132 level=INFO msg=これまでに地域内の評判によって78人、既存ユーザーの招待経由で80人が新規登録しました
+time=05:18:53.132 level=INFO msg=これまでに低評価なライドによって70人が利用をやめました
+time=05:18:53.132 level=INFO msg=32.0%のライドは椅子がマッチされるまでの時間、49.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、75.3%のライドは椅子の実移動時間に不満がありました
+time=05:18:53.132 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=05:18:53.132 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=369 score="[67 87 130 66 19]" criteria="[251 188 125 57]"
+time=05:18:53.540 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:53.540 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:53.585 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:53.586 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:18:53.719 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=3
+time=05:18:54.931 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=05:18:54.931 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=397 score="[67 92 153 66 19]" criteria="[279 211 125 57]"
+time=05:18:55.301 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=05:18:55.344 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:55.454 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:18:55.464 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:56.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=05:18:56.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=425 score="[67 95 178 66 19]" criteria="[307 236 125 57]"
+time=05:18:57.116 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=05:18:57.149 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:18:57.163 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:18:57.194 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:18:57.223 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:18:57.973 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=05:18:58.531 level=INFO msg=これまでに地域内の評判によって90人、既存ユーザーの招待経由で81人が新規登録しました
+time=05:18:58.531 level=INFO msg=これまでに低評価なライドによって70人が利用をやめました
+time=05:18:58.531 level=INFO msg=26.7%のライドは椅子がマッチされるまでの時間、43.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、79.2%のライドは椅子の実移動時間に不満がありました
+time=05:18:58.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=05:18:58.531 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=442 score="[67 97 191 68 19]" criteria="[324 251 126 58]"
+time=05:18:59.057 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:18:59.201 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:00.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=05:19:00.331 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=468 score="[68 99 213 69 19]" criteria="[349 274 127 58]"
+time=05:19:00.993 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=05:19:01.022 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:19:01.181 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:19:01.181 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:02.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=05:19:02.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=496 score="[68 100 239 70 19]" criteria="[376 302 128 58]"
+time=05:19:02.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:19:02.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:19:03.029 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:03.063 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:19:03.220 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:03.932 level=INFO msg=これまでに地域内の評判によって102人、既存ユーザーの招待経由で83人が新規登録しました
+time=05:19:03.932 level=INFO msg=これまでに低評価なライドによって72人が利用をやめました
+time=05:19:03.932 level=INFO msg=24.2%のライドは椅子がマッチされるまでの時間、37.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、82.0%のライドは椅子の実移動時間に不満がありました
+time=05:19:03.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=05:19:03.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=520 score="[68 108 254 71 19]" criteria="[394 324 128 59]"
+time=05:19:04.799 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:04.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:19:04.876 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:19:04.991 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:19:04.992 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:05.732 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=05:19:05.732 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=540 score="[68 117 265 71 19]" criteria="[406 343 128 59]"
+time=05:19:06.943 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:19:06.958 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:06.984 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:19:06.985 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:19:07.241 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:07.532 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=05:19:07.532 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=556 score="[68 125 273 71 19]" criteria="[414 359 128 59]"
+time=05:19:08.250 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:19:08.276 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:19:08.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:08.565 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:09.332 level=INFO msg=これまでに地域内の評判によって114人、既存ユーザーの招待経由で84人が新規登録しました
+time=05:19:09.332 level=INFO msg=これまでに低評価なライドによって78人が利用をやめました
+time=05:19:09.332 level=INFO msg=27.1%のライドは椅子がマッチされるまでの時間、34.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、83.9%のライドは椅子の実移動時間に不満がありました
+time=05:19:09.332 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=05:19:09.332 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=579 score="[70 138 281 71 19]" criteria="[422 380 128 59]"
+time=05:19:10.423 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:10.432 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=05:19:10.596 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=05:19:10.624 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:11.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=05:19:11.131 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=611 score="[71 156 294 71 19]" criteria="[435 411 128 59]"
+time=05:19:12.154 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=05:19:12.458 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=05:19:12.463 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:12.559 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:19:12.778 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=05:19:12.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=05:19:12.932 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=636 score="[72 164 310 71 19]" criteria="[451 435 128 59]"
+time=05:19:13.731 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:19:13.864 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=05:19:14.731 level=INFO msg=これまでに地域内の評判によって126人、既存ユーザーの招待経由で84人が新規登録しました
+time=05:19:14.731 level=INFO msg=これまでに低評価なライドによって86人が利用をやめました
+time=05:19:14.731 level=INFO msg=30.2%のライドは椅子がマッチされるまでの時間、30.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、85.9%のライドは椅子の実移動時間に不満がありました
+time=05:19:14.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=05:19:14.731 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=663 score="[74 177 322 71 19]" criteria="[463 460 128 59]"
+time=05:19:15.547 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=05:19:15.768 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=05:19:15.855 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=05:19:20.332 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=111 アクティブユーザー数=65
+time=05:19:20.332 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=113 アクティブユーザー数=72
+time=05:19:20.332 level=INFO msg=最終オーナー情報 名前=街のりタクシー 売上=683800 椅子数=36
+time=05:19:20.332 level=INFO msg=最終オーナー情報 名前="Skyline Taxis" 売上=707000 椅子数=36
+time=05:19:20.332 level=INFO msg=最終オーナー情報 名前="Orbit Taxi" 売上=618800 椅子数=33
+time=05:19:20.332 level=INFO msg=最終オーナー情報 名前="Sit Second Life" 売上=999800 椅子数=45
+time=05:19:20.332 level=INFO msg=最終オーナー情報 名前=座和インダストリー 売上=935200 椅子数=44
+time=05:19:20.332 level=INFO msg=29.9%のライドは椅子がマッチされるまでの時間、29.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、86.2%のライドは椅子の実移動時間に不満がありました
+time=05:19:20.332 level=INFO msg=結果 pass=true スコア=45032 種別エラー数=map[17:3]
+time=05:19:20.332 level=INFO msg=負荷走行が終了しました
+
+SCORE: 45032
+BENCHMARK_PASS
+2026-10-10T20:19:20.505004965Z	BENCHMARK_END
+
+SCORE: 45032
+BENCHMARK_PASS

@@ -140,10 +140,11 @@ digesterも`enabled_by_default: false`で既定の実行対象から外せます
 直接`manifest begin`を使う場合は`-role cache=host-a,host-b`を渡してください。
 古いRUNの未記録roleは推測で補いません。
 
-標準のfgprof・Go CPU・heap・allocs・goroutineは`group: profiles`かつ`enabled_by_default: true`。
+Go CPU・heap・allocs・goroutineは`group: profiles`かつ`enabled_by_default: true`。
+fgprofは既定無効で、必要な場合は`task fgprof-collect`で明示的に収集する。
 `bench/run.sh`がこの宣言から収集対象を選び、同じ対象を開始確認・必須成果物判定で使う。
 [Go profile導入例](../docs/measurement/go-profiling.md)に沿ってsetupでendpointを用意する。
-CPUとfgprofのRUN別開始確認後にベンチを開始し、設定した時間の収集・回収完了後にfinalizeする。
+有効なprofileのRUN別開始確認後にベンチを開始し、設定した時間の収集・回収完了後にfinalizeする。
 開始通知はprofilerの起動成功後に公開する。開始確認後は、CPU profile writerの非同期起動と
 小さなホスト時計差に備えて1秒先行収録し、同じRUNが収録中であることを再確認してからベンチを開始する。
 この1秒は大きな時計差を補正するものではなく、成果物の時間窓検査は緩和しない。
