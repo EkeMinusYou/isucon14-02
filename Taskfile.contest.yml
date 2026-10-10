@@ -22,11 +22,21 @@ tasks:
     cmds:
       - '{{.DEPLOYCTL_DIR}}/deployctl apply nginx -dry-run -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
 
+  build-ride-metrics:
+    desc: 計測対象Goアプリとsql-pool collectorを既存buildタスクでクロスコンパイル
+    deps: [build, build-sql-pool-metrics]
+
+  test-ride-metrics-collector:
+    desc: sql-pool collectorの独立した項目上限とexport契約を確認
+    dir: '{{.MEASUREMENT_DIR}}'
+    cmds: [go test -race -count=1 ./cmd/sql-pool-metrics]
+
   test-ride-metrics:
-    desc: 配車・評価の計測と既存collectorからDuckDBまでをローカルfixtureで確認
+    deps: [test-ride-metrics-collector]
+    desc: 座標・回転・配車・評価の境界とcollectorからDuckDBまでをローカルfixtureで確認
     dir: '{{.APP_DIR}}'
     cmds:
-      - go test -race -count=1 -v -run '^Test(DispatchMetrics|EvaluationMetrics|PaymentRetryCount|RideMetricsCollectorDuckDB)' .
+      - go test -race -count=1 -v -run '^Test(CoordinateMetrics|FlowMetrics|PlanningMetrics|RideMetricsSnapshot|DispatchMetrics|EvaluationMetrics|PaymentRetryCount|RideMetricsCollectorDuckDB)' .
 
   test-nearby-chairs:
     desc: SQLなしの近隣椅子APIの条件と最新状態を確認

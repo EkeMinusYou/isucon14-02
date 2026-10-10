@@ -16,6 +16,7 @@ type dispatchMetrics struct {
 }
 
 type chairMetricState struct {
+	flow                chairFlow
 	active              bool
 	unfinished, pending int
 }
@@ -79,6 +80,8 @@ func (s *rideState) resetDispatchMetrics() {
 		s.metrics.register(name, durationLimits)
 	}
 	s.metrics.register("dispatch_batch", [4]float64{1, 8, 32, 64})
+	s.resetFlow()
+	s.observeOpportunity(s.metrics.started)
 }
 
 // Called under the state lock. No chair ride history is revisited.
@@ -155,12 +158,12 @@ func observeAssignmentFlush(kind, statusID, generation string, at time.Time) {
 	s.metrics.observe("assign_flush_"+kind, float64(max(0, at.Sub(r.assignedAt)))/float64(time.Millisecond))
 }
 
-func (s *rideState) exportDispatch(values map[string]any) {
+func (s *rideState) exportDispatch(values map[string]any, at time.Time) {
 	d := s.dispatch
 	values["dispatch_waiting"] = len(d.waiting)
 	oldest := 0.0
 	if len(d.waiting) > 0 {
-		oldest = float64(max(0, time.Since(d.waiting[0].CreatedAt))) / float64(time.Millisecond)
+		oldest = float64(max(0, at.Sub(d.waiting[0].CreatedAt))) / float64(time.Millisecond)
 	}
 	values["dispatch_oldest_ms"] = oldest
 	values["dispatch_available"] = d.available

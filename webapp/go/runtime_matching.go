@@ -8,9 +8,11 @@ import (
 )
 
 type matchingPlan struct {
-	generation string
-	rides      []Ride
-	chairs     []matchingChair
+	observation        *planTiming
+	waiting, available int
+	generation         string
+	rides              []Ride
+	chairs             []matchingChair
 }
 
 func (s *rideState) matchingChair(id string) matchingChair {
@@ -24,14 +26,29 @@ func (s *rideState) matchingChair(id string) matchingChair {
 
 // Copy values under mu; sorting, candidate extraction and solving use only
 // this snapshot. Coordinates can continue changing while the solver runs.
-func (s *rideState) snapshotMatching(generation string, minimum int) (matchingPlan, error) {
+func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*planTiming) (matchingPlan, error) {
+	var t *planTiming
+	var started, acquired time.Time
+	if len(timing) > 0 {
+		t = timing[0]
+		started = time.Now()
+	}
 	s.mu.RLock()
-	defer s.mu.RUnlock()
+	if t != nil {
+		acquired = time.Now()
+		t.snapshotLock = acquired.Sub(started)
+	}
+	defer func() {
+		if t != nil {
+			t.snapshot = time.Since(acquired)
+		}
+		s.mu.RUnlock()
+	}()
 	if !s.ready || s.failed != nil {
 		return matchingPlan{}, errors.New("state WAL is unavailable")
 	}
 	n := min(len(s.waitingRides), len(s.matchingChairs), matchingPlanLimit)
-	plan := matchingPlan{generation: s.generation}
+	plan := matchingPlan{generation: s.generation, waiting: len(s.waitingRides), available: len(s.matchingChairs)}
 	if n == 0 || n < minimum || (generation != "" && generation != s.generation) {
 		return plan, nil
 	}
@@ -50,20 +67,30 @@ func (s *rideState) snapshotMatching(generation string, minimum int) (matchingPl
 // could skip an older ride or retain choices that depended on a lost chair.
 // Return retry only for conflicts within the same initialization generation.
 func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssignment) (retry bool, err error) {
+	started := time.Now()
 	s.mu.Lock()
-	defer s.mu.Unlock()
+	acquired := time.Now()
+	reason := "ok"
+	defer func() {
+		s.finishPlan(plan.observation, reason, acquired.Sub(started), time.Since(acquired), true)
+		s.mu.Unlock()
+	}()
 	if !s.ready || s.failed != nil {
+		reason = "unavailable"
 		return false, errors.New("state WAL is unavailable")
 	}
 	if s.generation != plan.generation {
+		reason = "generation"
 		return false, nil
 	}
 	if len(s.waitingRides) < len(plan.rides) {
+		reason = "conflict_rides"
 		return true, nil
 	}
 	for i, row := range plan.rides {
 		current := s.rides[row.ID]
 		if current == nil || current.ChairID.Valid || s.waitingRides[i].ID != row.ID {
+			reason = "conflict_rides"
 			return true, nil
 		}
 	}
@@ -73,6 +100,7 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 		current, queue := s.chairCurrent[id], s.chairEvents[id]
 		if !exists || !chair.IsActive || (current != nil && len(current.unfinished) != 0) ||
 			(queue != nil && queue.pending.Len() != 0) {
+			reason = "conflict_chairs"
 			return true, nil
 		}
 	}
@@ -94,7 +122,11 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 		plan.chairs[assignment.chairIndex] = s.matchingChair(chairID)
 	}
 	if err := s.commit(record); err != nil {
+		reason = "wal_fail"
 		return false, err
+	}
+	if plan.observation != nil {
+		plan.observation.assigned = len(record.Rides)
 	}
 	s.observeAssignments(record.Rides, plan.chairs, assignments, time.Now())
 	for _, row := range record.Rides {
@@ -106,8 +138,10 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 func (s *rideState) match() error {
 	// Serialize planners, not state updates. Avoid computing overlapping plans
 	// for concurrent matcher requests while coordinate/ACK handlers keep going.
+	started := time.Now()
 	s.matchingMu.Lock()
 	defer s.matchingMu.Unlock()
+	s.observeMatcherCall(time.Since(started))
 	generation, err := s.matchBatch("", 0)
 	if err != nil || generation == "" {
 		return err
@@ -121,18 +155,42 @@ func (s *rideState) match() error {
 // Caller serializes planners with matchingMu. Each plan has its own snapshot,
 // WAL record and metrics; state updates can progress between and during plans.
 func (s *rideState) matchBatch(generation string, minimum int) (string, error) {
+	var lastTiming *planTiming
 	for attempt := 0; attempt < 3; attempt++ {
-		plan, err := s.snapshotMatching(generation, minimum)
+		timing := s.beginPlan()
+		lastTiming = timing
+		plan, err := s.snapshotMatching(generation, minimum, timing)
+		plan.observation = timing
+		timing.rides, timing.candidates = len(plan.rides), len(plan.chairs)
 		if err != nil || len(plan.rides) == 0 {
+			reason := "below_min"
+			switch {
+			case err != nil:
+				reason = "unavailable"
+			case generation != "" && generation != plan.generation:
+				reason = "generation"
+			case plan.waiting == 0:
+				reason = "empty_demand"
+			case plan.available == 0:
+				reason = "empty_supply"
+			}
+			s.finishEmptyPlan(timing, reason)
 			return "", err
 		}
+		solving := time.Now()
 		sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
 		assignments := assignMatchingChairs(plan.rides, plan.chairs)
+		timing.solver = time.Since(solving)
 		retry, err := s.commitMatching(plan, assignments)
 		if err != nil || !retry {
 			return plan.generation, err
 		}
 	}
+	s.mu.Lock()
+	if lastTiming.metrics != nil && lastTiming.metrics == s.metrics && lastTiming.generation == s.generation {
+		s.metrics.counters["match_abandon_limit"]++
+	}
+	s.mu.Unlock()
 	// Continued churn defers work to the next external matcher invocation.
 	return "", nil
 }

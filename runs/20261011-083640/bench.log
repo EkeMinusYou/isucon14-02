@@ -1,0 +1,264 @@
+2026-10-10T23:36:43.789086211Z	BENCHMARK_START
+time=08:36:44.851 level=INFO msg=負荷走行を開始します
+time=08:36:44.851 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=08:36:50.347 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=08:36:50.347 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=08:36:52.119 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=1
+time=08:36:52.120 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=08:36:52.122 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=08:36:52.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=08:36:52.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=19 score="[0 0 0 13 6]" criteria="[19 6 19 19]"
+time=08:36:53.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=1
+time=08:36:53.921 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=08:36:53.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=1
+time=08:36:53.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=08:36:53.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=08:36:53.947 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で35人が新規登録しました
+time=08:36:53.947 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、61.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.4%のライドは椅子の実移動時間に不満がありました
+time=08:36:53.947 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=08:36:53.947 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=36 score="[0 0 1 21 14]" criteria="[36 14 36 35]"
+time=08:36:55.723 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=1
+time=08:36:55.723 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=08:36:55.723 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=1
+time=08:36:55.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=08:36:55.725 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=1
+time=08:36:55.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=08:36:55.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=55 score="[0 0 1 36 18]" criteria="[55 18 55 54]"
+time=08:36:57.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=1
+time=08:36:57.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=1
+time=08:36:57.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=08:36:57.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=08:36:57.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=08:36:57.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=08:36:57.547 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=75 score="[0 0 1 50 24]" criteria="[75 24 75 74]"
+time=08:36:59.324 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=08:36:59.325 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=08:36:59.326 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=08:36:59.326 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=2
+time=08:36:59.326 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=08:36:59.346 level=INFO msg=これまでに地域内の評判によって19人、既存ユーザーの招待経由で93人が新規登録しました
+time=08:36:59.346 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、69.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=08:36:59.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=08:36:59.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=100 score="[0 0 1 68 31]" criteria="[100 31 100 99]"
+time=08:37:01.120 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=08:37:01.122 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=08:37:01.123 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=08:37:01.124 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=08:37:01.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=08:37:01.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=126 score="[0 0 3 89 34]" criteria="[121 38 126 124]"
+time=08:37:02.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=2
+time=08:37:02.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=3
+time=08:37:02.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=08:37:02.924 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=3
+time=08:37:02.925 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=08:37:02.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=08:37:02.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=161 score="[0 0 13 114 34]" criteria="[129 55 161 159]"
+time=08:37:04.723 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=2
+time=08:37:04.723 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=1
+time=08:37:04.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=08:37:04.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=08:37:04.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=4
+time=08:37:04.746 level=INFO msg=これまでに地域内の評判によって31人、既存ユーザーの招待経由で156人が新規登録しました
+time=08:37:04.746 level=INFO msg=32.0%のライドは椅子がマッチされるまでの時間、68.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=08:37:04.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=08:37:04.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=203 score="[0 0 36 133 34]" criteria="[138 65 203 201]"
+time=08:37:06.519 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=08:37:06.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=08:37:06.524 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=2
+time=08:37:06.525 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=3
+time=08:37:06.525 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=08:37:06.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=08:37:06.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=244 score="[0 0 59 151 34]" criteria="[142 79 244 242]"
+time=08:37:08.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=3
+time=08:37:08.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=08:37:08.323 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=5
+time=08:37:08.323 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=08:37:08.323 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=4
+time=08:37:08.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=08:37:08.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=313 score="[0 1 99 179 34]" criteria="[145 105 313 309]"
+time=08:37:10.122 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=5
+time=08:37:10.124 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=3
+time=08:37:10.124 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=08:37:10.126 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=5
+time=08:37:10.126 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=5
+time=08:37:10.146 level=INFO msg=これまでに地域内の評判によって43人、既存ユーザーの招待経由で231人が新規登録しました
+time=08:37:10.146 level=INFO msg=61.2%のライドは椅子がマッチされるまでの時間、63.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.8%のライドは椅子の実移動時間に不満がありました
+time=08:37:10.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=08:37:10.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=399 score="[0 3 139 216 41]" criteria="[155 146 399 393]"
+time=08:37:11.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=6
+time=08:37:11.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=5
+time=08:37:11.923 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=6
+time=08:37:11.926 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=08:37:11.926 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=4
+time=08:37:11.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=08:37:11.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=515 score="[0 4 170 257 84]" criteria="[215 214 514 508]"
+time=08:37:13.723 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=6
+time=08:37:13.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=7
+time=08:37:13.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=5
+time=08:37:13.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=9
+time=08:37:13.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=4
+time=08:37:13.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=08:37:13.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=679 score="[0 4 184 300 191]" criteria="[364 323 678 671]"
+time=08:37:15.524 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=5
+time=08:37:15.524 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=7
+time=08:37:15.524 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=8
+time=08:37:15.524 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=08:37:15.526 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=7
+time=08:37:15.546 level=INFO msg=これまでに地域内の評判によって55人、既存ユーザーの招待経由で590人が新規登録しました
+time=08:37:15.546 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=08:37:15.546 level=INFO msg=36.8%のライドは椅子がマッチされるまでの時間、47.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=08:37:15.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=08:37:15.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=868 score="[0 4 190 346 328]" criteria="[549 460 866 859]"
+time=08:37:17.325 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=8
+time=08:37:17.326 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=08:37:17.326 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=8
+time=08:37:17.327 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=6
+time=08:37:17.327 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=08:37:17.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=08:37:17.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1097 score="[0 4 192 408 493]" criteria="[778 625 1094 1087]"
+time=08:37:19.125 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=6
+time=08:37:19.126 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=08:37:19.128 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=6
+time=08:37:19.128 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=7
+time=08:37:19.129 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=8
+time=08:37:19.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=08:37:19.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1338 score="[0 4 202 470 662]" criteria="[993 817 1335 1321]"
+time=08:37:20.922 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=6
+time=08:37:20.926 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=9
+time=08:37:20.926 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=9
+time=08:37:20.927 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=9
+time=08:37:20.927 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=08:37:20.946 level=INFO msg=これまでに地域内の評判によって67人、既存ユーザーの招待経由で1190人が新規登録しました
+time=08:37:20.946 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=08:37:20.946 level=INFO msg=33.8%のライドは椅子がマッチされるまでの時間、36.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.0%のライドは椅子の実移動時間に不満がありました
+time=08:37:20.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=08:37:20.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1623 score="[0 5 241 674 703]" criteria="[1074 1032 1618 1597]"
+time=08:37:22.727 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=10
+time=08:37:22.728 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=8
+time=08:37:22.729 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=08:37:22.729 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=08:37:22.730 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=7
+time=08:37:22.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=08:37:22.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1913 score="[0 9 286 913 705]" criteria="[1089 1280 1907 1864]"
+time=08:37:24.528 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M2V4D2GJ2SFPKF4K7PDWM7, got: 37600)"
+time=08:37:24.528 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M2V49RQ666VFYS8DT0RDKE, got: 22500)"
+time=08:37:24.528 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=11
+time=08:37:24.545 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=7
+time=08:37:24.545 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=10
+time=08:37:24.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=08:37:24.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2264 score="[2 39 382 1136 705]" criteria="[1089 1545 2237 2160]"
+time=08:37:26.330 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=08:37:26.330 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=24
+time=08:37:26.331 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=10
+time=08:37:26.332 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=6
+time=08:37:26.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=24
+time=08:37:26.346 level=INFO msg=これまでに地域内の評判によって79人、既存ユーザーの招待経由で1725人が新規登録しました
+time=08:37:26.346 level=INFO msg=これまでに低評価なライドによって24人が利用をやめました
+time=08:37:26.346 level=INFO msg=57.8%のライドは椅子がマッチされるまでの時間、30.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、4.9%のライドは椅子の実移動時間に不満がありました
+time=08:37:26.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=08:37:26.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2582 score="[9 63 494 1311 705]" criteria="[1089 1805 2536 2374]"
+time=08:37:28.141 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=12
+time=08:37:28.142 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=7
+time=08:37:28.144 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=08:37:28.144 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=11
+time=08:37:28.153 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=10
+time=08:37:28.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=08:37:28.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2933 score="[13 94 635 1486 705]" criteria="[1089 2091 2870 2592]"
+time=08:37:29.926 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=11
+time=08:37:29.934 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=8
+time=08:37:29.934 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=08:37:29.938 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=08:37:29.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=08:37:29.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3297 score="[24 123 824 1621 705]" criteria="[1089 2392 3207 2766]"
+time=08:37:29.954 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=10
+time=08:37:31.746 level=INFO msg=これまでに地域内の評判によって91人、既存ユーザーの招待経由で2078人が新規登録しました
+time=08:37:31.746 level=INFO msg=これまでに低評価なライドによって101人が利用をやめました
+time=08:37:31.746 level=INFO msg=70.9%のライドは椅子がマッチされるまでの時間、27.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、13.0%のライドは椅子の実移動時間に不満がありました
+time=08:37:31.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=08:37:31.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3739 score="[53 182 1074 1725 705]" criteria="[1089 2730 3586 2920]"
+time=08:37:31.750 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=15
+time=08:37:31.750 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=13
+time=08:37:31.751 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=9
+time=08:37:31.751 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=14
+time=08:37:31.751 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=14
+time=08:37:33.528 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=14
+time=08:37:33.529 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=10
+time=08:37:33.529 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=13
+time=08:37:33.540 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=9
+time=08:37:33.541 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=14
+time=08:37:33.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=08:37:33.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4136 score="[75 207 1324 1825 705]" criteria="[1089 3076 3954 3031]"
+time=08:37:35.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=9
+time=08:37:35.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=12
+time=08:37:35.335 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=08:37:35.335 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=9
+time=08:37:35.335 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=11
+time=08:37:35.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=08:37:35.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4498 score="[97 227 1613 1856 705]" criteria="[1089 3403 4283 3066]"
+time=08:37:37.146 level=INFO msg=これまでに地域内の評判によって108人、既存ユーザーの招待経由で2211人が新規登録しました
+time=08:37:37.146 level=INFO msg=これまでに低評価なライドによって170人が利用をやめました
+time=08:37:37.146 level=INFO msg=77.8%のライドは椅子がマッチされるまでの時間、23.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、21.1%のライドは椅子の実移動時間に不満がありました
+time=08:37:37.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=08:37:37.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4896 score="[129 252 1930 1880 705]" criteria="[1089 3757 4631 3095]"
+time=08:37:37.184 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=15
+time=08:37:37.184 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=08:37:37.185 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=15
+time=08:37:37.210 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=8
+time=08:37:37.210 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=08:37:38.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=08:37:38.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5303 score="[171 296 2244 1887 705]" criteria="[1089 4114 4956 3106]"
+time=08:37:39.007 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=14
+time=08:37:39.013 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=10
+time=08:37:39.013 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=15
+time=08:37:39.015 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=08:37:39.015 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=8
+time=08:37:40.830 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=16
+time=08:37:40.831 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=9
+time=08:37:40.831 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=14
+time=08:37:40.832 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=19
+time=08:37:40.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=08:37:40.746 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5768 score="[225 329 2607 1902 705]" criteria="[1089 4518 5335 3127]"
+time=08:37:40.849 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=15
+time=08:37:42.546 level=INFO msg=これまでに地域内の評判によって126人、既存ユーザーの招待経由で2239人が新規登録しました
+time=08:37:42.546 level=INFO msg=これまでに低評価なライドによって263人が利用をやめました
+time=08:37:42.546 level=INFO msg=82.4%のライドは椅子がマッチされるまでの時間、21.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、28.8%のライドは椅子の実移動時間に不満がありました
+time=08:37:42.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=08:37:42.546 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6185 score="[290 363 2904 1923 705]" criteria="[1089 4866 5651 3154]"
+time=08:37:42.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=8
+time=08:37:42.622 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=16
+time=08:37:44.330 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=28
+time=08:37:44.330 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=22
+time=08:37:44.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=27
+time=08:37:44.345 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=11
+time=08:37:44.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=08:37:44.346 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6594 score="[328 399 3219 1943 705]" criteria="[1089 5236 5984 3177]"
+time=08:37:46.129 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=28
+time=08:37:46.135 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=9
+time=08:37:46.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=08:37:46.146 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7022 score="[348 442 3557 1970 705]" criteria="[1089 5641 6347 3209]"
+time=08:37:47.940 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=28
+time=08:37:47.942 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=26
+time=08:37:47.946 level=INFO msg=これまでに地域内の評判によって144人、既存ユーザーの招待経由で2288人が新規登録しました
+time=08:37:47.946 level=INFO msg=これまでに低評価なライドによって309人が利用をやめました
+time=08:37:47.946 level=INFO msg=85.5%のライドは椅子がマッチされるまでの時間、19.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、33.8%のライドは椅子の実移動時間に不満がありました
+time=08:37:47.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=08:37:47.946 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7492 score="[390 514 3906 1977 705]" criteria="[1089 6069 6699 3220]"
+time=08:37:47.965 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=26
+time=08:37:47.966 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ComfortWorks 増加数=11
+time=08:37:53.547 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=1490 アクティブユーザー数=1330
+time=08:37:53.547 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=970 アクティブユーザー数=811
+time=08:37:53.547 level=INFO msg=最終オーナー情報 名前=CityRide 売上=10520500 椅子数=270
+time=08:37:53.547 level=INFO msg=最終オーナー情報 名前=座和インダストリー 売上=9573300 椅子数=251
+time=08:37:53.547 level=INFO msg=最終オーナー情報 名前=椅子のふるさと 売上=9244000 椅子数=243
+time=08:37:53.547 level=INFO msg=最終オーナー情報 名前=ComfortWorks 売上=6652400 椅子数=182
+time=08:37:53.547 level=INFO msg=最終オーナー情報 名前=快旅タクシー 売上=10740000 椅子数=261
+time=08:37:53.547 level=INFO msg=86.2%のライドは椅子がマッチされるまでの時間、18.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、35.7%のライドは椅子の実移動時間に不満がありました
+time=08:37:53.548 level=INFO msg=結果 pass=true スコア=527163 種別エラー数=map[24:2]
+time=08:37:53.548 level=INFO msg=負荷走行が終了しました
+
+SCORE: 527163
+BENCHMARK_PASS
+2026-10-10T23:37:53.954815585Z	BENCHMARK_END
+
+SCORE: 527163
+BENCHMARK_PASS

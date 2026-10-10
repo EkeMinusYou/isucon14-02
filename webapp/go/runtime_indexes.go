@@ -97,6 +97,7 @@ func maxTime(a, b time.Time) time.Time {
 }
 
 func (s *rideState) refreshChairIndexes(id string) {
+	defer s.observeReusable(id)
 	delete(s.matchingChairs, id)
 	delete(s.nearbyChairs, id)
 	delete(s.nearbyMissingStatus, id)

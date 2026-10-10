@@ -10,6 +10,7 @@ import (
 	"os"
 	"sort"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -52,6 +53,7 @@ const nearbyCompletionGrace = 100 * time.Millisecond
 // The single application owner serializes validation, WAL append and publication.
 // SQL and external payment calls never hold mu.
 type rideState struct {
+	coordinateCalls atomic.Uint64
 	metrics         *rideMetrics
 	dispatch        *dispatchMetrics
 	mu              sync.RWMutex
@@ -208,6 +210,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
 	s.ready = true
+	s.observeOpportunity(time.Now())
 	return nil
 }
 
@@ -293,6 +296,7 @@ func (s *rideState) addRide(r Ride, fare int) {
 	s.userRides[r.UserID] = append(s.userRides[r.UserID], r.ID)
 	if r.ChairID.Valid {
 		s.chairRides[r.ChairID.String] = append(s.chairRides[r.ChairID.String], r.ID)
+		s.startFlow(s.rides[r.ID], time.Now(), true)
 	}
 }
 
@@ -316,6 +320,7 @@ func (s *rideState) addStatus(status RideStatus) {
 	}
 	s.statuses[status.ID] = status
 	ride.Statuses = append(ride.Statuses, status.ID)
+	s.observeFlowStatus(ride, status.Status)
 	s.appendNotification("app", ride.UserID, status)
 	if wasCompleted != (status.Status == "COMPLETED") {
 		if status.Status == "COMPLETED" {
@@ -348,6 +353,7 @@ func (s *rideState) apply(record stateRecord) {
 		}
 	}
 	if record.Distance != nil {
+		s.observeAcceptedDistance(*record.Distance)
 		s.distances[record.Distance.ChairID] = *record.Distance
 	}
 	if record.Chair != nil {
@@ -380,6 +386,7 @@ func (s *rideState) apply(record stateRecord) {
 		ride.Ride = row
 		if assigned {
 			s.indexChairRide(ride)
+			s.startFlow(ride, time.Now(), true)
 		}
 		s.updateRideSale(before, ride)
 	}
@@ -464,8 +471,17 @@ func (s *rideState) continuingRide(userID string) bool {
 }
 
 func (s *rideState) coordinate(chairID string, coordinate Coordinate) (time.Time, error) {
+	var timing *coordinateTiming
+	if s.coordinateCalls.Add(1)%coordinateSampleEvery == 1 {
+		timing = &coordinateTiming{started: time.Now()}
+	}
 	s.mu.Lock()
-	defer s.mu.Unlock()
+	success := false
+	if timing != nil {
+		timing.locked = time.Now()
+		timing.elapsed[0] = timing.locked.Sub(timing.started)
+	}
+	defer func() { s.finishCoordinate(timing, success); s.mu.Unlock() }()
 	if _, ok := s.chairs[chairID]; !ok {
 		return time.Time{}, sql.ErrNoRows
 	}
@@ -494,12 +510,13 @@ func (s *rideState) coordinate(chairID string, coordinate Coordinate) (time.Time
 			changed = ride
 		}
 	}
-	if err := s.commit(record); err != nil {
+	if err := s.commitCoordinate(record, timing); err != nil {
 		return time.Time{}, err
 	}
 	if changed != nil {
 		notifyRide(&changed.Ride)
 	}
+	success = true
 	return at, nil
 }
 

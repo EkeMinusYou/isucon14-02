@@ -159,7 +159,7 @@ func TestLargeMatchingWALReplayAndMetricContract(t *testing.T) {
 	}
 	values := map[string]any{}
 	s.metrics.export(values)
-	if values["ride_metrics_version"] != 2 || values["pickup_b9_plus_n"] != uint64(256) {
+	if values["ride_metrics_version"] != 3 || values["pickup_b9_plus_n"] != uint64(256) {
 		t.Fatal("new metric contract missing")
 	}
 	if _, exists := values["pickup_b9_64_n"]; exists {

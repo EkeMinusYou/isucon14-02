@@ -59,20 +59,41 @@ func openStateWAL(directory string) (*os.File, error) {
 }
 
 func writeWALRecord(f *os.File, record stateRecord) error {
+	return writeWALRecordMeasured(f, record, nil)
+}
+
+func writeWALRecordMeasured(f *os.File, record stateRecord, timing *coordinateTiming) error {
+	var started time.Time
+	if timing != nil {
+		started = time.Now()
+	}
 	payload, err := json.Marshal(record)
+	if timing != nil {
+		timing.elapsed[2], timing.visited[2], timing.ok[2] = time.Since(started), true, err == nil && len(payload) <= maxWALRecordBytes
+	}
 	if err != nil {
 		return err
 	}
 	if len(payload) > maxWALRecordBytes {
 		return errors.New("state WAL record too large")
 	}
+	if timing != nil {
+		started = time.Now()
+	}
 	frame := make([]byte, 8+len(payload))
 	binary.LittleEndian.PutUint32(frame, uint32(len(payload)))
 	binary.LittleEndian.PutUint32(frame[4:], crc32.ChecksumIEEE(payload))
 	copy(frame[8:], payload)
+	if timing != nil {
+		timing.elapsed[3], timing.visited[3], timing.ok[3] = time.Since(started), true, true
+		started = time.Now()
+	}
 	n, err := f.Write(frame)
 	if err == nil && n != len(frame) {
 		err = io.ErrShortWrite
+	}
+	if timing != nil {
+		timing.elapsed[4], timing.visited[4], timing.ok[4], timing.bytes = time.Since(started), true, err == nil, n
 	}
 	return err
 }
@@ -158,17 +179,41 @@ func (s *rideState) recoverWAL() error {
 }
 
 // Called with s.mu held; no memory state is published before a complete write.
-func (s *rideState) commit(record stateRecord) error {
+func (s *rideState) commit(record stateRecord) error { return s.commitMeasured(record, nil, false) }
+func (s *rideState) commitCoordinate(record stateRecord, timing *coordinateTiming) error {
+	return s.commitMeasured(record, timing, true)
+}
+func (s *rideState) commitMeasured(record stateRecord, timing *coordinateTiming, coordinate bool) error {
 	if !s.ready || s.failed != nil {
 		return errors.New("state WAL is unavailable")
 	}
 	record.Version, record.Generation, record.Sequence = 1, s.generation, s.sequence+1
-	if err := writeWALRecord(s.wal, record); err != nil {
+	if err := writeWALRecordMeasured(s.wal, record, timing); err != nil {
+		if coordinate && s.metrics != nil {
+			s.metrics.counters["coord_wal_fail"]++
+		}
 		s.failed = err
+		s.observeOpportunity(time.Now())
 		return err
 	}
+	if coordinate && s.metrics != nil {
+		s.metrics.counters["coord_wal_ok"]++
+	}
 	s.sequence = record.Sequence
+	var started time.Time
+	if timing != nil {
+		started = time.Now()
+	}
 	s.apply(record)
+	if timing != nil {
+		timing.elapsed[5], timing.visited[5], timing.ok[5] = time.Since(started), true, true
+	}
+	if coordinate && s.metrics != nil {
+		s.metrics.counters["coord_apply_ok"]++
+	}
+	if s.metrics != nil && (record.CreatedRide != nil || record.Chair != nil || len(record.Rides) > 0 || len(record.Statuses) > 0 || record.Ack != nil) {
+		s.observeOpportunity(time.Now())
+	}
 	return nil
 }
 

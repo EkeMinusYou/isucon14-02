@@ -20,7 +20,7 @@ type rideMetricPool struct{}
 
 func (rideMetricPool) Stats() sql.DBStats { return sql.DBStats{MaxOpenConnections: 8} }
 
-// Exercise the real exporter, unmodified collector, TSV importer and contest SQL.
+// Exercise the real exporter, bounded collector, TSV importer and contest SQL.
 // Files are isolated temporary fixtures, never saved RUNs or server artifacts.
 func TestRideMetricsCollectorDuckDB(t *testing.T) {
 	s := memoryTestState(t)
@@ -40,6 +40,9 @@ func TestRideMetricsCollectorDuckDB(t *testing.T) {
 	observe(300)
 	missing := rideMeasurementSnapshot()
 	delete(missing.Metrics, "dispatch_wait_sum")
+	for _, suffix := range []string{"_n", "_sum", "_b0", "_b1", "_b2", "_b3", "_inf"} {
+		delete(missing.Metrics, "flow_dist_enroute"+suffix)
+	}
 	snapshots = append(snapshots, missing)
 	observe(400)
 	snapshots = append(snapshots, rideMeasurementSnapshot())
@@ -53,8 +56,8 @@ func TestRideMetricsCollectorDuckDB(t *testing.T) {
 			t.Fatalf("metric name too long: %s", name)
 		}
 	}
-	if len(snapshots[0].Metrics) != 124 {
-		t.Fatalf("metric count %d (collector maximum 128)", len(snapshots[0].Metrics))
+	if len(snapshots[0].Metrics) != 452 {
+		t.Fatalf("metric count %d (collector maximum 1024)", len(snapshots[0].Metrics))
 	}
 	var polls atomic.Int32
 	complete := make(chan struct{})
@@ -160,4 +163,69 @@ func TestRideMetricsCollectorDuckDB(t *testing.T) {
 	if len(hist) != 1 || hist[0].Events != 3 || hist[0].Total != 350 || hist[0].Missing != 2 || hist[0].MissingGauges != 0 {
 		t.Fatalf("histograms: %s", output)
 	}
+	// A completely absent series remains visible as missing. The definition
+	// grid must exactly match each exported version, without phantom fields.
+	duck = exec.Command("duckdb", "-json", "-batch")
+	duck.Stdin = strings.NewReader(query[:strings.Index(query, "\n select metric,count(*)")] + `
+ select v.version,
+  (select count(*) from ride_metric_definitions d where v.version between d.min_version and d.max_version) as fields,
+  (select count(*) from ride_metric_histograms where series='flow_dist_enroute' and events is null) as missing_series
+ from (values (1),(2),(3)) v(version) order by version;`)
+	output, err = duck.CombinedOutput()
+	if err != nil {
+		t.Fatalf("vocabulary SQL: %v\n%s", err, output)
+	}
+	var vocab []struct {
+		Version       int
+		Fields        int
+		MissingSeries int `json:"missing_series"`
+	}
+	if err := json.Unmarshal(output, &vocab); err != nil {
+		t.Fatal(err)
+	}
+	if len(vocab) != 3 || vocab[0].Fields != 124 || vocab[1].Fields != 124 || vocab[2].Fields != 452 || vocab[2].MissingSeries != 4 {
+		t.Fatalf("version/absent-series grid: %s", output)
+	}
+
+	duck = exec.Command("duckdb", "-json", "-batch")
+	duck.Stdin = strings.NewReader("SET TimeZone='Asia/Tokyo';\n" + query[:strings.Index(query, "\n select metric,count(*)")] + `
+ select max(abs(epoch_us(observed_at)-observed_us)) as timestamp_error_us,
+        count(*) filter(where valid) as valid_samples
+ from ride_metric_samples;`)
+	output, err = duck.CombinedOutput()
+	if err != nil {
+		t.Fatalf("timezone SQL: %v\n%s", err, output)
+	}
+	var instants []struct {
+		Error float64 `json:"timestamp_error_us"`
+		Valid int     `json:"valid_samples"`
+	}
+	if err := json.Unmarshal(output, &instants); err != nil {
+		t.Fatal(err)
+	}
+	if len(instants) != 1 || instants[0].Error != 0 || instants[0].Valid < 6 {
+		t.Fatalf("UTC observation shifted by local timezone: %s", output)
+	}
+
+	duck = exec.Command("duckdb", "-json", "-batch")
+	duck.Stdin = strings.NewReader(query[:strings.Index(query, "\n select metric,count(*)")] + `
+ update metrics set value=0 where metric='ride_metrics_ready'
+  and ts=(select distinct ts from metrics order by ts limit 1 offset 1);
+ select sum(delta) as total,count(delta) as valid_intervals
+ from ride_metric_intervals where metric='dispatch_wait_sum';`)
+	output, err = duck.CombinedOutput()
+	if err != nil {
+		t.Fatalf("busy boundary SQL: %v\n%s", err, output)
+	}
+	var busy []struct {
+		Total float64
+		Valid int `json:"valid_intervals"`
+	}
+	if err := json.Unmarshal(output, &busy); err != nil {
+		t.Fatal(err)
+	}
+	if len(busy) != 1 || busy[0].Total != 50 || busy[0].Valid != 1 {
+		t.Fatalf("counter delta crossed unready boundary: %s", output)
+	}
+
 }
