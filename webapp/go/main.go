@@ -139,6 +139,8 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	notifications.reset()
+
 	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
 		writeError(w, http.StatusInternalServerError, fmt.Errorf("failed to initialize: %s: %w", string(out), err))
 		return
@@ -183,7 +185,7 @@ func writeError(w http.ResponseWriter, statusCode int, err error) {
 	}
 	w.Write(buf)
 
-	slog.Error("error response wrote", err)
+	slog.Error("error response wrote", "error", err)
 }
 
 func secureRandomStr(b int) string {

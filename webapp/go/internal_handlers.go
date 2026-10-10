@@ -49,5 +49,8 @@ func internalGetMatching(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	notifications.publish("app", ride.UserID)
+	notifications.publish("chair", matched.ID)
+
 	w.WriteHeader(http.StatusNoContent)
 }

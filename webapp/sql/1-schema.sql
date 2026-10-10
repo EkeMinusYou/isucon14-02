@@ -36,6 +36,15 @@ CREATE TABLE chairs
 )
   COMMENT = '椅子情報テーブル';
 
+DROP TABLE IF EXISTS chair_stats;
+CREATE TABLE chair_stats
+(
+  chair_id VARCHAR(26) NOT NULL,
+  total_rides_count BIGINT NOT NULL DEFAULT 0,
+  total_evaluation BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (chair_id)
+);
+
 DROP TABLE IF EXISTS chair_locations;
 CREATE TABLE chair_locations
 (

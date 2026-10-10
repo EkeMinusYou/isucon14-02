@@ -1,0 +1,1202 @@
+{
+  "artifact_contract": [
+    {
+      "pattern": "isucon-1-app-journal.log",
+      "producer": "digester:app-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-disk-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-2-disk-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-3-disk-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-fgprof.pprof",
+      "producer": "oneshot:fgprof",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-go-allocs.pprof",
+      "producer": "oneshot:go-allocs",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-go-cpu.pprof",
+      "producer": "oneshot:go-cpu",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-go-goroutine.pprof",
+      "producer": "oneshot:go-goroutine",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-go-heap.pprof",
+      "producer": "oneshot:go-heap",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-kernel.log",
+      "producer": "digester:kernel-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-2-kernel.log",
+      "producer": "digester:kernel-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-3-kernel.log",
+      "producer": "digester:kernel-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-mysql-digest.stderr",
+      "producer": "digester:mysql-digest",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-mysql-digest.tsv",
+      "producer": "digester:mysql-digest",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-mysql-error.log",
+      "producer": "digester:mysql-error",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-mysql-error.stderr",
+      "producer": "digester:mysql-error",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-mysql-lock-waits.stderr",
+      "producer": "collector:mysql-locks",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-mysql-lock-waits.tsv",
+      "producer": "collector:mysql-locks",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-mysql-status.stderr",
+      "producer": "collector:mysql",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-mysql-status.tsv",
+      "producer": "collector:mysql",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-nginx-error.log",
+      "producer": "digester:nginx-error",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-nginx-oncpu-metadata.json",
+      "producer": "collector:nginx-oncpu",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-nginx-oncpu.folded",
+      "producer": "collector:nginx-oncpu",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-nginx-oncpu.stderr",
+      "producer": "collector:nginx-oncpu",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-oom.log",
+      "producer": "digester:oom-events",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-2-oom.log",
+      "producer": "digester:oom-events",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-3-oom.log",
+      "producer": "digester:oom-events",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-proc-metrics.stderr",
+      "producer": "collector:proc",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-2-proc-metrics.stderr",
+      "producer": "collector:proc",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-3-proc-metrics.stderr",
+      "producer": "collector:proc",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-proc-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-2-proc-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-3-proc-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-pt-query-digest.json",
+      "producer": "digester:pt-query-digest",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-pt-query-digest.log",
+      "producer": "digester:pt-query-digest",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-pt-query-digest.stderr",
+      "producer": "digester:pt-query-digest",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-service-journal.log",
+      "producer": "digester:service-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-2-service-journal.log",
+      "producer": "digester:service-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-3-service-journal.log",
+      "producer": "digester:service-journal",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-service-journal.stderr",
+      "producer": "digester:service-journal",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-2-service-journal.stderr",
+      "producer": "digester:service-journal",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-3-service-journal.stderr",
+      "producer": "digester:service-journal",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-service-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-2-service-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-3-service-metrics.tsv",
+      "producer": "collector:proc",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-slp.stderr",
+      "producer": "digester:slp",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-slp.tsv",
+      "producer": "digester:slp",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-sql-pool-metrics.stderr",
+      "producer": "collector:sql-pool",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-sql-pool-metrics.tsv",
+      "producer": "collector:sql-pool",
+      "optional": false
+    },
+    {
+      "pattern": "isucon-1-task-states.stderr",
+      "producer": "collector:task-state",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-2-task-states.stderr",
+      "producer": "collector:task-state",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-3-task-states.stderr",
+      "producer": "collector:task-state",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-1-task-states.tsv",
+      "producer": "collector:task-state",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-2-task-states.tsv",
+      "producer": "collector:task-state",
+      "optional": true
+    },
+    {
+      "pattern": "isucon-3-task-states.tsv",
+      "producer": "collector:task-state",
+      "optional": true
+    },
+    {
+      "pattern": "alp-by-ingress.stderr",
+      "producer": "digester:alp-by-ingress",
+      "optional": true
+    },
+    {
+      "pattern": "alp-by-ingress.tsv",
+      "producer": "digester:alp-by-ingress",
+      "optional": false
+    },
+    {
+      "pattern": "alp.json",
+      "producer": "digester:alp",
+      "optional": false
+    },
+    {
+      "pattern": "alp.stderr",
+      "producer": "digester:alp",
+      "optional": true
+    },
+    {
+      "pattern": "alp.txt",
+      "producer": "digester:alp",
+      "optional": false
+    },
+    {
+      "pattern": "app-journal.stderr",
+      "producer": "digester:app-journal",
+      "optional": true
+    },
+    {
+      "pattern": "bench.log",
+      "producer": "bench",
+      "optional": false
+    },
+    {
+      "pattern": "kernel-journal.stderr",
+      "producer": "digester:kernel-journal",
+      "optional": true
+    },
+    {
+      "pattern": "nginx-error.stderr",
+      "producer": "digester:nginx-error",
+      "optional": true
+    },
+    {
+      "pattern": "oom-events.stderr",
+      "producer": "digester:oom-events",
+      "optional": true
+    },
+    {
+      "pattern": "raw/access-*.log",
+      "producer": "source:access (圧縮前)",
+      "optional": true
+    },
+    {
+      "pattern": "raw/access-*.log.zst",
+      "producer": "source:access",
+      "optional": false
+    },
+    {
+      "pattern": "run.json",
+      "producer": "measurectl:manifest",
+      "optional": false
+    },
+    {
+      "pattern": "scores.tsv",
+      "producer": "measurectl:manifest",
+      "optional": true
+    },
+    {
+      "pattern": "upstream-breakdown-by-ingress.stderr",
+      "producer": "digester:upstream-breakdown-by-ingress",
+      "optional": true
+    },
+    {
+      "pattern": "upstream-breakdown-by-ingress.tsv",
+      "producer": "digester:upstream-breakdown-by-ingress",
+      "optional": false
+    },
+    {
+      "pattern": "upstream-breakdown.stderr",
+      "producer": "digester:upstream-breakdown",
+      "optional": true
+    },
+    {
+      "pattern": "upstream-breakdown.tsv",
+      "producer": "digester:upstream-breakdown",
+      "optional": false
+    },
+    {
+      "pattern": "user-transitions.json",
+      "producer": "digester:user-transitions",
+      "optional": false
+    },
+    {
+      "pattern": "user-transitions.stderr",
+      "producer": "digester:user-transitions",
+      "optional": true
+    },
+    {
+      "pattern": "raw/access-isucon-1.log.zst",
+      "producer": "RUN capture contract",
+      "optional": false
+    }
+  ],
+  "profiles_enabled": true,
+  "required_artifacts": [
+    "isucon-1-fgprof.pprof",
+    "isucon-1-go-allocs.pprof",
+    "isucon-1-go-cpu.pprof",
+    "isucon-1-go-goroutine.pprof",
+    "isucon-1-go-heap.pprof",
+    "raw/access-isucon-1.log.zst",
+    "user-transitions.json"
+  ],
+  "schema_version": 4,
+  "phase": "finalized",
+  "run_id": "20261011-042630",
+  "started_at": "2026-10-11T04:26:30+09:00",
+  "written_at": "2026-10-11T04:27:47+09:00",
+  "finalized_at": "2026-10-11T04:27:47+09:00",
+  "score": 8288,
+  "passed": true,
+  "roles": {
+    "additional": {
+      "all": [
+        "isucon-1",
+        "isucon-2",
+        "isucon-3"
+      ],
+      "mysql_all": [
+        "isucon-1"
+      ],
+      "nginx_profile": [
+        "isucon-1"
+      ]
+    },
+    "app": [
+      "isucon-1"
+    ],
+    "app_traffic": [
+      "isucon-1"
+    ],
+    "nginx": [
+      "isucon-1"
+    ],
+    "entry": "isucon-1",
+    "mysql": "isucon-1"
+  },
+  "source": {
+    "commit": "362cf047169951272bf2bd312b3c71eb0ad82569",
+    "branch": "thu"
+  },
+  "artifacts": [
+    {
+      "name": "alp-by-ingress.tsv",
+      "bytes": 6373,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "alp.json",
+      "bytes": 6155,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "alp.txt",
+      "bytes": 13280,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "bench.log",
+      "bytes": 20579,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-app-journal.log",
+      "bytes": 3620842,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-disk-metrics.tsv",
+      "bytes": 143000,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 648,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-fgprof.pprof",
+      "bytes": 31040,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 830,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-go-allocs.pprof",
+      "bytes": 19286,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 359,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-go-cpu.pprof",
+      "bytes": 61586,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 1153,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-go-goroutine.pprof",
+      "bytes": 4974,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 25,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-go-heap.pprof",
+      "bytes": 19318,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 359,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-kernel.log",
+      "bytes": 115,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-mysql-digest.tsv",
+      "bytes": 36524,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-mysql-error.log",
+      "bytes": 107,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-mysql-lock-waits.tsv",
+      "bytes": 89414,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-mysql-status.tsv",
+      "bytes": 23743,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 72,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1007,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-nginx-error.log",
+      "bytes": 179,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-oom.log",
+      "bytes": 102,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-proc-metrics.tsv",
+      "bytes": 31242,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 72,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-pt-query-digest.json",
+      "bytes": 38266,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-pt-query-digest.log",
+      "bytes": 7849,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-service-journal.log",
+      "bytes": 3621058,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-service-metrics.tsv",
+      "bytes": 52782,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 360,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-slp.tsv",
+      "bytes": 543133,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-1-sql-pool-metrics.tsv",
+      "bytes": 81099,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 936,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1002,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-2-disk-metrics.tsv",
+      "bytes": 142180,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 648,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-2-kernel.log",
+      "bytes": 115,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-2-oom.log",
+      "bytes": 102,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-2-proc-metrics.tsv",
+      "bytes": 28691,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 72,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-2-service-journal.log",
+      "bytes": 340,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-2-service-metrics.tsv",
+      "bytes": 47212,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 360,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-3-disk-metrics.tsv",
+      "bytes": 142251,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 648,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-3-kernel.log",
+      "bytes": 115,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-3-oom.log",
+      "bytes": 102,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-3-proc-metrics.tsv",
+      "bytes": 28702,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 72,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-3-service-journal.log",
+      "bytes": 340,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "isucon-3-service-metrics.tsv",
+      "bytes": 47252,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 360,
+        "in_window_samples": 69,
+        "expected_samples": 69,
+        "window_coverage_pct": 100,
+        "max_gap_ms": 1000,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "profile-collection.log",
+      "bytes": 2517,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "raw/access-isucon-1.log.zst",
+      "bytes": 280570,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 32169,
+        "in_window_samples": 32159,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "upstream-breakdown-by-ingress.tsv",
+      "bytes": 621,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "upstream-breakdown.tsv",
+      "bytes": 563,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": false,
+        "status": "not-applicable",
+        "rows": 0,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": true,
+        "finite": true,
+        "reason": ""
+      }
+    },
+    {
+      "name": "user-transitions.json",
+      "bytes": 50727,
+      "status": "ok",
+      "reason": "",
+      "quality": {
+        "expected": true,
+        "status": "valid",
+        "rows": 17968,
+        "in_window_samples": 0,
+        "expected_samples": 0,
+        "window_coverage_pct": 0,
+        "max_gap_ms": 0,
+        "monotonic": false,
+        "finite": false,
+        "reason": ""
+      }
+    }
+  ],
+  "raw_bytes": 280570,
+  "preflight": {
+    "collector_clean": true
+  },
+  "load_window": {
+    "started_at": "2026-10-10T19:26:34.438218354Z",
+    "ended_at": "2026-10-10T19:27:43.618101985Z",
+    "duration_ms": 69179,
+    "source": "bench.log",
+    "status": "ok",
+    "reason": ""
+  }
+}

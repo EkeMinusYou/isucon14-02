@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/oklog/ulid/v2"
@@ -157,8 +156,9 @@ WHERE chair_id = ?`, req.Latitude, req.Longitude, req.Latitude, req.Longitude, l
 		return
 	}
 
+	changed := false
 	ride := &Ride{}
-	if err := tx.GetContext(ctx, ride, `SELECT * FROM rides WHERE chair_id = ? ORDER BY updated_at DESC LIMIT 1`, chair.ID); err != nil {
+	if err := tx.GetContext(ctx, ride, `SELECT * FROM rides WHERE chair_id = ? ORDER BY updated_at DESC, id DESC LIMIT 1`, chair.ID); err != nil {
 		if !errors.Is(err, sql.ErrNoRows) {
 			writeError(w, http.StatusInternalServerError, err)
 			return
@@ -175,6 +175,7 @@ WHERE chair_id = ?`, req.Latitude, req.Longitude, req.Latitude, req.Longitude, l
 					writeError(w, http.StatusInternalServerError, err)
 					return
 				}
+				changed = true
 			}
 
 			if req.Latitude == ride.DestinationLatitude && req.Longitude == ride.DestinationLongitude && status == "CARRYING" {
@@ -182,6 +183,7 @@ WHERE chair_id = ?`, req.Latitude, req.Longitude, req.Latitude, req.Longitude, l
 					writeError(w, http.StatusInternalServerError, err)
 					return
 				}
+				changed = true
 			}
 		}
 	}
@@ -189,6 +191,10 @@ WHERE chair_id = ?`, req.Latitude, req.Longitude, req.Latitude, req.Longitude, l
 	if err := tx.Commit(); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
+	}
+
+	if changed {
+		notifyRide(ride)
 	}
 
 	writeJSON(w, http.StatusOK, &chairPostCoordinateResponse{
@@ -201,11 +207,6 @@ type simpleUser struct {
 	Name string `json:"name"`
 }
 
-type chairGetNotificationResponse struct {
-	Data         *chairGetNotificationResponseData `json:"data"`
-	RetryAfterMs int                               `json:"retry_after_ms"`
-}
-
 type chairGetNotificationResponseData struct {
 	RideID                string     `json:"ride_id"`
 	User                  simpleUser `json:"user"`
@@ -215,84 +216,7 @@ type chairGetNotificationResponseData struct {
 }
 
 func chairGetNotification(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	chair := ctx.Value("chair").(*Chair)
-
-	tx, err := db.Beginx()
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer tx.Rollback()
-	ride := &Ride{}
-	yetSentRideStatus := RideStatus{}
-	status := ""
-
-	if err := tx.GetContext(ctx, ride, `SELECT * FROM rides WHERE chair_id = ? ORDER BY updated_at DESC LIMIT 1`, chair.ID); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeJSON(w, http.StatusOK, &chairGetNotificationResponse{
-				RetryAfterMs: 30,
-			})
-			return
-		}
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if err := tx.GetContext(ctx, &yetSentRideStatus, `SELECT * FROM ride_statuses WHERE ride_id = ? AND chair_sent_at IS NULL ORDER BY created_at ASC LIMIT 1`, ride.ID); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			status, err = getLatestRideStatus(ctx, tx, ride.ID)
-			if err != nil {
-				writeError(w, http.StatusInternalServerError, err)
-				return
-			}
-		} else {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-	} else {
-		status = yetSentRideStatus.Status
-	}
-
-	user := &User{}
-	err = tx.GetContext(ctx, user, "SELECT * FROM users WHERE id = ? FOR SHARE", ride.UserID)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if yetSentRideStatus.ID != "" {
-		_, err := tx.ExecContext(ctx, `UPDATE ride_statuses SET chair_sent_at = CURRENT_TIMESTAMP(6) WHERE id = ?`, yetSentRideStatus.ID)
-		if err != nil {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	writeJSON(w, http.StatusOK, &chairGetNotificationResponse{
-		Data: &chairGetNotificationResponseData{
-			RideID: ride.ID,
-			User: simpleUser{
-				ID:   user.ID,
-				Name: fmt.Sprintf("%s %s", user.Firstname, user.Lastname),
-			},
-			PickupCoordinate: Coordinate{
-				Latitude:  ride.PickupLatitude,
-				Longitude: ride.PickupLongitude,
-			},
-			DestinationCoordinate: Coordinate{
-				Latitude:  ride.DestinationLatitude,
-				Longitude: ride.DestinationLongitude,
-			},
-			Status: status,
-		},
-		RetryAfterMs: 30,
-	})
+	serveNotifications(w, r, "chair", r.Context().Value("chair").(*Chair).ID)
 }
 
 type postChairRidesRideIDStatusRequest struct {
@@ -357,12 +281,15 @@ func chairPostRideStatus(w http.ResponseWriter, r *http.Request) {
 		}
 	default:
 		writeError(w, http.StatusBadRequest, errors.New("invalid status"))
+		return
 	}
 
 	if err := tx.Commit(); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
+
+	notifyRide(ride)
 
 	w.WriteHeader(http.StatusNoContent)
 }

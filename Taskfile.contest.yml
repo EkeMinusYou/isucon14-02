@@ -10,8 +10,13 @@
 version: '3'
 
 tasks:
+  test-app:
+    desc: Goアプリの通知・統計を検証（MYSQL_TEST_DSN指定時はローカルMySQLで統合テスト）
+    dir: '{{.APP_DIR}}'
+    cmds: [go test -race ./...]
+
   check-chair-distance:
-    desc: ローカルの一時MySQLで距離集計の初期化・API・同時更新・rollbackを確認
+    desc: ローカルの一時MySQLで距離集計・SSE通知・椅子統計の初期化とAPIを確認
     dir: '{{.APP_DIR}}'
     cmds:
       - |
@@ -28,9 +33,9 @@ tasks:
         export ISUCON_DB_HOST=127.0.0.1 ISUCON_DB_PORT="${distance_address##*:}"
         export ISUCON_DB_USER=root ISUCON_DB_PASSWORD=distance-local-test ISUCON_DB_NAME=isuride
         export CHAIR_DISTANCE_TEST_DSN="root:distance-local-test@tcp(127.0.0.1:$ISUCON_DB_PORT)/isuride?parseTime=true&multiStatements=true"
+        export MYSQL_TEST_DSN="$CHAIR_DISTANCE_TEST_DSN"
         ../sql/init.sh
-        # The reference implementation's slog.Error call fails vet.
-        go test -vet=off -race -count=1 -v -run '^TestChairDistance$' .
+        go test -race -count=1 -v .
 
   deploy-sql:
     desc: SQL初期化資材をAPP_HOSTSへ反映（DB再作成・サービス再起動なし）
