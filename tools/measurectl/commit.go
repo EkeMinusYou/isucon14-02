@@ -1,0 +1,167 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
+)
+
+const (
+	gitCommandRetryCount = 3
+	gitCommandRetryDelay = 100 * time.Millisecond
+)
+
+func runGitWithRetry(run func() ([]byte, error), command string) ([]byte, error) {
+	var out []byte
+	var err error
+	for attempt := 0; attempt <= gitCommandRetryCount; attempt++ {
+		out, err = run()
+		if err == nil {
+			return out, nil
+		}
+		if attempt < gitCommandRetryCount {
+			time.Sleep(gitCommandRetryDelay)
+		}
+	}
+	return out, fmt.Errorf("git %s: %w: %s", command, err, out)
+}
+
+// commitWorkingTree records all tracked and untracked changes before a RUN starts.
+func commitWorkingTree(runID string) error {
+	git := func(root string, args ...string) ([]byte, error) {
+		command := args[0]
+		if command == "-c" && len(args) > 2 {
+			command = args[2]
+		}
+		gitArgs := []string{}
+		if root != "" {
+			gitArgs = append(gitArgs, "-C", root)
+		}
+		gitArgs = append(gitArgs, args...)
+		return runGitWithRetry(func() ([]byte, error) {
+			return exec.Command("git", gitArgs...).CombinedOutput()
+		}, command)
+	}
+	rootOut, err := git("", "rev-parse", "--show-toplevel")
+	if err != nil {
+		return err
+	}
+	root := strings.TrimSpace(string(rootOut))
+	status, err := git(root, "status", "--porcelain=v1", "--untracked-files=all")
+	if err != nil || len(status) == 0 {
+		return err
+	}
+	if _, err := git(root, "add", "-A", "--", "."); err != nil {
+		return err
+	}
+	staged, err := git(root, "diff", "--cached", "--name-only")
+	if err != nil {
+		return err
+	}
+	if len(staged) == 0 {
+		return fmt.Errorf("working tree has changes that git add could not stage: %s", status)
+	}
+	out, err := git(root, "-c", "core.hooksPath=/dev/null", "commit", "-m", "Snapshot changes before benchmark "+runID)
+	fmt.Print(string(out))
+	if err != nil {
+		return err
+	}
+	status, err = git(root, "status", "--porcelain=v1", "--untracked-files=all")
+	if err != nil {
+		return err
+	}
+	if len(status) != 0 {
+		return fmt.Errorf("working tree still has changes after snapshot: %s", status)
+	}
+	return nil
+}
+
+func commitRunArtifacts(runDir, scores string) error {
+	git := func(args ...string) ([]byte, error) {
+		command := args[0]
+		args = append([]string{"--literal-pathspecs", "-c", "core.hooksPath=/dev/null"}, args...)
+		return runGitWithRetry(func() ([]byte, error) {
+			return exec.Command("git", args...).CombinedOutput()
+		}, command)
+	}
+	rootOut, err := git("rev-parse", "--show-toplevel")
+	if err != nil {
+		return err
+	}
+	root := strings.TrimSpace(string(rootOut))
+	// Restrict paths to this checkout and reject symlink traversal.
+	validate := func(p string) (string, error) {
+		abs, err := filepath.Abs(p)
+		if err != nil {
+			return "", err
+		}
+		rel, err := filepath.Rel(root, abs)
+		if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+			return "", fmt.Errorf("artifact outside repository: %s", p)
+		}
+		resolved, err := filepath.EvalSymlinks(abs)
+		if err != nil {
+			return "", err
+		}
+		resolvedRoot, err := filepath.EvalSymlinks(root)
+		if err != nil {
+			return "", err
+		}
+		if resolved != filepath.Join(resolvedRoot, rel) {
+			return "", fmt.Errorf("symlink artifact path: %s", p)
+		}
+		return abs, nil
+	}
+	runDir, err = validate(runDir)
+	if err != nil {
+		return err
+	}
+	body, err := os.ReadFile(filepath.Join(runDir, "run.json"))
+	if err != nil {
+		return err
+	}
+	var m Manifest
+	if err := json.Unmarshal(body, &m); err != nil {
+		return err
+	}
+	if m.Phase != "finalized" || m.RunID != filepath.Base(runDir) {
+		return fmt.Errorf("RUN is not finalized or ID does not match: %s", runDir)
+	}
+	paths := []string{runDir}
+	if scores != "" {
+		p, err := validate(scores)
+		if err != nil {
+			return err
+		}
+		if p != filepath.Join(filepath.Dir(runDir), "scores.tsv") {
+			return fmt.Errorf("scores must be adjacent to RUN directory")
+		}
+		paths = append(paths, p)
+	}
+	// Never overwrite the user's staging choices for these files.
+	staged, err := git(append([]string{"diff", "--cached", "--name-only", "--"}, paths...)...)
+	if err != nil {
+		return err
+	}
+	if len(staged) != 0 {
+		return fmt.Errorf("artifact paths already staged; commit manually: %s", staged)
+	}
+	// Scoped paths and --only exclude all unrelated staged changes.
+	if _, err := git(append([]string{"add", "--"}, paths...)...); err != nil {
+		return err
+	}
+	changed, err := git(append([]string{"diff", "--cached", "--name-only", "--"}, paths...)...)
+	if err != nil {
+		return err
+	}
+	if len(changed) == 0 {
+		return nil
+	}
+	out, err := git(append([]string{"commit", "--only", "-m", "Record benchmark artifacts for " + m.RunID, "--"}, paths...)...)
+	fmt.Print(string(out))
+	return err
+}

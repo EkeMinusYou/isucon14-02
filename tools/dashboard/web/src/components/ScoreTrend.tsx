@@ -1,0 +1,111 @@
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import type { ScoreEntry } from '../api'
+import { EmptyState } from './EmptyState'
+
+type Props = {
+  scores: ScoreEntry[]
+}
+
+export function ScoreTrend({ scores }: Props) {
+  if (scores.length === 0) {
+    return (
+      <EmptyState
+        title="スコア履歴がありません"
+        detail="runs/scores.tsv にまだ記録がありません"
+      />
+    )
+  }
+
+  const data = scores.map((s) => ({ ...s, label: s.run_id.slice(4, 13) }))
+  const scored = scores.filter((s): s is ScoreEntry & { score: number } => s.score != null)
+  const best = scored.length > 0 ? scored.reduce((a, b) => (b.score > a.score ? b : a)) : null
+  const latest = scores[scores.length - 1]
+
+  return (
+    <>
+    <div className="stats stats-horizontal w-full overflow-x-auto border border-base-300 bg-base-100">
+      <div className="stat px-4 py-2">
+        <div className="stat-title text-sm">最新スコア</div>
+        <div className="stat-value text-2xl tabular-nums">{latest.score?.toLocaleString() ?? '不明'}</div>
+        <div className="stat-desc font-mono text-xs">{latest.run_id}</div>
+      </div>
+      <div className="stat px-4 py-2">
+        <div className="stat-title text-sm">ベストスコア</div>
+        <div className="stat-value text-2xl tabular-nums text-success">{best?.score.toLocaleString() ?? '不明'}</div>
+        <div className="stat-desc font-mono text-xs">{best?.run_id ?? '—'}</div>
+      </div>
+      <div className="stat px-4 py-2">
+        <div className="stat-title text-sm">RUN数</div>
+        <div className="stat-value text-2xl tabular-nums">{scores.length}</div>
+      </div>
+    </div>
+    {(latest.passed != null || latest.addition != null || latest.deduction != null) && (
+      <div className="rounded-lg border border-base-300 bg-base-100 p-4 text-sm">
+        <div className="font-medium">最新RUNのベンチ結果</div>
+        <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 tabular-nums">
+          <span>整合性: {latest.passed == null ? '不明' : latest.passed ? '合格' : '失敗'}</span>
+          <span>加点: {latest.addition?.toLocaleString() ?? '不明'}</span>
+          <span>減点: {latest.deduction?.toLocaleString() ?? '不明'}</span>
+        </div>
+        {latest.routes && latest.routes.length > 0 && (
+          <details className="mt-3">
+            <summary className="cursor-pointer">操作別のベンチ出力（{latest.routes.length}件）</summary>
+            <ul className="mt-2 grid gap-1 font-mono text-xs sm:grid-cols-2">
+              {latest.routes.map((route) => (
+                <li key={`${route.method} ${route.route}`}>
+                  {route.method} {route.route}: {route.points}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </div>
+    )}
+    <ResponsiveContainer width="100%" height={260}>
+      <LineChart data={data} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
+        <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+        <XAxis
+          dataKey="label"
+          tick={{ fontSize: 13, fill: 'var(--chart-muted)' }}
+          axisLine={{ stroke: 'var(--chart-baseline)' }}
+          tickLine={false}
+        />
+        <YAxis
+          tick={{ fontSize: 13, fill: 'var(--chart-muted)' }}
+          axisLine={false}
+          tickLine={false}
+          width={56}
+        />
+        <Tooltip
+          cursor={{ stroke: 'var(--chart-cursor-line)', strokeWidth: 1 }}
+          contentStyle={{
+            background: 'var(--chart-tooltip-bg)',
+            color: 'var(--chart-tooltip-text)',
+            border: '1px solid var(--chart-grid)',
+            borderRadius: 8,
+            fontSize: 12,
+          }}
+          labelFormatter={(_, payload) => payload?.[0]?.payload?.run_id ?? ''}
+          formatter={(value) => [Number(value).toLocaleString(), 'score']}
+        />
+        <Line
+          type="monotone"
+          dataKey="score"
+          stroke="var(--series-1)"
+          strokeWidth={2}
+          dot={{ r: 3, fill: 'var(--series-1)' }}
+          activeDot={{ r: 5 }}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+    </>
+  )
+}

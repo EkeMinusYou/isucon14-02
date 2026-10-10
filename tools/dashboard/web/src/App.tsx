@@ -1,0 +1,346 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  api,
+  type AlpResponse,
+  type MetricsResponse,
+  type MysqlResponse,
+  type FgprofResponse,
+  type GoPprofResponse,
+  type RunInfo,
+  type ScoreEntry,
+  type SlowQueryResponse,
+  type TimelineResponse,
+  type UpstreamResponse,
+  type UserTransitionsResponse,
+} from './api'
+import { AlpTop } from './components/AlpTop'
+import { BenchmarkTimeline } from './components/BenchmarkTimeline'
+import { MysqlStatus } from './components/MysqlStatus'
+import { FgprofTop } from './components/PprofTop'
+import { GoPprofTop } from './components/GoPprofTop'
+import { ResourceTimeSeries } from './components/ResourceTimeSeries'
+import { RunSelector } from './components/RunSelector'
+import { ServerRoles } from './components/ServerRoles'
+import { SectionNav, type SectionDef } from './components/SectionNav'
+import { ScoreTrend } from './components/ScoreTrend'
+import { ChartSkeleton, TableSkeleton } from './components/Skeletons'
+import { SlowQueryTop } from './components/SlowQueryTop'
+import { ThemeToggle } from './components/ThemeToggle'
+import { UpstreamBreakdown } from './components/UpstreamBreakdown'
+import { UserTransitions } from './components/UserTransitions'
+import { useTheme } from './useTheme'
+
+type RunData = {
+  alp: AlpResponse
+  slowquery: SlowQueryResponse
+  metrics: MetricsResponse
+  fgprof: FgprofResponse
+  pprof: GoPprofResponse
+  mysql: MysqlResponse
+  upstream: UpstreamResponse
+  userTransitions: UserTransitionsResponse
+  timeline: TimelineResponse
+}
+
+// ジャンプバーの並び順とラベル。各 Section の id と 1:1 で対応させる
+const SECTIONS: SectionDef[] = [
+  { id: 'server-roles', title: 'サーバーの役割', navLabel: 'サーバー構成' },
+  { id: 'score-trend', title: 'スコア推移', navLabel: 'スコア' },
+  { id: 'benchmark-timeline', title: 'ベンチマーカー挙動タイムライン', navLabel: 'タイムライン' },
+  { id: 'alp', title: 'alp トップボトルネック', navLabel: 'alp' },
+  { id: 'upstream', title: 'nginx upstream/キャッシュ内訳', navLabel: 'upstream' },
+  { id: 'user-transitions', title: 'Cookie ユーザー遷移', navLabel: 'ユーザー遷移' },
+  { id: 'slowquery', title: 'slow query トップ', navLabel: 'slow query' },
+  { id: 'mysql', title: 'MySQL ステータス', navLabel: 'MySQL' },
+  { id: 'resources', title: 'ホスト/サービス別リソース時系列', navLabel: 'リソース' },
+  { id: 'pprof', title: 'Go pprof', navLabel: 'pprof' },
+  { id: 'fgprof', title: 'fgprof wall-clock', navLabel: 'fgprof' },
+]
+
+const COLLAPSED_BY_DEFAULT = new Set(['upstream', 'mysql', 'resources', 'pprof', 'fgprof'])
+
+function Section({
+  id,
+  title,
+  badge,
+  extra,
+  children,
+}: {
+  id?: string
+  title: string
+  badge?: string
+  extra?: React.ReactNode
+  children: React.ReactNode
+}) {
+  const [isOpen, setIsOpen] = useState(() => !id || !COLLAPSED_BY_DEFAULT.has(id))
+  const contentId = id ? `${id}-content` : undefined
+
+  return (
+    <section
+      id={id}
+      // sticky ヘッダー + ジャンプバーの高さぶん、ジャンプ先のスクロール位置を下げる
+      style={{ scrollMarginTop: 'calc(var(--dash-header-h, 7rem) + 1rem)' }}
+      className="card card-border mb-6 border-base-300 bg-base-100 shadow-sm"
+    >
+      <div className="card-body gap-4 p-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="card-title min-w-0 flex-1 text-xl">
+            <button
+              type="button"
+              className="flex w-full min-w-0 cursor-pointer items-center gap-3 rounded-lg text-left outline-offset-4 focus-visible:outline-2 focus-visible:outline-primary"
+              aria-expanded={isOpen}
+              aria-controls={contentId}
+              onClick={() => setIsOpen((open) => !open)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`size-5 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+                aria-hidden="true"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+              <span>{title}</span>
+              {badge && <span className="badge badge-soft badge-neutral badge-sm">{badge}</span>}
+            </button>
+          </h2>
+          {extra}
+        </div>
+        <div id={contentId} hidden={!isOpen}>
+          {children}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function App() {
+  const [runs, setRuns] = useState<RunInfo[]>([])
+  const [selectedRun, setSelectedRun] = useState<string | null>(null)
+  const [scores, setScores] = useState<ScoreEntry[]>([])
+  const [runData, setRunData] = useState<RunData | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [lastLoaded, setLastLoaded] = useState<Date | null>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const [headerHeight, setHeaderHeight] = useState(0)
+  const [theme, setTheme] = useTheme()
+  const selectedScore = scores.find((s) => s.run_id === selectedRun)?.score ?? null
+
+  // sticky ヘッダーの実寸を測り、ジャンプ先の scroll-margin と現在地判定に使う
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => {
+      const height = el.getBoundingClientRect().height
+      setHeaderHeight(height)
+      document.documentElement.style.setProperty('--dash-header-h', `${height}px`)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const loadAll = useCallback(async (runIdOverride?: string) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const [runList, scoreList] = await Promise.all([
+        api.runs(),
+        api.scores(),
+      ])
+      setRuns(runList)
+      setScores(scoreList)
+
+      const runId = runIdOverride ?? selectedRun ?? runList[0]?.run_id ?? null
+      setSelectedRun(runId)
+
+      if (runId) {
+        const [alp, slowquery, metrics, pprof, fgprof, mysql, upstream, userTransitions, timeline] = await Promise.all([
+          api.alp(runId),
+          api.slowQuery(runId),
+          api.metrics(runId),
+          api.pprof(runId),
+          api.fgprof(runId),
+          api.mysql(runId),
+          api.upstream(runId),
+          api.userTransitions(runId),
+          api.timeline(runId),
+        ])
+        setRunData({ alp, slowquery, metrics, pprof, fgprof, mysql, upstream, userTransitions, timeline })
+      } else {
+        setRunData(null)
+      }
+      setLastLoaded(new Date())
+    } catch (err) {
+      setError(String((err as Error).message ?? err))
+    } finally {
+      setLoading(false)
+    }
+  }, [selectedRun])
+
+  useEffect(() => {
+    loadAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleRunChange = async (runId: string) => {
+    setSelectedRun(runId)
+    setLoading(true)
+    setError(null)
+    try {
+      const [alp, slowquery, metrics, pprof, fgprof, mysql, upstream, userTransitions, timeline] = await Promise.all([
+        api.alp(runId),
+        api.slowQuery(runId),
+        api.metrics(runId),
+        api.pprof(runId),
+        api.fgprof(runId),
+        api.mysql(runId),
+        api.upstream(runId),
+        api.userTransitions(runId),
+        api.timeline(runId),
+      ])
+      setRunData({ alp, slowquery, metrics, pprof, fgprof, mysql, upstream, userTransitions, timeline })
+      setLastLoaded(new Date())
+    } catch (err) {
+      setError(String((err as Error).message ?? err))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-base-200">
+      <div ref={headerRef} className="sticky top-0 z-20 border-b border-base-300 bg-base-100/90 backdrop-blur">
+        <div className="navbar gap-4 px-8">
+          <div className="navbar-start gap-4">
+            {/* ghost ボタンにする以上は押せる必要があるので、ダッシュボード先頭へ戻す */}
+            <button
+              className="btn btn-ghost gap-2.5 px-2 text-lg font-bold"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }}
+            >
+              <img src="/favicon.svg" alt="" className="size-9 object-contain" />
+              ISUCON 計測ダッシュボード
+            </button>
+          </div>
+
+          <div className="navbar-end gap-3">
+            {/* 数値は色付きピルではなく見出し付きの stat で出す。
+                stat 同士の区切り線がそのままグループの仕切りになる */}
+            <div className="stats stats-horizontal bg-transparent">
+              {selectedScore != null && (
+                <div className="stat gap-0 px-3 py-0">
+                  <div className="stat-title text-xs">選択中RUNのスコア</div>
+                  <div className="stat-value text-xl tabular-nums">{selectedScore.toLocaleString()}</div>
+                </div>
+              )}
+              <div className="stat gap-0 px-3 py-0">
+                <div className="stat-title text-xs">最終更新</div>
+                {/* スコアより一段軽くする。主役はスコアの方 */}
+                <div className="stat-value text-base font-medium tabular-nums text-base-content/70">
+                  {lastLoaded ? lastLoaded.toLocaleTimeString('ja-JP') : '—'}
+                </div>
+              </div>
+            </div>
+
+            {/* RUN の選択と再読み込みは一続きの操作なので join でまとめる */}
+            <div className="join">
+              <RunSelector
+                className="join-item"
+                runs={runs}
+                selected={selectedRun}
+                onChange={handleRunChange}
+              />
+              <button
+                className="btn btn-primary btn-sm join-item"
+                disabled={loading}
+                onClick={() => loadAll(selectedRun ?? undefined)}
+              >
+                {loading ? (
+                  <span className="loading loading-spinner loading-xs" />
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="size-4">
+                    <path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6" />
+                  </svg>
+                )}
+                {loading ? '更新中…' : '再読み込み'}
+              </button>
+            </div>
+            <ThemeToggle value={theme} onChange={setTheme} />
+          </div>
+        </div>
+        <SectionNav sections={SECTIONS} offset={headerHeight} />
+      </div>
+
+      <div className="mx-auto max-w-[1920px] px-8 pt-6 pb-12">
+        {error && (
+          <div className="alert alert-error mb-5 text-base">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5 shrink-0">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v6m0 3.5v.5" />
+            </svg>
+            <span>{error}</span>
+            <button className="btn btn-sm btn-ghost" onClick={() => setError(null)}>
+              閉じる
+            </button>
+          </div>
+        )}
+
+        <>
+            <Section id="server-roles" title="サーバーの役割" badge="選択中RUNの構成">
+              <ServerRoles run={runs.find((run) => run.run_id === selectedRun)} />
+            </Section>
+
+            <Section id="score-trend" title="スコア推移" badge={`${scores.length} RUN`}>
+              <ScoreTrend scores={scores} />
+            </Section>
+
+            <Section id="benchmark-timeline" title="ベンチマーカー挙動タイムライン">
+              {runData ? <BenchmarkTimeline timeline={runData.timeline} /> : <ChartSkeleton />}
+            </Section>
+
+            <Section id="alp" title="alp トップボトルネック">
+              {runData ? <AlpTop rows={runData.alp.rows} /> : <TableSkeleton />}
+            </Section>
+
+            <Section id="upstream" title="nginx upstream/キャッシュ内訳">
+              {runData ? <UpstreamBreakdown data={runData.upstream} /> : <TableSkeleton />}
+            </Section>
+
+            <Section id="user-transitions" title="Cookie ユーザー遷移">
+              {runData ? <UserTransitions data={runData.userTransitions} alpRows={runData.alp.rows} /> : <TableSkeleton />}
+            </Section>
+
+            <Section id="slowquery" title="slow query トップ">
+              {runData ? <SlowQueryTop data={runData.slowquery} /> : <TableSkeleton />}
+            </Section>
+
+            <Section id="mysql" title="MySQL ステータス">
+              {runData ? <MysqlStatus data={runData.mysql} /> : <ChartSkeleton columns={3} />}
+            </Section>
+
+            <Section id="resources" title="ホスト/サービス別リソース時系列">
+              {runData ? <ResourceTimeSeries metrics={runData.metrics} /> : <ChartSkeleton columns={3} />}
+            </Section>
+
+            <Section id="pprof" title="Go pprof">
+              {runData ? <GoPprofTop data={runData.pprof} /> : <TableSkeleton />}
+            </Section>
+
+            <Section id="fgprof" title="fgprof wall-clock">
+              {runData ? <FgprofTop data={runData.fgprof} /> : <TableSkeleton />}
+            </Section>
+
+        </>
+      </div>
+    </div>
+  )
+}
+
+export default App

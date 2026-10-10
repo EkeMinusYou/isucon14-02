@@ -1,0 +1,514 @@
+package main
+
+import (
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"io/fs"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
+)
+
+// Manifest は走行 1 回分の記録。runs/<RUN_ID>/run.json として保存する。
+//
+// これまで「その RUN で何が取れて何が欠けたか」は、0 バイトの .stderr が
+// 残っているかどうかで推測するしかなかった。ここに集約することで、
+// 解析側はディレクトリを走査せずに走行の状態を判定できる。
+// フィールドは omitempty を付けずに必ず出す。DuckDB の read_json は
+// 実ファイルから型を推論するので、RUN によってキーが出たり消えたりすると
+// 横断クエリのスキーマが揺れる。
+type Manifest struct {
+	ArtifactContract   []ArtifactSpec `json:"artifact_contract,omitempty"`
+	ProfilesEnabled    bool           `json:"profiles_enabled"`
+	RequiredArtifacts  []string       `json:"required_artifacts,omitempty"`
+	CollectorsDisabled bool           `json:"collectors_disabled,omitempty"`
+	SchemaVersion      int            `json:"schema_version"`
+	Phase              string         `json:"phase"`
+	RunID              string         `json:"run_id"`
+	StartedAt          string         `json:"started_at"`
+	WrittenAt          string         `json:"written_at"`
+	FinalizedAt        string         `json:"finalized_at"`
+	Score              *int64         `json:"score"`
+	Passed             *bool          `json:"passed"`
+	Roles              Roles          `json:"roles"`
+	Source             CodeSource     `json:"source"`
+	Artifacts          []Artifact     `json:"artifacts"`
+	RawBytes           int64          `json:"raw_bytes"`
+	Preflight          Preflight      `json:"preflight"`
+	LoadWindow         LoadWindow     `json:"load_window"`
+}
+
+type LoadWindow struct {
+	StartedAt  string `json:"started_at"`
+	EndedAt    string `json:"ended_at"`
+	DurationMS int64  `json:"duration_ms"`
+	Source     string `json:"source"`
+	Status     string `json:"status"`
+	Reason     string `json:"reason"`
+}
+
+type Preflight struct {
+	CollectorClean bool `json:"collector_clean"`
+}
+
+// Roles はその走行時点のホスト役割。構成をまたぐ RUN 比較で必要になる。
+type Roles struct {
+	Additional map[string][]string `json:"additional,omitempty"`
+	App        []string            `json:"app"`
+	AppTraffic []string            `json:"app_traffic"`
+	Nginx      []string            `json:"nginx"`
+	Entry      string              `json:"entry"`
+	MySQL      string              `json:"mysql"`
+}
+
+// CodeSource はその走行で動いていたアプリのコード。スコア差分の原因を後から
+// 追うとき、RUN と commit の対応が分からないと比較にならない。
+// (JSON のキーは source。digesters.yaml の Source とは別物)
+type CodeSource struct {
+	Commit string `json:"commit"`
+	Branch string `json:"branch"`
+}
+
+// Artifact は回収物 1 件。status は ok / empty / failed / missing のいずれか。
+// failed のときは対応する .stderr の中身を reason に入れる。
+type Artifact struct {
+	Name    string          `json:"name"`
+	Bytes   int64           `json:"bytes"`
+	Status  string          `json:"status"`
+	Reason  string          `json:"reason"`
+	Quality ArtifactQuality `json:"quality"`
+}
+
+type ArtifactQuality struct {
+	Expected          bool    `json:"expected"`
+	Status            string  `json:"status"`
+	Rows              int64   `json:"rows"`
+	InWindowSamples   int64   `json:"in_window_samples"`
+	ExpectedSamples   int64   `json:"expected_samples"`
+	WindowCoveragePct float64 `json:"window_coverage_pct"`
+	MaxGapMS          int64   `json:"max_gap_ms"`
+	Monotonic         bool    `json:"monotonic"`
+	Finite            bool    `json:"finite"`
+	Reason            string  `json:"reason"`
+}
+
+var scoreRe = regexp.MustCompile(`(?im)(?:スコア|score)\s*[:：]\s*([0-9]+)`)
+
+// ベンチマーカーは失敗時には結果 JSON、成功時には通常ログを出す。
+// preflight の成功だけでは完走を意味しないため、最終チェックの成功だけを
+// pass=true として扱う。ログ欠損や途中終了は nil のまま残す。
+var passFalseRe = regexp.MustCompile(`(?i)"pass"\s*:\s*false|BENCHMARK_FAIL|(?:整合性|最終)チェック(?:が|に)失敗しました`)
+var passTrueRe = regexp.MustCompile(`(?i)"pass"\s*:\s*true|BENCHMARK_PASS|最終チェックが成功しました`)
+
+func runManifest(args []string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("manifest requires begin or finalize")
+	}
+	switch args[0] {
+	case "begin":
+		return runManifestBegin(args[1:])
+	case "finalize":
+		return runManifestFinalize(args[1:])
+	default:
+		return fmt.Errorf("unknown manifest command %q; use begin or finalize", args[0])
+	}
+}
+
+func runManifestBegin(args []string) error {
+	fs := flag.NewFlagSet("manifest begin", flag.ExitOnError)
+	dir := fs.String("dir", "", "走行ディレクトリ (runs/<RUN_ID>)")
+	app := fs.String("app", "", "APP_HOSTS (カンマ区切り)")
+	appTraffic := fs.String("app-traffic", "", "APP_TRAFFIC_HOSTS (カンマ区切り)")
+	nginx := fs.String("nginx", "", "NGINX_HOSTS (カンマ区切り)")
+	mysql := fs.String("mysql", "", "MYSQL_HOST")
+	entry := fs.String("entry", "", "ENTRY_HOST")
+	additionalRoles := keyValues{}
+	fs.Var(additionalRoles, "role", "additional role=host1,host2 (repeatable)")
+	collectorsDisabled := fs.Bool("collectors-disabled", false, "periodic collectors were intentionally disabled")
+	collectorClean := fs.Bool("collector-clean", false, "collector clean gate passed")
+	profilesEnabled := fs.Bool("profiles-enabled", false, "require automatic profiles for this RUN")
+	captureContract := fs.Bool("capture-contract", false, "snapshot per-host capture requirements")
+	collectors := fs.String("collectors", defaultMeasureConfigPath("collectors.yaml"), "collector declaration")
+	digesters := fs.String("digesters", defaultMeasureConfigPath("digesters.yaml"), "digester declaration")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	if *dir == "" {
+		return fmt.Errorf("-dir は必須です")
+	}
+	if _, err := os.Stat(*dir); err != nil {
+		return fmt.Errorf("走行ディレクトリを読めません: %w", err)
+	}
+	runID := filepath.Base(strings.TrimSuffix(*dir, string(filepath.Separator)))
+	source, err := gitSource()
+	if err != nil {
+		return err
+	}
+	m := Manifest{
+		ProfilesEnabled:    *profilesEnabled,
+		CollectorsDisabled: *collectorsDisabled,
+		SchemaVersion:      4,
+		Phase:              "started",
+		RunID:              runID,
+		StartedAt:          parseRunIDTime(runID),
+		Roles: Roles{
+			Additional: additionalRoles,
+			App:        splitHosts(*app),
+			AppTraffic: splitHosts(*appTraffic),
+			Nginx:      splitHosts(*nginx),
+			Entry:      *entry,
+			MySQL:      *mysql,
+		},
+		Source:     source,
+		Artifacts:  []Artifact{},
+		Preflight:  Preflight{CollectorClean: *collectorClean},
+		LoadWindow: LoadWindow{Status: "pending", Source: "bench.log"},
+	}
+	if *captureContract {
+		var err error
+		m.RequiredArtifacts, err = captureRequirements(m, *collectors, *digesters)
+		if err != nil {
+			return err
+		}
+		m.ArtifactContract, err = captureArtifactContract(m, *collectors, *digesters)
+		if err != nil {
+			return err
+		}
+	}
+	if err := writeManifestAtomic(filepath.Join(*dir, "run.json"), m); err != nil {
+		return err
+	}
+	fmt.Printf("%s/run.json (phase=started)\n", *dir)
+	return nil
+}
+
+func runManifestFinalize(args []string) error {
+	fs := flag.NewFlagSet("manifest finalize", flag.ExitOnError)
+	dir := fs.String("dir", "", "走行ディレクトリ (runs/<RUN_ID>)")
+	score := fs.String("score", "", "ポータルのスコア。省略時は bench.log から読む")
+	scores := fs.String("scores", "", "スコアと構成の履歴を追記する TSV (省略時は追記しない)")
+	collectors := fs.String("collectors", defaultMeasureConfigPath("collectors.yaml"), "collector の宣言")
+	digesters := fs.String("digesters", defaultMeasureConfigPath("digesters.yaml"), "集計の宣言")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	if *dir == "" {
+		return fmt.Errorf("-dir は必須です")
+	}
+	path := filepath.Join(*dir, "run.json")
+	body, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("manifest beginのrun.jsonを読めません: %w", err)
+	}
+	var m Manifest
+	if err := json.Unmarshal(body, &m); err != nil {
+		return fmt.Errorf("run.jsonが不正です: %w", err)
+	}
+	if m.SchemaVersion != 4 || (m.Phase != "started" && m.Phase != "finalized") {
+		return fmt.Errorf("run.jsonはmanifest beginで作成されたものではありません")
+	}
+	if *score != "" {
+		if _, err := strconv.ParseInt(*score, 10, 64); err != nil || strings.HasPrefix(*score, "-") {
+			return fmt.Errorf("-score は 0 以上の整数で指定してください: %q", *score)
+		}
+		benchPath := filepath.Join(*dir, "bench.log")
+		if info, err := os.Stat(benchPath); errors.Is(err, os.ErrNotExist) || (err == nil && info.Size() == 0) {
+			body := fmt.Sprintf("本番ポータルから実行\nスコア: %s\n", *score)
+			if err := os.WriteFile(benchPath, []byte(body), 0o644); err != nil {
+				return err
+			}
+		} else if err != nil {
+			return err
+		}
+	}
+
+	benchLog, _ := os.ReadFile(filepath.Join(*dir, "bench.log"))
+	m.Score = resolveScore(*score, benchLog)
+	m.Passed = resolvePassed(benchLog)
+	m.LoadWindow = resolveLoadWindow(benchLog)
+
+	artifacts, rawBytes, err := scanArtifacts(*dir)
+	if err != nil {
+		return err
+	}
+	specs, err := loadArtifactSpecs(*collectors, *digesters)
+	if err != nil {
+		return err
+	}
+	specs = specsForRun(specs, m)
+	if artifacts == nil {
+		artifacts = []Artifact{}
+	}
+	artifacts, err = appendMissingArtifacts(*dir, artifacts, specs)
+	if err != nil {
+		return err
+	}
+	artifacts = assessArtifactQuality(*dir, m.LoadWindow, artifacts)
+	artifacts = assessCaptureQuality(*dir, m, artifacts)
+	m.Artifacts = artifacts
+	m.RawBytes = rawBytes
+	m.Phase = "finalized"
+	m.FinalizedAt = time.Now().Format(time.RFC3339)
+	m.WrittenAt = m.FinalizedAt
+	if err := writeManifestAtomic(path, m); err != nil {
+		return err
+	}
+
+	ok, failed := 0, 0
+	for _, a := range m.Artifacts {
+		if a.Status == "ok" {
+			ok++
+		} else {
+			failed++
+		}
+	}
+	fmt.Printf("%s (成果物 %d 件, 要確認 %d 件, score=%s)\n", path, ok, failed, formatScore(m.Score))
+
+	if *scores != "" {
+		if err := appendScores(*scores, m); err != nil {
+			return err
+		}
+		fmt.Printf("スコア %s を %s に追記\n", formatScore(m.Score), *scores)
+	}
+	return nil
+}
+
+func writeManifestAtomic(path string, m Manifest) error {
+	body, err := json.MarshalIndent(m, "", "  ")
+	if err != nil {
+		return err
+	}
+	body = append(body, '\n')
+	tmp, err := os.CreateTemp(filepath.Dir(path), ".run-*.json")
+	if err != nil {
+		return err
+	}
+	tmpPath := tmp.Name()
+	defer os.Remove(tmpPath)
+	if _, err := tmp.Write(body); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Sync(); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Chmod(0o644); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmpPath, path)
+}
+
+// appendScores は manifest の内容を scores.tsv へ 1 行追記する。
+// 走行の記録は run.json が正本で、この TSV はそこから導ける履歴ビュー。
+// task runs / task q が読む形式なので、列は変えずに保つ。
+func appendScores(path string, m Manifest) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		header := "run_id\tscore\tapp\tnginx\tmysql\tapp_traffic\n"
+		if err := os.WriteFile(path, []byte(header), 0o644); err != nil {
+			return err
+		}
+	}
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND, 0o644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Unknown is an empty field, not zero. A real zero score and a run whose
+	// score could not be obtained have different meanings.
+	score := ""
+	if m.Score != nil {
+		score = strconv.FormatInt(*m.Score, 10)
+	}
+	_, err = fmt.Fprintf(f, "%s\t%s\t%s\t%s\t%s\t%s\n",
+		m.RunID, score,
+		strings.Join(m.Roles.App, ","),
+		strings.Join(m.Roles.Nginx, ","),
+		m.Roles.MySQL,
+		strings.Join(m.Roles.AppTraffic, ","))
+	return err
+}
+
+// scanArtifacts は走行ディレクトリを 1 段だけ走査して回収物を列挙する。
+// raw/ はローカル専用の生ログなので、個別には並べずに合計サイズだけ持つ。
+func scanArtifacts(dir string) ([]Artifact, int64, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// .stderr は成果物そのものではなく、対応する回収物の失敗理由。
+	// 先に集めてから本体の status 判定に使う。
+	reasons := map[string]string{}
+	for _, e := range entries {
+		name := e.Name()
+		if e.IsDir() || !strings.HasSuffix(name, ".stderr") {
+			continue
+		}
+		body, err := os.ReadFile(filepath.Join(dir, name))
+		if err != nil {
+			continue
+		}
+		if text := strings.TrimSpace(string(body)); text != "" {
+			reasons[strings.TrimSuffix(name, ".stderr")] = text
+		}
+	}
+
+	var artifacts []Artifact
+	var rawBytes int64
+	for _, e := range entries {
+		name := e.Name()
+		if e.IsDir() {
+			if name == "raw" {
+				rawBytes = dirSize(filepath.Join(dir, name))
+				err := filepath.WalkDir(filepath.Join(dir, name), func(path string, entry fs.DirEntry, walkErr error) error {
+					if walkErr != nil {
+						return walkErr
+					}
+					if entry.IsDir() {
+						return nil
+					}
+					info, err := entry.Info()
+					if err != nil {
+						return err
+					}
+					relative, err := filepath.Rel(dir, path)
+					if err != nil {
+						return err
+					}
+					a := Artifact{Name: filepath.ToSlash(relative), Bytes: info.Size(), Status: "ok"}
+					if info.Size() == 0 {
+						a.Status = "empty"
+					}
+					artifacts = append(artifacts, a)
+					return nil
+				})
+				if err != nil {
+					return nil, 0, err
+				}
+			}
+			continue
+		}
+		if strings.HasSuffix(name, ".stderr") || name == "run.json" {
+			continue
+		}
+		info, err := e.Info()
+		if err != nil {
+			continue
+		}
+		a := Artifact{Name: name, Bytes: info.Size(), Status: "ok"}
+		// 回収物の stem は拡張子を落とした名前 (slp.tsv -> slp)。
+		if reason, ok := reasons[strings.TrimSuffix(name, filepath.Ext(name))]; ok {
+			a.Status = "failed"
+			a.Reason = reason
+		} else if info.Size() == 0 {
+			a.Status = "empty"
+		}
+		artifacts = append(artifacts, a)
+	}
+	sort.Slice(artifacts, func(i, j int) bool { return artifacts[i].Name < artifacts[j].Name })
+	return artifacts, rawBytes, nil
+}
+
+func dirSize(dir string) int64 {
+	var total int64
+	_ = filepath.WalkDir(dir, func(_ string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil //nolint:nilerr // 読めない枝は数えないだけでよい
+		}
+		if info, err := d.Info(); err == nil {
+			total += info.Size()
+		}
+		return nil
+	})
+	return total
+}
+
+// resolveScore は明示指定を優先し、無ければ bench.log の最後のスコア行を読む。
+// どちらも無ければ nil (0 とは区別する。0 点の走行と未記録は別物)。
+func resolveScore(explicit string, benchLog []byte) *int64 {
+	if explicit != "" {
+		if n, err := strconv.ParseInt(explicit, 10, 64); err == nil {
+			return &n
+		}
+	}
+	matches := scoreRe.FindAllSubmatch(benchLog, -1)
+	if len(matches) == 0 {
+		return nil
+	}
+	if n, err := strconv.ParseInt(string(matches[len(matches)-1][1]), 10, 64); err == nil {
+		return &n
+	}
+	return nil
+}
+
+func resolvePassed(benchLog []byte) *bool {
+	if passFalseRe.Match(benchLog) {
+		v := false
+		return &v
+	}
+	if passTrueRe.Match(benchLog) {
+		v := true
+		return &v
+	}
+	return nil
+}
+
+func gitSource() (CodeSource, error) {
+	git := func(args ...string) (string, error) {
+		out, err := runGitWithRetry(func() ([]byte, error) {
+			return exec.Command("git", args...).CombinedOutput()
+		}, args[0])
+		return strings.TrimSpace(string(out)), err
+	}
+	commit, err := git("rev-parse", "--verify", "HEAD")
+	if err != nil {
+		return CodeSource{}, err
+	}
+	branch, err := git("rev-parse", "--abbrev-ref", "HEAD")
+	if err != nil {
+		return CodeSource{}, err
+	}
+	return CodeSource{Commit: commit, Branch: branch}, nil
+}
+
+func parseRunIDTime(runID string) string {
+	t, err := time.ParseInLocation("20060102-150405", runID, time.Local)
+	if err != nil {
+		return ""
+	}
+	return t.Format(time.RFC3339)
+}
+
+func splitHosts(s string) []string {
+	if strings.TrimSpace(s) == "" {
+		return nil
+	}
+	parts := strings.Split(s, ",")
+	out := make([]string, 0, len(parts))
+	for _, p := range parts {
+		if p = strings.TrimSpace(p); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+func formatScore(score *int64) string {
+	if score == nil {
+		return "unknown"
+	}
+	return strconv.FormatInt(*score, 10)
+}
