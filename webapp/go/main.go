@@ -66,6 +66,7 @@ func setup() http.Handler {
 		panic(err)
 	}
 	db = _db
+	db.SetMaxIdleConns(32)
 	measurementServer, err := measurement.Start(measurement.Options{
 		MaxProfileSeconds: 180,
 		Pools:             []measurement.Pool{{DB: db, DatabaseHost: host, Name: "main", Role: "primary"}},

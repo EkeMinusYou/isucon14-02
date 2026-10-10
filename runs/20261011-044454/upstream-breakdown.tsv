@@ -1,0 +1,7 @@
+upstream_addr	upstream_status	cache_status	requests	status_2xx	status_3xx	status_4xx	status_5xx	status_other	response_time_sum_ms	response_time_avg_ms	upstream_time_sum_ms	upstream_time_avg_ms
+172.31.0.126:8080	200	NONE	30890	30890	0	0	0	0	8830904.000	285.882	8831336.000	285.896
+172.31.0.126:8080	201	NONE	251	251	0	0	0	0	7303.000	29.096	7285.000	29.024
+172.31.0.126:8080	202	NONE	362	362	0	0	0	0	28048.000	77.481	28028.000	77.425
+172.31.0.126:8080	204	NONE	1003	1003	0	0	0	0	34948.000	34.843	35011.000	34.906
+172.31.0.126:8080	500	NONE	1	0	0	0	1	0	4.000	4.000	3.000	3.000
+NONE	NONE	NONE	31939	5102	26837	0	0	0	2.000	0.000	0.000	0.000
