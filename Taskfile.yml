@@ -81,7 +81,9 @@ vars:
 
   # >>> contest values >>>
   BENCH_TARGET: https://isuride.xiv.isucon.net
-  BENCH_COMMAND: ''
+  # The benchmarker serves the payment mock; the app reaches it via the bench host's private IP.
+  BENCH_PAYMENT_URL: http://172.31.36.103:12345
+  BENCH_COMMAND: ./bench run --target {{.BENCH_TARGET}} --addr {{.ENTRY_IP}}:443 --payment-url {{.BENCH_PAYMENT_URL}}
   BENCH_SSH_OPTIONS: ''
   # <<< contest values <<<
 
