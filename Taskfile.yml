@@ -187,6 +187,42 @@ vars:
   RUN: '{{.LATEST_RUN}}'
 
 tasks:
+  worktree-link-raw:
+    desc: primary worktreeのrawを共有するディレクトリリンクを作成
+    requires: { vars: [PRIMARY_WORKTREE] }
+    env:
+      RAW_PRIMARY_WORKTREE: '{{.PRIMARY_WORKTREE}}'
+      RAW_DIRECTORY: '{{.RAW_DIR}}'
+    cmds:
+      - |
+        set -eu
+        primary=$(cd "$RAW_PRIMARY_WORKTREE" && pwd -P)
+        current=$(git rev-parse --show-toplevel)
+        current=$(cd "$current" && pwd -P)
+        primary_git=$(git -C "$primary" rev-parse --path-format=absolute --git-common-dir)
+        current_git=$(git rev-parse --path-format=absolute --git-common-dir)
+        test "$(cd "$primary_git" && pwd -P)" = "$(cd "$current_git" && pwd -P)" || {
+          echo 'primary worktree belongs to another repository' >&2
+          exit 1
+        }
+        mkdir -p "$primary/$RAW_DIRECTORY"
+        if [ "$current" = "$primary" ]; then exit 0; fi
+        destination="$current/$RAW_DIRECTORY"
+        if [ -L "$destination" ]; then
+          test "$(cd "$destination" && pwd -P)" = "$(cd "$primary/$RAW_DIRECTORY" && pwd -P)" || {
+            echo "raw link points elsewhere: $destination" >&2
+            exit 1
+          }
+          exit 0
+        fi
+        if [ -e "$destination" ]; then
+          rmdir "$destination" || {
+            echo "raw is not an empty directory: $destination" >&2
+            exit 1
+          }
+        fi
+        ln -s "$primary/$RAW_DIRECTORY" "$destination"
+
   default:
     desc: 現在の役割とタスク一覧を表示
     silent: true
@@ -840,11 +876,13 @@ tasks:
     desc: 進行中RUNを破棄しcollectorを掃除（破壊的）
     deps: [build-measurectl]
     cmds:
-      - '{{.OPERATION_LOCK}} {{.MEASURECTL_DIR}}/measurectl collect sweep {{.MEASURECTL_COMMON}}'
       - |
-        if [ -f '{{.RUN_STATE_FILE}}' ]; then
-          mv -f '{{.RUN_STATE_FILE}}' '{{.RAW_DIR}}/aborted-run-id'
-        fi
+        {{.OPERATION_LOCK}} bash <<'BASH'
+        set -eu
+        sh tools/bench/active-run-id.sh '{{.RUN_STATE_FILE}}' >/dev/null
+        {{.MEASURECTL_DIR}}/measurectl collect sweep {{.MEASURECTL_COMMON}}
+        mv -f '{{.RUN_STATE_FILE}}' '{{.RAW_DIR}}/aborted-run-id'
+        BASH
 
   artifacts:
     desc: 成果物宣言と読み手の整合を確認

@@ -43,7 +43,7 @@ echo "$1" >> "$ISUCON_TEST_DIR/calls"
 case "$1" in
 before-bench)
   mkdir -p "$run" "$(dirname "$ISUCON_BENCH_RUN_STATE_FILE")"
-  echo 20260901-120000 > "$ISUCON_BENCH_RUN_STATE_FILE"
+  printf '%s\n%s\n' 20260901-120000 "$(pwd -P)" > "$ISUCON_BENCH_RUN_STATE_FILE"
   ;;
 profiles-collect)
   echo PROFILE_CAPTURE_STARTED
@@ -234,7 +234,7 @@ func TestProfileTasksResolveConfiguredDuration(t *testing.T) {
 		t.Fatal(err)
 	}
 	state := filepath.Join(t.TempDir(), "state")
-	if err := os.WriteFile(state, []byte("20000101-000000\n"), 0o600); err != nil {
+	if err := os.WriteFile(state, []byte("20000101-000000\n"+root+"\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	for _, name := range []string{"profiles-collect", "profiles-ready", "profiles-stop"} {
