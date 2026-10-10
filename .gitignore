@@ -10,6 +10,8 @@ raw/
 
 # Contest application build artifacts
 webapp/go/default.pgo
+# contest: executable rebuilt locally for the confirmed target architecture.
+webapp/go/isuride
 
 # Tool build artifacts
 /tools/bench-output/bench-output

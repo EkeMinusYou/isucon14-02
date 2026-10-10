@@ -18,6 +18,33 @@ tasks:
 
   setup-contest-assets:
     desc: 標準の取得対象外にある競技固有の資材を取得する（setupのhook、既定は何もしない）
+    cmds:
+      - '{{.RSYNC}} {{.SSH_USER}}@{{.CONF_SRC}}:/etc/systemd/system/isuride-matcher.service etc/systemd/system/'
+      - '{{.RSYNC}} {{.SSH_USER}}@{{.CONF_SRC}}:/etc/systemd/system/isuride-payment_mock.service etc/systemd/system/'
 
   setup-smoke-probes:
     desc: smoke実行中に競技固有の経路を追加で確認する（setup-smokeのhook、既定は何もしない）
+    cmds:
+      - '{{.SSH}} {{.SSH_USER}}@{{.MYSQL_HOST}} "sudo mysql {{.DB_NAME}} -e \"SELECT SLEEP(0.06) AS setup_slow_log_probe\""'
+
+  setup-smoke-analysis:
+    desc: RUNを作らず疎通成果物をDuckDBとdashboardのAPI・parserで確認
+    requires:
+      vars: [SMOKE_DIR]
+    env:
+      ISUCON_SETUP_SMOKE_DIR: '{{.ROOT_DIR}}/{{.SMOKE_DIR}}'
+    cmds:
+      - cd tools/analysisctl && go test -count=1 -v -run '^TestISURIDE(SetupSmokeDuckDB|PortalResultMarkers)$' .
+      - cd tools/analysisctl/internal/pprofimport && go test -count=1 -v -run '^TestISURIDESetupSmokePprofDuckDB$' .
+      - cd tools/dashboard/server && go test -count=1 -v -run '^TestISURIDESetupSmokeAPI$' .
+      - for profile in '{{.SMOKE_DIR}}'/*.pprof; do go tool pprof -top "$profile"; done
+
+  setup-postflight:
+    desc: 配布物・role・内部疎通とcollector終了を読み取りで確認
+    deps: [build-deployctl, build-measurectl]
+    cmds:
+      - task: check-roles
+      - task: check-network
+      - '{{.DEPLOYCTL_DIR}}/deployctl verify -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
+      - '{{.MEASURECTL_DIR}}/measurectl collect check-clean {{.MEASURECTL_REMOTE}}'
+      - '{{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} "curl -fsS http://127.0.0.1:6060/debug/profiles/status" </dev/null'

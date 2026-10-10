@@ -1,11 +1,75 @@
 {
-  "_comment": "Placeholder. Set cookie_field to the access log column that identifies a session, api_prefix to the API root, and replace routes with the contest's own paths: dynamic IDs normalized, most specific pattern first.",
+  "_comment": "ISURIDE app, owner and chair sessions; SHA-256 pseudonyms emitted by the Go adapter, never raw authentication cookies.",
   "cookie_field": "session_id",
-  "api_prefix": "/",
+  "api_prefix": "/api/",
   "routes": [
     {
-      "name": "/initialize",
-      "pattern": "^/initialize$"
+      "name": "/api/initialize",
+      "pattern": "^/api/initialize$"
+    },
+    {
+      "name": "/api/app/users",
+      "pattern": "^/api/app/users$"
+    },
+    {
+      "name": "/api/app/payment-methods",
+      "pattern": "^/api/app/payment-methods$"
+    },
+    {
+      "name": "/api/app/rides",
+      "pattern": "^/api/app/rides$"
+    },
+    {
+      "name": "/api/app/rides/estimated-fare",
+      "pattern": "^/api/app/rides/estimated-fare$"
+    },
+    {
+      "name": "/api/app/rides/{ride_id}/evaluation",
+      "pattern": "^/api/app/rides/[^/]+/evaluation$"
+    },
+    {
+      "name": "/api/app/notification",
+      "pattern": "^/api/app/notification$"
+    },
+    {
+      "name": "/api/app/nearby-chairs",
+      "pattern": "^/api/app/nearby-chairs$"
+    },
+    {
+      "name": "/api/owner/owners",
+      "pattern": "^/api/owner/owners$"
+    },
+    {
+      "name": "/api/owner/sales",
+      "pattern": "^/api/owner/sales$"
+    },
+    {
+      "name": "/api/owner/chairs",
+      "pattern": "^/api/owner/chairs$"
+    },
+    {
+      "name": "/api/chair/chairs",
+      "pattern": "^/api/chair/chairs$"
+    },
+    {
+      "name": "/api/chair/activity",
+      "pattern": "^/api/chair/activity$"
+    },
+    {
+      "name": "/api/chair/coordinate",
+      "pattern": "^/api/chair/coordinate$"
+    },
+    {
+      "name": "/api/chair/notification",
+      "pattern": "^/api/chair/notification$"
+    },
+    {
+      "name": "/api/chair/rides/{ride_id}/status",
+      "pattern": "^/api/chair/rides/[^/]+/status$"
+    },
+    {
+      "name": "/api/internal/matching",
+      "pattern": "^/api/internal/matching$"
     }
   ]
 }

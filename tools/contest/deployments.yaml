@@ -1,0 +1,129 @@
+include:
+  - ../deployctl/deployments.yaml
+
+deployments:
+  db-schema:
+    uploads:
+      - label: official SQL schema and initialization data
+        role: app_db
+        local: '{var:sql_dir}/'
+        remote: '{var:remote_home}/{var:sql_dir}/'
+        delete: true
+    activations:
+      - label: recreate the official database with its original collation
+        role: app_db
+        script: |
+          set -eu
+          sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/{var:sql_dir}
+          sudo mysql -e 'DROP DATABASE IF EXISTS `{var:db_name}`; CREATE DATABASE `{var:db_name}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;'
+          sudo mysql '{var:db_name}' < '{var:remote_home}/{var:sql_dir}/{var:sql_schema_file}'
+
+  sql-assets:
+    uploads:
+      - label: official initialization assets
+        role: app
+        local: '{var:sql_dir}/'
+        remote: '{var:remote_home}/{var:sql_dir}/'
+        delete: true
+    activations:
+      - label: set initialization asset ownership
+        role: app
+        script: |
+          set -eu
+          sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/{var:sql_dir}
+
+  dependencies:
+    uploads:
+      - label: matcher unit
+        role: app
+        local: etc/systemd/system/isuride-matcher.service
+        remote: /etc/systemd/system/isuride-matcher.service
+        validate: sudo systemd-analyze verify /etc/systemd/system/isuride-matcher.service
+      - label: payment mock unit
+        role: app
+        local: etc/systemd/system/isuride-payment_mock.service
+        remote: /etc/systemd/system/isuride-payment_mock.service
+        validate: sudo systemd-analyze verify /etc/systemd/system/isuride-payment_mock.service
+    activations:
+      - label: reload and start application dependencies
+        role: app
+        script: |
+          set -eu
+          sudo systemctl daemon-reload
+          sudo systemctl restart isuride-payment_mock isuride-matcher
+          sudo systemctl is-active --quiet isuride-payment_mock
+          sudo systemctl is-active --quiet isuride-matcher
+
+  matcher-stop:
+    activations:
+      - label: stop matcher before recreating DB
+        role: all
+        script: |
+          set -eu
+          sudo systemctl stop isuride-matcher
+          test "$(sudo systemctl show isuride-matcher -p MainPID --value)" = 0
+
+  matcher-start:
+    activations:
+      - label: restore matcher after initialization
+        role: app
+        script: |
+          set -eu
+          sudo systemctl start isuride-matcher
+          sudo systemctl is-active --quiet isuride-matcher
+
+  app-initialize:
+    activations:
+      - label: initialize with the supplied payment mock
+        role: app_init
+        script: |
+          set -eu
+          curl --fail-with-body --silent --show-error --max-time 30 \
+            -H 'Content-Type: application/json' \
+            -d '{"payment_server":"http://127.0.0.1:12345"}' \
+            'http://127.0.0.1:{var:listen_port}{var:initialize_path}'
+
+  dependency-roles-off:
+    activations:
+      - label: stop dependencies outside application hosts
+        role: all
+        script: |
+          set -eu
+          case ',{var:app_hosts},' in
+            *',{host},'*) ;;
+            *) sudo systemctl disable --now isuride-matcher isuride-payment_mock ;;
+          esac
+
+  dependency-roles-on:
+    activations:
+      - label: enable dependencies on application hosts
+        role: app
+        script: |
+          set -eu
+          sudo systemctl enable --now isuride-payment_mock isuride-matcher
+          sudo systemctl is-active --quiet isuride-payment_mock
+          sudo systemctl is-active --quiet isuride-matcher
+
+plans:
+  deploy-all:
+    deployments:
+      sysctl: {}
+      mysql: {}
+      sql-assets: {}
+      app: {needs: [mysql, sql-assets]}
+      nginx: {needs: [app]}
+      dependencies: {needs: [nginx]}
+  db-recreate:
+    deployments:
+      matcher-stop: {}
+      app-stop: {needs: [matcher-stop]}
+      db-schema: {needs: [app-stop]}
+      app-start: {needs: [db-schema]}
+      app-initialize: {needs: [app-start]}
+      matcher-start: {needs: [app-initialize]}
+  roles:
+    deployments:
+      dependency-roles-off: {}
+      roles-off: {needs: [dependency-roles-off]}
+      roles-on: {needs: [roles-off]}
+      dependency-roles-on: {needs: [roles-on]}

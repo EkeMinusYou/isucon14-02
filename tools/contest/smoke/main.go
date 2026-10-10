@@ -1,15 +1,9 @@
-// Command smoke exercises a few requests against the application without
-// running the benchmark, so that `task setup-smoke` can check that the
-// collectors, logs, and profiles produce artifacts.
-//
-// Placeholder: task setup-smoke builds this for TARGET_OS/TARGET_ARCH, copies
-// the binary to ENTRY_HOST, and runs it there with no arguments. Replace the
-// flow below with the contest's own session flow (registration, login, and a
-// few authenticated reads) during setup. Keep it read-mostly, keep it short,
-// and never print session identifiers or credentials.
+// Command smoke checks a bounded ISURIDE session flow without a benchmark.
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -21,23 +15,37 @@ import (
 )
 
 func main() {
-	base := flag.String("base", "http://127.0.0.1", "application base URL, reached from the host this runs on")
+	base := flag.String("base", "https://isuride.xiv.isucon.net", "application base URL")
 	flag.Parse()
-
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		log.Fatal(err)
+	app, owner, chair := newClient(*base), newClient(*base), newClient(*base)
+	name := fmt.Sprintf("smoke-%d", time.Now().UnixNano())
+	app.do("GET", "/", nil, http.StatusOK, nil)
+	app.do("POST", "/api/app/users", map[string]string{
+		"username": name, "firstname": "Setup", "lastname": "Smoke", "date_of_birth": "2000-01-01",
+	}, http.StatusCreated, nil)
+	app.requireCookie("app_session")
+	var registeredOwner struct {
+		ChairRegisterToken string `json:"chair_register_token"`
 	}
-	// The jar keeps the session across steps once the flow logs in.
-	c := &client{http: &http.Client{Jar: jar, Timeout: 15 * time.Second}, base: strings.TrimSuffix(*base, "/")}
-
-	paths := []string{"/"}
-	for _, path := range paths {
-		if _, err := c.get(path); err != nil {
-			log.Fatal(err)
-		}
+	owner.do("POST", "/api/owner/owners", map[string]string{"name": name}, http.StatusCreated, &registeredOwner)
+	owner.requireCookie("owner_session")
+	if registeredOwner.ChairRegisterToken == "" {
+		log.Fatal("owner registration returned no chair register token")
 	}
-	fmt.Printf("Smoke: %d unauthenticated read(s) passed; replace this flow with the contest's own\n", len(paths))
+	chair.do("POST", "/api/chair/chairs", map[string]string{
+		"name": name, "model": "リラックスシート NEO", "chair_register_token": registeredOwner.ChairRegisterToken,
+	}, http.StatusCreated, nil)
+	chair.requireCookie("chair_session")
+	chair.do("POST", "/api/chair/activity", map[string]bool{"is_active": false}, http.StatusNoContent, nil)
+	chair.do("POST", "/api/chair/coordinate", map[string]int{"latitude": 0, "longitude": 0}, http.StatusOK, nil)
+	for i := 0; i < 4; i++ {
+		app.do("GET", "/api/app/rides", nil, http.StatusOK, nil)
+		app.do("GET", "/api/app/nearby-chairs?latitude=0&longitude=0&distance=1", nil, http.StatusOK, nil)
+		owner.do("GET", "/api/owner/chairs", nil, http.StatusOK, nil)
+		owner.do("GET", "/api/owner/sales", nil, http.StatusOK, nil)
+		time.Sleep(250 * time.Millisecond)
+	}
+	fmt.Println("Smoke: app, owner and inactive chair sessions, authenticated reads and JSON responses passed")
 }
 
 type client struct {
@@ -45,30 +53,58 @@ type client struct {
 	base string
 }
 
-func (c *client) get(path string) ([]byte, error) {
-	return c.do(http.MethodGet, path, nil)
+func newClient(base string) *client {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &client{http: &http.Client{Jar: jar, Timeout: 15 * time.Second}, base: strings.TrimSuffix(base, "/")}
 }
 
-func (c *client) do(method, path string, body io.Reader) ([]byte, error) {
-	req, err := http.NewRequest(method, c.base+path, body)
+func (c *client) do(method, path string, body any, wantStatus int, dest any) {
+	var reader io.Reader
+	if body != nil {
+		data, err := json.Marshal(body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		reader = bytes.NewReader(data)
+	}
+	req, err := http.NewRequest(method, c.base+path, reader)
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
 	res, err := c.http.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("%s %s: %w", method, path, err)
+		log.Fatalf("%s %s: transport failed: %v", method, path, err)
 	}
 	defer res.Body.Close()
 	data, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("%s %s: %w", method, path, err)
+	if err != nil || res.StatusCode != wantStatus {
+		log.Fatalf("%s %s: status %d, expected %d, read error %v", method, path, res.StatusCode, wantStatus, err)
 	}
-	if res.StatusCode != http.StatusOK {
-		// Response bodies can carry identifiers, so report the status only.
-		return nil, fmt.Errorf("%s %s: status %d", method, path, res.StatusCode)
+	if res.Header.Get("X-Measurement-Session-ID") != "" {
+		log.Fatal("measurement session header was exposed to the client")
 	}
-	return data, nil
+	if strings.HasPrefix(path, "/api/") && wantStatus != http.StatusNoContent && !json.Valid(data) {
+		log.Fatalf("%s %s: invalid JSON", method, path)
+	}
+	if dest != nil {
+		if err := json.Unmarshal(data, dest); err != nil {
+			log.Fatal("invalid registration response")
+		}
+	}
+}
+
+func (c *client) requireCookie(name string) {
+	req, _ := http.NewRequest("GET", c.base, nil)
+	for _, cookie := range c.http.Jar.Cookies(req.URL) {
+		if cookie.Name == name && cookie.Value != "" {
+			return
+		}
+	}
+	log.Fatalf("registration did not set %s", name)
 }

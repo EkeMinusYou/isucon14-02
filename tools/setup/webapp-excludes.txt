@@ -2,6 +2,14 @@
 # Keep the historical default; add only confirmed generated artifacts.
 node_modules/
 
+# contest: confirmed build/dependency outputs in the acquired reference tree.
+/go/isuride
+/rust/target/
+/python/.venv/
+/php/vendor/
+/perl/local/
+/payment_mock/payment_mock
+
 # Examples: uncomment after checking the actual source/build layout.
 # /rust/target/
 # /go/app

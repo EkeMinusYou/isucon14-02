@@ -1,6 +1,6 @@
 {
-  "_comment": "Contest-specific benchmark log format. Replace the expressions for each contest; the generic core and the emitted markers stay unchanged. score needs exactly one capture group; leave an entry empty when the benchmarker has no such line.",
-  "score": "score:\\s*(\\d+)\\s*$",
-  "pass": "^\\s*pass\\s*$",
-  "fail": "^\\s*fail\\s*$"
+  "_comment": "Portal benchmark: task bench-manual records confirmed score and verdict. Automatic benchmark invocation is intentionally unconfigured; adapt participant output after the first user RUN.",
+  "score": "^SCORE:\\s*(\\d+)\\s*$",
+  "pass": "^BENCHMARK_PASS$",
+  "fail": "^BENCHMARK_FAIL$"
 }

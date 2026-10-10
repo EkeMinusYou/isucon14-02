@@ -4,5 +4,21 @@ reverse: true
 limit: 65536
 matching_groups:
   # >>> contest values >>>
-  # Normalize the contest's dynamic path segments here, most specific first.
+  - "^/api/initialize$"
+  - "^/api/app/users$"
+  - "^/api/app/payment-methods$"
+  - "^/api/app/rides$"
+  - "^/api/app/rides/estimated-fare$"
+  - "^/api/app/rides/[^/]+/evaluation$"
+  - "^/api/app/notification$"
+  - "^/api/app/nearby-chairs$"
+  - "^/api/owner/owners$"
+  - "^/api/owner/sales$"
+  - "^/api/owner/chairs$"
+  - "^/api/chair/chairs$"
+  - "^/api/chair/activity$"
+  - "^/api/chair/coordinate$"
+  - "^/api/chair/notification$"
+  - "^/api/chair/rides/[^/]+/status$"
+  - "^/api/internal/matching$"
   # <<< contest values <<<

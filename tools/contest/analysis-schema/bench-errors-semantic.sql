@@ -2,7 +2,8 @@
 -- 生テキストの取り込みは汎用側（tools/analysis/schema/bench-errors.sql が
 -- bench_error_logs へ入れる）が担当し、ここは行の解釈だけを持つ。
 --
--- プレースホルダー。setupで当日の出力を見てから、下の5ビューの本体を書き換える。
+-- Portal results use the explicit markers recorded by task bench-manual.
+-- Participant warning/progress formats are adapted after the first user RUN.
 -- ビュー名と列はdashboard（tools/dashboard/server/bench_errors.go、scores.go）とREADMEの契約なので
 -- 変えない。書き換えるまでは、いずれも0行を返す。
 -- 書式に依存するテストは tools/dashboard/server/<contest>_test.go へ置き、
@@ -14,13 +15,17 @@ create table if not exists bench_error_logs (
 -- 1RUNにつき1行のベンチ結果。manifestにscore/passedが無いRUNをdashboardが補う。
 create or replace view bench_results as
 select
-    cast(null as varchar) as run_id,
-    cast(null as bigint) as score,
-    cast(null as boolean) as passed,
+    run_id,
+    try_cast(list_last(regexp_extract_all(content, 'SCORE:\s*([0-9]+)', 1)) as bigint) as score,
+    case
+        when regexp_matches(content, 'BENCHMARK_FAIL') then false
+        when regexp_matches(content, 'BENCHMARK_PASS') then true
+        else cast(null as boolean)
+    end as passed,
     cast(null as bigint) as addition,
     cast(null as bigint) as deduction,
-    cast(null as varchar) as source_artifact
-where false;
+    source_artifact
+from bench_error_logs;
 
 -- ベンチマーカーが操作別に出す得点。
 create or replace view bench_score_routes as

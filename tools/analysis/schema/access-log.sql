@@ -6,9 +6,23 @@ create or replace view http_traffic_buckets as
 with routes as (
     select [
         -- # >>> contest values >>>
-        -- プレースホルダー。当日の path を、動的セグメントを正規化して、
-        -- より具体的なものから並べる。alp.yml の matching_groups と同じ内容にする。
-        '^/initialize$'
+        '^/api/initialize$',
+        '^/api/app/users$',
+        '^/api/app/payment-methods$',
+        '^/api/app/rides$',
+        '^/api/app/rides/estimated-fare$',
+        '^/api/app/rides/[^/]+/evaluation$',
+        '^/api/app/notification$',
+        '^/api/app/nearby-chairs$',
+        '^/api/owner/owners$',
+        '^/api/owner/sales$',
+        '^/api/owner/chairs$',
+        '^/api/chair/chairs$',
+        '^/api/chair/activity$',
+        '^/api/chair/coordinate$',
+        '^/api/chair/notification$',
+        '^/api/chair/rides/[^/]+/status$',
+        '^/api/internal/matching$'
         -- # <<< contest values <<<
     ] as patterns
 ),

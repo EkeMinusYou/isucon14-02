@@ -17,26 +17,26 @@ vars:
   # 競技ごとに書き換える区画。template-diffはここをbackport候補として扱わない。
   # 区画の外は、次の競技でもそのまま使う既定値である。
   # setup-checkの前に、公式資料と実環境で全項目を確認する。
-  APP_NAME: app
-  SERVICE: app
-  DB_NAME: app
+  APP_NAME: isuride
+  SERVICE: isuride-go
+  DB_NAME: isuride
   LISTEN_PORT: '8080'
   TARGET_OS: linux
   TARGET_ARCH: amd64
   # Example budget: initialization + checks + load + margin. Tune for the contest.
-  PROFILE_SECONDS: '120'
-  SNAPSHOT_PROFILE_DELAY: 40s
+  PROFILE_SECONDS: '180'
+  SNAPSHOT_PROFILE_DELAY: 60s
   # Additional local files read during DB recreation or initialization; use 'none' if empty.
-  RESET_INPUTS: ''
+  RESET_INPUTS: webapp/sql/init.sh webapp/sql/2-master-data.sql webapp/sql/3-initial-data.sql.gz
   # Adapt these reset assets and endpoint to the acquired official implementation.
   SQL_DIR: webapp/sql
-  SQL_SCHEMA_FILE: schema.sql
-  INITIALIZE_PATH: /initialize
-  CONFIG_CHECK_COMMAND: ''
+  SQL_SCHEMA_FILE: 1-schema.sql
+  INITIALIZE_PATH: /api/initialize
+  CONFIG_CHECK_COMMAND: task config-check
   CONFIG_CHECK_CONFIG: tools/setup/config-check.yaml
   SETUP_SECRET_ALLOWLIST: ''
   # Services whose metrics and journals measurectl collects on every host.
-  MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql'
+  MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql,isuride-matcher,isuride-payment_mock'
   # <<< contest values <<<
 
   SSH_USER: ubuntu
@@ -56,9 +56,9 @@ vars:
   BENCH_HOST: isucon-bench
   IP:
     map:
-      isucon-1: 192.0.2.11
-      isucon-2: 192.0.2.12
-      isucon-3: 192.0.2.13
+      isucon-1: 172.31.0.126
+      isucon-2: 172.31.7.50
+      isucon-3: 172.31.5.116
   APP_HOSTS: isucon-1
   APP_TRAFFIC_HOSTS: isucon-1
   NGINX_HOSTS: isucon-1
@@ -68,9 +68,9 @@ vars:
   MYSQL_HOSTS: '{{.MYSQL_HOST}}'
   CONF_SRC: isucon-1
   # Extra deployctl roles and vars for contest-specific deployments.
-  DEPLOYCTL_FLAGS: ''
+  DEPLOYCTL_FLAGS: '-var extra_service_roles=isuride-matcher:app,isuride-payment_mock:app'
   # Arguments passed to the contest smoke binary on ENTRY_HOST.
-  SMOKE_ARGS: ''
+  SMOKE_ARGS: '-base https://isuride.xiv.isucon.net'
   # <<< contest values <<<
 
   ENTRY_HOST: '{{splitList " " .NGINX_HOSTS | first}}'
@@ -80,8 +80,8 @@ vars:
   ALL_HOST_IPS: '{{range (splitList " " .ALL_HOSTS)}}{{.}}={{index $.IP .}} {{end}}'
 
   # >>> contest values >>>
-  BENCH_TARGET: http://{{.ENTRY_IP}}
-  BENCH_COMMAND: ./bench_linux_amd64 run --target {{.BENCH_TARGET}}
+  BENCH_TARGET: https://isuride.xiv.isucon.net
+  BENCH_COMMAND: ''
   BENCH_SSH_OPTIONS: ''
   # <<< contest values <<<
 
@@ -91,7 +91,7 @@ vars:
   ANALYSIS_DB: runs/analysis.duckdb
   ANALYSIS_CONFIG: tools/analysis/sources.yaml
   # >>> contest values >>>
-  DEPLOYCTL_CONFIG: tools/deployctl/deployments.yaml
+  DEPLOYCTL_CONFIG: tools/contest/deployments.yaml
   # <<< contest values <<<
 
   MEASUREMENT_DIR: tools/measurement
@@ -533,20 +533,22 @@ tasks:
         mkdir -p '{{.SMOKE_DIR}}'
         {{.MEASURECTL_DIR}}/measurectl collect check-clean {{.MEASURECTL_REMOTE}}
         {{.MEASURECTL_DIR}}/measurectl collect prepare {{.MEASURECTL_REMOTE}}
-        trap '{{.MEASURECTL_DIR}}/measurectl collect stop -run-id "{{.SMOKE_ID}}" -run-dir "{{.SMOKE_DIR}}" {{.MEASURECTL_REMOTE}}' EXIT
+        profiles_pid=''
+        trap 'if [ -n "$profiles_pid" ]; then wait "$profiles_pid" || true; fi; {{.MEASURECTL_DIR}}/measurectl collect stop -run-id "{{.SMOKE_ID}}" -run-dir "{{.SMOKE_DIR}}" {{.MEASURECTL_REMOTE}}' EXIT
         {{.MEASURECTL_DIR}}/measurectl collect start -run-id '{{.SMOKE_ID}}' {{.MEASURECTL_REMOTE}}
         {{.MEASURECTL_DIR}}/measurectl collect oneshot -group profiles -run-id '{{.SMOKE_ID}}' -run-dir '{{.SMOKE_DIR}}' {{.MEASURECTL_REMOTE}} {{.SMOKE_PROFILE_VARS}} &
         profiles_pid=$!
         {{.MEASURECTL_DIR}}/measurectl collect ready -group profiles -run-id '{{.SMOKE_ID}}' {{.MEASURECTL_REMOTE}}
-        started_at=$(task --silent bench-timestamp)
+        started_at=$(task --silent bench-timestamp </dev/null)
         printf '%s\tBENCHMARK_START\n' "$started_at" > '{{.SMOKE_DIR}}/bench.log'
-        {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} 'mkdir -p {{.SMOKE_REMOTE_DIR}}'
+        {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} 'mkdir -p {{.SMOKE_REMOTE_DIR}}' </dev/null
         {{.RSYNC}} '{{.SMOKE_TOOL_DIR}}/smoke' {{.SSH_USER}}@{{.ENTRY_HOST}}:{{.SMOKE_REMOTE_DIR}}/smoke
-        {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} '{{.SMOKE_REMOTE_DIR}}/smoke {{.SMOKE_ARGS}}'
-        task setup-smoke-probes
-        ended_at=$(task --silent bench-timestamp)
+        {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} '{{.SMOKE_REMOTE_DIR}}/smoke {{.SMOKE_ARGS}}' </dev/null
+        task setup-smoke-probes </dev/null
+        ended_at=$(task --silent bench-timestamp </dev/null)
         printf '%s\tBENCHMARK_END\n' "$ended_at" >> '{{.SMOKE_DIR}}/bench.log'
         wait "$profiles_pid"
+        profiles_pid=''
         {{.MEASURECTL_DIR}}/measurectl digest -run-dir '{{.SMOKE_DIR}}' -raw-dir '{{.SMOKE_DIR}}/raw' {{.MEASURECTL_REMOTE}}
         echo 'Smoke artifacts: {{.SMOKE_DIR}} (not a benchmark RUN)'
         BASH
@@ -1003,7 +1005,7 @@ tasks:
   bench-timestamp:
     desc: 計測対象の入口ホストのUTC時刻を返す（ベンチは実行しない）
     cmds:
-      - '{{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} "date -u +%Y-%m-%dT%H:%M:%S.%NZ"'
+      - '{{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}} "date -u +%Y-%m-%dT%H:%M:%S.%NZ" </dev/null'
 
 
   config-check:
@@ -1012,4 +1014,4 @@ tasks:
     deps: [build-deployctl]
     cmds:
       - task: gen
-      - '{{.DEPLOYCTL_DIR}}/deployctl apply config-check -config {{.CONFIG_CHECK_CONFIG}} {{.DEPLOYCTL_COMMON}}'
+      - '{{.OPERATION_LOCK}} {{.DEPLOYCTL_DIR}}/deployctl apply config-check -config {{.CONFIG_CHECK_CONFIG}} {{.DEPLOYCTL_COMMON}}'

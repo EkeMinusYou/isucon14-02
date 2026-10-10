@@ -5,6 +5,9 @@ ISUCONの競技サーバーを、ローカルのリポジトリを正本とし�
 
 改善活動の最上位目的は、公式ルールと正当性要件を満たしたうえで、最終スコアを最大化することです。
 
+現在のISUCON14環境はセットアップ済みです。構成・標準計測の確認結果・初回ベンチの手順は
+[セットアップ完了報告](docs/conversation/20261011-setup.md)に記録しています。
+
 競技中の変更は[ISUCONでの変更方針](AGENTS.md#isuconでの変更方針)に従います。
 依頼された改善に必要なDB再作成や不要ファイルの削除などの破壊的変更を許容し、
 切り戻し専用の仕組みや旧実装の保持は求めません。公式の正当性・永続性・追試要件は維持します。
@@ -93,6 +96,11 @@ task db-recreate-dry
 アプリを停止し、`MYSQL_HOST`の`DB_NAME`を再作成して`SQL_DIR`の`SQL_SCHEMA_FILE`を適用します。
 アプリを起動して`INITIALIZE_PATH`への初期化リクエストを一度実行し、失敗時は後続へ進みません。
 `RESET_INPUTS`とSQLのuploadが初期化資材を管理します。`db-recreate-dry`で対象と順序を確認してください。
+
+現在の破棄対象は`isucon-1`の`isuride`データベース全体です。ISUCON14用のgraphは3台のmatcherと
+1号機のGoアプリを停止してから、公式の`1-schema.sql`、`2-master-data.sql`、`3-initial-data.sql.gz`、
+`init.sh`でDBを再構成します。`POST /api/initialize`が成功した後でmatcherを再開します。
+`task deploy-all`はDBを再作成せず、`task db-recreate`がこの破棄・再作成を行います。
 
 `task config-check`はnginx/MySQLの正規配布先へ設定を書き込み、構文検査します。reloadは行いませんが、
 成功した設定は配布先に残ります。初期化時の`CONFIG_CHECK_COMMAND`へ設定する前に、検査コマンドと
