@@ -452,6 +452,9 @@ type appPostRideEvaluationResponse struct {
 }
 
 func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
+	started := time.Now()
+	measurement := evaluationMetrics{metrics: runtimeState.metrics}
+	defer measurement.finish(started)
 	ctx := r.Context()
 	rideID := r.PathValue("ride_id")
 
@@ -467,15 +470,22 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 
 	user := ctx.Value("user").(*User)
 	lock := runtimeState.userMutex(user.ID)
+	stageStarted := time.Now()
 	lock.Lock()
+	measurement.elapsed[evalLock] = time.Since(stageStarted)
+	measurement.visited[evalLock], measurement.success[evalLock] = true, true
 	defer lock.Unlock()
 	ride, fare, err := runtimeState.completionCandidate(rideID, user.ID)
 	if err != nil {
 		writeStateError(w, err)
 		return
 	}
+	measurement.visited[evalSQL] = true
+	stageStarted = time.Now()
 	var paymentToken PaymentToken
-	if err := db.GetContext(ctx, &paymentToken, "SELECT * FROM payment_tokens WHERE user_id = ?", ride.UserID); err != nil {
+	err = db.GetContext(ctx, &paymentToken, "SELECT * FROM payment_tokens WHERE user_id = ?", ride.UserID)
+	measurement.elapsed[evalSQL] = time.Since(stageStarted)
+	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			writeError(w, http.StatusBadRequest, errors.New("payment token not registered"))
 		} else {
@@ -484,11 +494,17 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var paymentGatewayURL string
-	if err := db.GetContext(ctx, &paymentGatewayURL, "SELECT value FROM settings WHERE name = 'payment_gateway_url'"); err != nil {
+	stageStarted = time.Now()
+	err = db.GetContext(ctx, &paymentGatewayURL, "SELECT value FROM settings WHERE name = 'payment_gateway_url'")
+	measurement.elapsed[evalSQL] += time.Since(stageStarted)
+	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	if err := requestPaymentGatewayPostPayment(ctx, paymentGatewayURL, paymentToken.Token, &paymentGatewayPostPaymentRequest{Amount: fare}, func() ([]Ride, error) {
+	measurement.success[evalSQL] = true
+	measurement.visited[evalPayment] = true
+	stageStarted = time.Now()
+	retries, paymentErr := requestPaymentGatewayPostPayment(ctx, paymentGatewayURL, paymentToken.Token, &paymentGatewayPostPaymentRequest{Amount: fare}, func() ([]Ride, error) {
 		runtimeState.mu.RLock()
 		defer runtimeState.mu.RUnlock()
 		rides := []Ride{}
@@ -496,7 +512,11 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 			rides = append(rides, runtimeState.rides[id].Ride)
 		}
 		return rides, nil
-	}); err != nil {
+	})
+	measurement.elapsed[evalPayment] = time.Since(stageStarted)
+	measurement.retries = retries
+	measurement.success[evalPayment] = paymentErr == nil
+	if err := paymentErr; err != nil {
 		if errors.Is(err, erroredUpstream) {
 			writeError(w, http.StatusBadGateway, err)
 		} else {
@@ -504,11 +524,16 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	measurement.visited[evalComplete] = true
+	stageStarted = time.Now()
 	at, err := runtimeState.complete(rideID, req.Evaluation)
+	measurement.elapsed[evalComplete] = time.Since(stageStarted)
+	measurement.success[evalComplete] = err == nil
 	if err != nil {
 		writeStateError(w, err)
 		return
 	}
+	measurement.success[evalTotal] = true
 	defer runtimeState.finishCompletionResponse(rideID)
 	writeJSON(w, http.StatusOK, &appPostRideEvaluationResponse{CompletedAt: at.UnixMilli()})
 	if err := http.NewResponseController(w).Flush(); err != nil && !errors.Is(err, http.ErrNotSupported) {

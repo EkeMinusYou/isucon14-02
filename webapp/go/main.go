@@ -105,6 +105,7 @@ func setup() http.Handler {
 
 	measurementServer, err := measurement.Start(measurement.Options{
 		MaxProfileSeconds: 180,
+		Snapshot:          rideMeasurementSnapshot,
 		Pools:             []measurement.Pool{{DB: db, DatabaseHost: host, Name: "main", Role: "primary"}},
 	})
 	if err != nil {

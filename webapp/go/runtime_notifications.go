@@ -96,10 +96,14 @@ func loadNotifications(ctx context.Context, kind, id, lastEventID string) ([]not
 			cursor = position
 		}
 	}
+	flushIndex := 0
+	if kind == "app" {
+		flushIndex = 1
+	}
 	var events []notificationEvent
 	appendEvent := func(statusID string) {
 		status := s.statuses[statusID]
-		events = append(events, notificationEvent{statusID: status.ID, eventID: status.ID, generation: s.generation, data: s.notificationData(kind, s.rides[status.RideID], status.Status)})
+		events = append(events, notificationEvent{measureAssignment: status.Status == "MATCHING" && !s.rides[status.RideID].assignedAt.IsZero() && !s.rides[status.RideID].firstFlushed[flushIndex], statusID: status.ID, eventID: status.ID, generation: s.generation, data: s.notificationData(kind, s.rides[status.RideID], status.Status)})
 	}
 	if queue != nil {
 		// Pending events before the cursor remain required. Merge them with

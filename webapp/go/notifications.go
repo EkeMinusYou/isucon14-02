@@ -76,10 +76,11 @@ func notifyRide(ride *Ride) {
 }
 
 type notificationEvent struct {
-	statusID   string
-	generation string
-	eventID    string
-	data       any
+	measureAssignment bool
+	statusID          string
+	generation        string
+	eventID           string
+	data              any
 }
 
 func serveNotifications(w http.ResponseWriter, r *http.Request, kind, id string) {
@@ -121,7 +122,11 @@ func serveNotifications(w http.ResponseWriter, r *http.Request, kind, id string)
 			if event.eventID != "" {
 				message += "id: " + event.eventID + "\n"
 			}
-			if err := writeSSE(w, controller, message+"\n"); err != nil {
+			var flushed func()
+			if event.measureAssignment {
+				flushed = func() { observeAssignmentFlush(kind, event.statusID, event.generation, time.Now()) }
+			}
+			if err := writeSSEWithFlush(w, controller, message+"\n", flushed); err != nil {
 				return
 			}
 			last = payload
@@ -154,6 +159,10 @@ func serveNotifications(w http.ResponseWriter, r *http.Request, kind, id string)
 }
 
 func writeSSE(w http.ResponseWriter, controller *http.ResponseController, message string) error {
+	return writeSSEWithFlush(w, controller, message, nil)
+}
+
+func writeSSEWithFlush(w http.ResponseWriter, controller *http.ResponseController, message string, flushed func()) error {
 	if err := controller.SetWriteDeadline(time.Now().Add(5 * time.Second)); err != nil && !errors.Is(err, http.ErrNotSupported) {
 		return err
 	}
@@ -162,6 +171,9 @@ func writeSSE(w http.ResponseWriter, controller *http.ResponseController, messag
 	}
 	if err := controller.Flush(); err != nil {
 		return err
+	}
+	if flushed != nil {
+		flushed()
 	}
 	if err := controller.SetWriteDeadline(time.Time{}); err != nil && !errors.Is(err, http.ErrNotSupported) {
 		return err

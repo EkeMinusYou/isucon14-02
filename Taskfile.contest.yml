@@ -10,6 +10,12 @@
 version: '3'
 
 tasks:
+  test-ride-metrics:
+    desc: 配車・評価の計測と既存collectorからDuckDBまでをローカルfixtureで確認
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - go test -race -count=1 -v -run '^Test(DispatchMetrics|EvaluationMetrics|PaymentRetryCount|RideMetricsCollectorDuckDB)' .
+
   test-nearby-chairs:
     desc: SQLなしの近隣椅子APIの条件と最新状態を確認
     dir: '{{.APP_DIR}}'

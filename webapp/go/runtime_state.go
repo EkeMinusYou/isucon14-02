@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/heap"
 	"context"
 	"database/sql"
 	"errors"
@@ -33,6 +34,9 @@ type chairStatsTotal struct {
 }
 
 type memoryRide struct {
+	waitIndex    int
+	assignedAt   time.Time
+	firstFlushed [2]bool
 	Ride
 	Fare                      int
 	Statuses                  []string
@@ -48,6 +52,8 @@ const nearbyCompletionGrace = 100 * time.Millisecond
 // The single application owner serializes validation, WAL append and publication.
 // SQL and external payment calls never hold mu.
 type rideState struct {
+	metrics         *rideMetrics
+	dispatch        *dispatchMetrics
 	mu              sync.RWMutex
 	flushMu         sync.Mutex
 	userLocks       sync.Map
@@ -107,6 +113,8 @@ func newRideState(ctx context.Context, database *sqlx.DB, directory string) (*ri
 
 func (s *rideState) restore(ctx context.Context) error {
 	s.ready = false
+	s.metrics = nil
+	s.dispatch = nil
 	if err := s.ensureCouponIndex(ctx); err != nil {
 		return err
 	}
@@ -203,6 +211,8 @@ func (s *rideState) restore(ctx context.Context) error {
 	// Rebuild recipient queues after replay, rather than appending old events
 	// behind the new ride's already-persistent MATCHING status.
 	s.rebuildIndexes()
+	s.metrics = newRideMetrics()
+	s.resetDispatchMetrics()
 	s.ready = true
 	return nil
 }
@@ -270,11 +280,21 @@ func (s *rideState) addUser(u User) {
 }
 func (s *rideState) addChair(c Chair) {
 	s.chairs[c.ID], s.chairTokens[c.AccessToken] = c, c.ID
+	if s.dispatch != nil {
+		s.dispatch.changeChair(c.ID, func(state *chairMetricState) { state.active = c.IsActive })
+	}
 	s.refreshChairIndexes(c.ID)
 }
 
 func (s *rideState) addRide(r Ride, fare int) {
-	s.rides[r.ID] = &memoryRide{Ride: r, Fare: fare}
+	s.rides[r.ID] = &memoryRide{Ride: r, Fare: fare, waitIndex: -1}
+	if s.dispatch != nil {
+		if !r.ChairID.Valid {
+			heap.Push(&s.dispatch.waiting, s.rides[r.ID])
+		} else {
+			s.dispatch.changeChair(r.ChairID.String, func(c *chairMetricState) { c.unfinished++ })
+		}
+	}
 	s.indexRide(s.rides[r.ID])
 	s.userRides[r.UserID] = append(s.userRides[r.UserID], r.ID)
 	if r.ChairID.Valid {
@@ -286,6 +306,20 @@ func (s *rideState) addStatus(status RideStatus) {
 	ride := s.rides[status.RideID]
 	before := s.saleForRide(ride)
 	wasCompleted := s.latest(ride) == "COMPLETED"
+	if s.dispatch != nil && ride.ChairID.Valid {
+		s.dispatch.changeChair(ride.ChairID.String, func(c *chairMetricState) {
+			if status.ChairSentAt == nil {
+				c.pending++
+			}
+			if wasCompleted != (status.Status == "COMPLETED") {
+				if status.Status == "COMPLETED" {
+					c.unfinished--
+				} else {
+					c.unfinished++
+				}
+			}
+		})
+	}
 	s.statuses[status.ID] = status
 	ride.Statuses = append(ride.Statuses, status.ID)
 	s.appendNotification("app", ride.UserID, status)
@@ -330,6 +364,19 @@ func (s *rideState) apply(record stateRecord) {
 		before := s.saleForRide(ride)
 		assigned := !ride.ChairID.Valid && row.ChairID.Valid
 		if assigned {
+			if s.dispatch != nil {
+				heap.Remove(&s.dispatch.waiting, ride.waitIndex)
+				s.dispatch.changeChair(row.ChairID.String, func(c *chairMetricState) {
+					if s.latest(ride) != "COMPLETED" {
+						c.unfinished++
+					}
+					for _, id := range ride.Statuses {
+						if s.statuses[id].ChairSentAt == nil {
+							c.pending++
+						}
+					}
+				})
+			}
 			s.chairRides[row.ChairID.String] = append(s.chairRides[row.ChairID.String], row.ID)
 			s.waitingRides = removeCurrentRide(s.waitingRides, ride)
 			for _, id := range ride.Statuses {
@@ -354,6 +401,12 @@ func (s *rideState) apply(record stateRecord) {
 		status := s.statuses[ack.StatusID]
 		at := ack.At
 		if ack.Kind == "chair" {
+			if s.dispatch != nil && status.ChairSentAt == nil {
+				r := s.rides[status.RideID]
+				if r.ChairID.Valid {
+					s.dispatch.changeChair(r.ChairID.String, func(c *chairMetricState) { c.pending-- })
+				}
+			}
 			status.ChairSentAt = &at
 		} else {
 			status.AppSentAt = &at
@@ -564,6 +617,7 @@ func (s *rideState) match() error {
 	if err := s.commit(record); err != nil {
 		return err
 	}
+	s.observeAssignments(record.Rides, candidates, assignments, time.Now())
 	for _, row := range record.Rides {
 		notifyRide(&row)
 	}

@@ -21,15 +21,14 @@ type paymentGatewayGetPaymentsResponseOne struct {
 	Status string `json:"status"`
 }
 
-func requestPaymentGatewayPostPayment(ctx context.Context, paymentGatewayURL string, token string, param *paymentGatewayPostPaymentRequest, retrieveRidesOrderByCreatedAtAsc func() ([]Ride, error)) error {
+func requestPaymentGatewayPostPayment(ctx context.Context, paymentGatewayURL string, token string, param *paymentGatewayPostPaymentRequest, retrieveRidesOrderByCreatedAtAsc func() ([]Ride, error)) (retry int, result error) {
 	b, err := json.Marshal(param)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	// 失敗したらとりあえずリトライ
 	// FIXME: 社内決済マイクロサービスのインフラに異常が発生していて、同時にたくさんリクエストすると変なことになる可能性あり
-	retry := 0
 	for {
 		err := func() error {
 			req, err := http.NewRequestWithContext(ctx, http.MethodPost, paymentGatewayURL+"/payments", bytes.NewBuffer(b))
@@ -87,11 +86,11 @@ func requestPaymentGatewayPostPayment(ctx context.Context, paymentGatewayURL str
 				time.Sleep(100 * time.Millisecond)
 				continue
 			} else {
-				return err
+				return retry, err
 			}
 		}
 		break
 	}
 
-	return nil
+	return retry, nil
 }
