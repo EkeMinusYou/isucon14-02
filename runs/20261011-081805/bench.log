@@ -1,0 +1,261 @@
+2026-10-10T23:18:08.943802445Z	BENCHMARK_START
+time=08:18:09.063 level=INFO msg=負荷走行を開始します
+time=08:18:09.062 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=08:18:14.581 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=08:18:14.581 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3 score="[0 0 0 2 1]" criteria="[3 1 3 3]"
+time=08:18:16.354 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=1
+time=08:18:16.355 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=1
+time=08:18:16.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=08:18:16.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=08:18:16.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=21 score="[0 0 0 13 8]" criteria="[21 8 21 21]"
+time=08:18:18.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=2
+time=08:18:18.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=1
+time=08:18:18.158 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=1
+time=08:18:18.158 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=08:18:18.181 level=INFO msg=これまでに地域内の評判によって6人、既存ユーザーの招待経由で33人が新規登録しました
+time=08:18:18.181 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、71.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=08:18:18.181 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=08:18:18.181 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=35 score="[0 0 0 25 10]" criteria="[35 10 35 35]"
+time=08:18:19.953 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=1
+time=08:18:19.954 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=08:18:19.954 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=1
+time=08:18:19.956 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=1
+time=08:18:19.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=08:18:19.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=46 score="[0 0 1 31 14]" criteria="[46 14 46 45]"
+time=08:18:21.754 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=08:18:21.754 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=1
+time=08:18:21.754 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=3
+time=08:18:21.754 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=2
+time=08:18:21.756 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=1
+time=08:18:21.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=08:18:21.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=64 score="[0 0 1 44 19]" criteria="[64 19 64 63]"
+time=08:18:23.553 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=2
+time=08:18:23.554 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=1
+time=08:18:23.554 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=08:18:23.554 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=1
+time=08:18:23.554 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=2
+time=08:18:23.580 level=INFO msg=これまでに地域内の評判によって18人、既存ユーザーの招待経由で74人が新規登録しました
+time=08:18:23.580 level=INFO msg=1.2%のライドは椅子がマッチされるまでの時間、73.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.8%のライドは椅子の実移動時間に不満がありました
+time=08:18:23.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=08:18:23.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=84 score="[0 0 4 58 22]" criteria="[83 22 84 81]"
+time=08:18:25.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=1
+time=08:18:25.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=08:18:25.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=3
+time=08:18:25.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=1
+time=08:18:25.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=1
+time=08:18:25.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=08:18:25.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=106 score="[0 0 6 73 27]" criteria="[101 29 106 103]"
+time=08:18:27.156 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=3
+time=08:18:27.156 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=08:18:27.156 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=2
+time=08:18:27.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=3
+time=08:18:27.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=1
+time=08:18:27.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=08:18:27.181 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=147 score="[0 0 16 102 29]" criteria="[122 41 147 144]"
+time=08:18:28.957 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=3
+time=08:18:28.957 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=4
+time=08:18:28.957 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=08:18:28.957 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=3
+time=08:18:28.957 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=3
+time=08:18:28.980 level=INFO msg=これまでに地域内の評判によって30人、既存ユーザーの招待経由で158人が新規登録しました
+time=08:18:28.980 level=INFO msg=22.6%のライドは椅子がマッチされるまでの時間、68.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.8%のライドは椅子の実移動時間に不満がありました
+time=08:18:28.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=08:18:28.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=199 score="[0 0 30 125 44]" criteria="[154 62 199 196]"
+time=08:18:30.754 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=5
+time=08:18:30.756 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=3
+time=08:18:30.756 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=2
+time=08:18:30.757 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=3
+time=08:18:30.757 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=3
+time=08:18:30.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=08:18:30.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=256 score="[0 0 40 144 72]" criteria="[201 90 256 253]"
+time=08:18:32.556 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=5
+time=08:18:32.556 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=08:18:32.556 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=5
+time=08:18:32.557 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=5
+time=08:18:32.557 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=5
+time=08:18:32.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=08:18:32.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=347 score="[0 0 46 195 106]" criteria="[281 129 347 344]"
+time=08:18:34.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=4
+time=08:18:34.358 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=5
+time=08:18:34.358 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=5
+time=08:18:34.359 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=6
+time=08:18:34.359 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=5
+time=08:18:34.380 level=INFO msg=これまでに地域内の評判によって42人、既存ユーザーの招待経由で365人が新規登録しました
+time=08:18:34.380 level=INFO msg=15.8%のライドは椅子がマッチされるまでの時間、57.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=08:18:34.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=08:18:34.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=455 score="[0 0 51 237 167]" criteria="[383 193 455 450]"
+time=08:18:36.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=4
+time=08:18:36.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=6
+time=08:18:36.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=5
+time=08:18:36.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=4
+time=08:18:36.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=6
+time=08:18:36.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=08:18:36.181 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=577 score="[0 0 54 293 230]" criteria="[501 257 577 572]"
+time=08:18:37.958 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=5
+time=08:18:37.958 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=6
+time=08:18:37.965 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=7
+time=08:18:37.965 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=7
+time=08:18:37.965 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=7
+time=08:18:37.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=08:18:37.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=734 score="[0 0 69 384 281]" criteria="[598 354 734 728]"
+time=08:18:39.762 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=7
+time=08:18:39.762 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=7
+time=08:18:39.763 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=7
+time=08:18:39.763 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=6
+time=08:18:39.763 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=7
+time=08:18:39.780 level=INFO msg=これまでに地域内の評判によって54人、既存ユーザーの招待経由で737人が新規登録しました
+time=08:18:39.780 level=INFO msg=31.1%のライドは椅子がマッチされるまでの時間、46.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=08:18:39.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=08:18:39.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=931 score="[0 0 104 527 300]" criteria="[641 494 931 923]"
+time=08:18:41.557 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=6
+time=08:18:41.559 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=7
+time=08:18:41.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=8
+time=08:18:41.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=8
+time=08:18:41.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=7
+time=08:18:41.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=08:18:41.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1169 score="[0 0 154 714 301]" criteria="[647 679 1169 1159]"
+time=08:18:43.362 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=10
+time=08:18:43.362 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=8
+time=08:18:43.363 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=7
+time=08:18:43.363 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=8
+time=08:18:43.363 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=7
+time=08:18:43.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=08:18:43.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1445 score="[0 1 220 921 303]" criteria="[650 889 1445 1432]"
+time=08:18:45.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=9
+time=08:18:45.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=7
+time=08:18:45.163 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=9
+time=08:18:45.163 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=8
+time=08:18:45.164 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=8
+time=08:18:45.181 level=INFO msg=これまでに地域内の評判によって66人、既存ユーザーの招待経由で1244人が新規登録しました
+time=08:18:45.181 level=INFO msg=これまでに低評価なライドによって3人が利用をやめました
+time=08:18:45.181 level=INFO msg=62.3%のライドは椅子がマッチされるまでの時間、36.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.8%のライドは椅子の実移動時間に不満がありました
+time=08:18:45.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=08:18:45.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1722 score="[0 3 295 1121 303]" criteria="[650 1100 1722 1696]"
+time=08:18:46.965 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=10
+time=08:18:46.966 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=11
+time=08:18:46.966 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=8
+time=08:18:46.968 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=8
+time=08:18:46.968 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=9
+time=08:18:46.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=08:18:46.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2026 score="[0 7 386 1330 303]" criteria="[650 1326 2024 1981]"
+time=08:18:48.760 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=11
+time=08:18:48.760 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=12
+time=08:18:48.795 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=10
+time=08:18:48.795 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=9
+time=08:18:48.796 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=11
+time=08:18:48.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=08:18:48.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2368 score="[7 40 526 1492 303]" criteria="[650 1573 2349 2208]"
+time=08:18:50.561 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=8
+time=08:18:50.562 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=9
+time=08:18:50.569 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=11
+time=08:18:50.569 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=12
+time=08:18:50.570 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=8
+time=08:18:50.580 level=INFO msg=これまでに地域内の評判によって78人、既存ユーザーの招待経由で1671人が新規登録しました
+time=08:18:50.580 level=INFO msg=これまでに低評価なライドによって30人が利用をやめました
+time=08:18:50.580 level=INFO msg=75.8%のライドは椅子がマッチされるまでの時間、32.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、6.1%のライドは椅子の実移動時間に不満がありました
+time=08:18:50.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=08:18:50.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2691 score="[19 62 672 1635 303]" criteria="[650 1819 2652 2402]"
+time=08:18:52.383 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=12
+time=08:18:52.390 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=8
+time=08:18:52.391 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=10
+time=08:18:52.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=9
+time=08:18:52.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=9
+time=08:18:52.438 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=08:18:52.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=08:18:52.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3019 score="[31 89 836 1760 303]" criteria="[650 2087 2959 2557]"
+time=08:18:54.164 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=12
+time=08:18:54.166 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=11
+time=08:18:54.181 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=11
+time=08:18:54.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=08:18:54.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3407 score="[59 137 1031 1877 303]" criteria="[650 2385 3296 2711]"
+time=08:18:54.185 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=14
+time=08:18:54.185 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=13
+time=08:18:55.963 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=12
+time=08:18:55.965 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=15
+time=08:18:55.980 level=INFO msg=これまでに地域内の評判によって89人、既存ユーザーの招待経由で1982人が新規登録しました
+time=08:18:55.980 level=INFO msg=これまでに低評価なライドによって98人が利用をやめました
+time=08:18:55.980 level=INFO msg=83.2%のライドは椅子がマッチされるまでの時間、28.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、15.3%のライドは椅子の実移動時間に不満がありました
+time=08:18:55.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=08:18:55.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3878 score="[100 174 1296 2005 303]" criteria="[650 2770 3705 2868]"
+time=08:18:56.019 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=13
+time=08:18:56.020 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=13
+time=08:18:56.021 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=13
+time=08:18:57.768 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=11
+time=08:18:57.769 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=13
+time=08:18:57.781 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=13
+time=08:18:57.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=08:18:57.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4302 score="[126 210 1591 2072 303]" criteria="[650 3135 4080 2955]"
+time=08:18:57.788 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=14
+time=08:18:57.789 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=15
+time=08:18:59.570 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=13
+time=08:18:59.570 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=13
+time=08:18:59.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=08:18:59.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4717 score="[155 248 1872 2139 303]" criteria="[650 3500 4430 3041]"
+time=08:18:59.584 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=11
+time=08:18:59.584 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=12
+time=08:18:59.585 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=13
+time=08:19:01.380 level=INFO msg=これまでに地域内の評判によって104人、既存ユーザーの招待経由で2131人が新規登録しました
+time=08:19:01.380 level=INFO msg=これまでに低評価なライドによって172人が利用をやめました
+time=08:19:01.380 level=INFO msg=87.5%のライドは椅子がマッチされるまでの時間、24.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、23.7%のライドは椅子の実移動時間に不満がありました
+time=08:19:01.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=08:19:01.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5181 score="[197 294 2209 2178 303]" criteria="[650 3906 4811 3091]"
+time=08:19:01.415 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=12
+time=08:19:01.480 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=13
+time=08:19:01.537 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=18
+time=08:19:01.542 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=14
+time=08:19:01.542 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=11
+time=08:19:02.641 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4M1RZ5KQRR40700KRH07QS7の椅子は既にライド中です"
+time=08:19:03.211 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=15
+time=08:19:03.213 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=12
+time=08:19:03.229 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=14
+time=08:19:03.233 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=11
+time=08:19:03.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=08:19:03.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5616 score="[236 369 2507 2201 303]" criteria="[650 4288 5131 3129]"
+time=08:19:04.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=08:19:04.980 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6041 score="[259 415 2831 2233 303]" criteria="[650 4680 5494 3164]"
+time=08:19:05.000 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=13
+time=08:19:05.089 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=12
+time=08:19:05.093 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=12
+time=08:19:05.094 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=27
+time=08:19:06.768 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ゆったり号 増加数=23
+time=08:19:06.768 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=15
+time=08:19:06.780 level=INFO msg=これまでに地域内の評判によって122人、既存ユーザーの招待経由で2192人が新規登録しました
+time=08:19:06.780 level=INFO msg=これまでに低評価なライドによって241人が利用をやめました
+time=08:19:06.780 level=INFO msg=90.0%のライドは椅子がマッチされるまでの時間、21.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、30.8%のライドは椅子の実移動時間に不満がありました
+time=08:19:06.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=08:19:06.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6512 score="[304 499 3164 2242 303]" criteria="[650 5097 5834 3184]"
+time=08:19:06.815 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=13
+time=08:19:06.816 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=13
+time=08:19:08.580 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=11
+time=08:19:08.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=08:19:08.580 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6923 score="[341 610 3422 2247 303]" criteria="[650 5469 6092 3196]"
+time=08:19:10.363 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M1SDC4KM500NHD1S58BBQM, got: 22900)"
+time=08:19:10.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=08:19:10.380 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7352 score="[377 766 3654 2252 303]" criteria="[650 5861 6327 3204]"
+time=08:19:10.504 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座心工房 増加数=25
+time=08:19:10.505 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=木座デザイン 増加数=43
+time=08:19:12.172 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=43
+time=08:19:12.180 level=INFO msg=これまでに地域内の評判によって140人、既存ユーザーの招待経由で2203人が新規登録しました
+time=08:19:12.180 level=INFO msg=これまでに低評価なライドによって319人が利用をやめました
+time=08:19:12.180 level=INFO msg=91.7%のライドは椅子がマッチされるまでの時間、19.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、37.2%のライドは椅子の実移動時間に不満がありました
+time=08:19:12.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=08:19:12.180 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7826 score="[415 918 3934 2256 303]" criteria="[650 6293 6607 3216]"
+time=08:19:12.186 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M1SRXA7D4PRJQ446JSWFK0, got: 10100)"
+time=08:19:12.195 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Urban Wheels" 増加数=27
+time=08:19:17.782 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=1418 アクティブユーザー数=1240
+time=08:19:17.782 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=943 アクティブユーザー数=791
+time=08:19:17.782 level=INFO msg=最終オーナー情報 名前=木座デザイン 売上=10725400 椅子数=265
+time=08:19:17.782 level=INFO msg=最終オーナー情報 名前="Skyline Taxis" 売上=10182400 椅子数=268
+time=08:19:17.782 level=INFO msg=最終オーナー情報 名前=座心工房 売上=9580400 椅子数=237
+time=08:19:17.782 level=INFO msg=最終オーナー情報 名前=ゆったり号 売上=8585500 椅子数=194
+time=08:19:17.782 level=INFO msg=最終オーナー情報 名前="Urban Wheels" 売上=9115900 椅子数=241
+time=08:19:17.782 level=INFO msg=92.1%のライドは椅子がマッチされるまでの時間、19.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、39.0%のライドは椅子の実移動時間に不満がありました
+time=08:19:17.782 level=INFO msg=結果 pass=true スコア=540785 種別エラー数="map[17:1 24:2 30:1]"
+time=08:19:17.782 level=INFO msg=負荷走行が終了しました
+
+SCORE: 540785
+BENCHMARK_PASS
+2026-10-10T23:19:18.227093683Z	BENCHMARK_END
+
+SCORE: 540785
+BENCHMARK_PASS

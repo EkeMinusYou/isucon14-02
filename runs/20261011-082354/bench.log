@@ -1,0 +1,272 @@
+2026-10-10T23:23:57.660613350Z	BENCHMARK_START
+time=08:23:57.780 level=INFO msg=負荷走行を開始します
+time=08:23:57.780 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=08:24:03.307 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=08:24:03.307 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6 score="[0 0 0 4 2]" criteria="[6 2 6 6]"
+time=08:24:05.080 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=1
+time=08:24:05.080 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=08:24:05.081 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=1
+time=08:24:05.081 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=08:24:05.082 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=08:24:05.107 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=08:24:05.107 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=25 score="[0 0 0 18 7]" criteria="[25 7 25 25]"
+time=08:24:06.880 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=1
+time=08:24:06.880 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=08:24:06.881 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=2
+time=08:24:06.883 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=08:24:06.883 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=08:24:06.907 level=INFO msg=これまでに地域内の評判によって8人、既存ユーザーの招待経由で40人が新規登録しました
+time=08:24:06.907 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、78.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=08:24:06.907 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=08:24:06.907 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=41 score="[0 0 0 32 9]" criteria="[41 9 41 41]"
+time=08:24:08.680 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=1
+time=08:24:08.681 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=2
+time=08:24:08.681 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=08:24:08.682 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=08:24:08.682 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=08:24:08.707 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=08:24:08.707 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=61 score="[0 0 0 46 15]" criteria="[61 15 61 61]"
+time=08:24:10.480 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=1
+time=08:24:10.481 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=08:24:10.507 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=08:24:10.507 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=76 score="[0 0 0 58 18]" criteria="[76 18 76 76]"
+time=08:24:12.282 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=08:24:12.283 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=1
+time=08:24:12.284 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=08:24:12.284 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=2
+time=08:24:12.307 level=INFO msg=これまでに地域内の評判によって20人、既存ユーザーの招待経由で92人が新規登録しました
+time=08:24:12.307 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、77.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=08:24:12.307 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=08:24:12.307 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=96 score="[0 0 0 74 22]" criteria="[96 22 96 96]"
+time=08:24:14.081 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=08:24:14.084 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=08:24:14.084 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=1
+time=08:24:14.084 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=08:24:14.085 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=2
+time=08:24:14.107 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=08:24:14.107 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=117 score="[0 0 1 92 24]" criteria="[117 24 117 116]"
+time=08:24:15.881 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=08:24:15.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=08:24:15.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=4
+time=08:24:15.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=3
+time=08:24:15.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=2
+time=08:24:15.907 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=08:24:15.907 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=149 score="[0 0 1 118 30]" criteria="[149 30 149 148]"
+time=08:24:17.680 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=08:24:17.684 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=1
+time=08:24:17.684 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=08:24:17.684 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=08:24:17.684 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=3
+time=08:24:17.707 level=INFO msg=これまでに地域内の評判によって32人、既存ユーザーの招待経由で165人が新規登録しました
+time=08:24:17.707 level=INFO msg=3.3%のライドは椅子がマッチされるまでの時間、78.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=08:24:17.707 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=08:24:17.707 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=182 score="[0 0 4 142 36]" criteria="[176 39 182 181]"
+time=08:24:19.510 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=4
+time=08:24:19.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=3
+time=08:24:19.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:19.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:19.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=08:24:19.537 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=08:24:19.537 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=234 score="[0 0 13 174 47]" criteria="[216 53 234 233]"
+time=08:24:19.784 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=08:24:21.338 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=2
+time=08:24:21.340 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=4
+time=08:24:21.340 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:21.341 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=6
+time=08:24:21.341 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:21.395 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=08:24:21.395 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=301 score="[0 0 20 218 63]" criteria="[276 69 301 300]"
+time=08:24:23.144 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=08:24:23.147 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:23.147 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=4
+time=08:24:23.147 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:23.147 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=4
+time=08:24:23.167 level=INFO msg=これまでに地域内の評判によって44人、既存ユーザーの招待経由で311人が新規登録しました
+time=08:24:23.167 level=INFO msg=7.3%のライドは椅子がマッチされるまでの時間、72.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=08:24:23.167 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=08:24:23.167 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=368 score="[0 0 24 247 97]" criteria="[341 103 368 365]"
+time=08:24:25.094 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=4
+time=08:24:25.095 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:25.096 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:25.096 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:25.100 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:25.117 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=08:24:25.117 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=452 score="[0 0 24 305 123]" criteria="[425 129 452 449]"
+time=08:24:27.099 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:27.112 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:27.114 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=5
+time=08:24:27.120 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:27.120 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=08:24:27.193 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=08:24:27.193 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=560 score="[0 0 28 370 162]" criteria="[531 169 560 554]"
+time=08:24:28.969 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:28.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:28.978 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=08:24:28.978 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=4
+time=08:24:28.982 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=5
+time=08:24:28.988 level=INFO msg=これまでに地域内の評判によって56人、既存ユーザーの招待経由で556人が新規登録しました
+time=08:24:28.988 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=08:24:28.988 level=INFO msg=4.5%のライドは椅子がマッチされるまでの時間、69.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.6%のライドは椅子の実移動時間に不満がありました
+time=08:24:28.988 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=08:24:28.988 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=664 score="[0 1 41 424 198]" criteria="[634 206 663 644]"
+time=08:24:30.766 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=5
+time=08:24:30.768 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=5
+time=08:24:30.777 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:30.779 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=08:24:30.779 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:30.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=08:24:30.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=803 score="[0 3 56 495 249]" criteria="[772 257 796 771]"
+time=08:24:32.571 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:32.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:32.575 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=5
+time=08:24:32.576 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:32.576 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=4
+time=08:24:32.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=08:24:32.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=943 score="[0 5 65 566 307]" criteria="[912 320 929 900]"
+time=08:24:34.366 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=5
+time=08:24:34.369 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=6
+time=08:24:34.379 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=08:24:34.380 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:34.383 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=6
+time=08:24:34.387 level=INFO msg=これまでに地域内の評判によって68人、既存ユーザーの招待経由で872人が新規登録しました
+time=08:24:34.387 level=INFO msg=これまでに低評価なライドによって3人が利用をやめました
+time=08:24:34.387 level=INFO msg=2.8%のライドは椅子がマッチされるまでの時間、64.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、4.4%のライドは椅子の実移動時間に不満がありました
+time=08:24:34.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=08:24:34.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1101 score="[0 5 94 638 364]" criteria="[1070 387 1072 1034]"
+time=08:24:36.165 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=08:24:36.169 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:36.187 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=08:24:36.187 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1247 score="[0 17 117 703 410]" criteria="[1216 457 1196 1131]"
+time=08:24:36.190 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:36.193 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:36.195 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:38.017 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=08:24:38.017 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1404 score="[0 35 155 766 448]" criteria="[1373 522 1325 1215]"
+time=08:24:38.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=6
+time=08:24:38.051 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:38.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:38.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=08:24:38.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=5
+time=08:24:39.800 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:39.801 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=5
+time=08:24:39.817 level=INFO msg=これまでに地域内の評判によって80人、既存ユーザーの招待経由で1147人が新規登録しました
+time=08:24:39.817 level=INFO msg=これまでに低評価なライドによって27人が利用をやめました
+time=08:24:39.817 level=INFO msg=2.0%のライドは椅子がマッチされるまでの時間、62.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、12.5%のライドは椅子の実移動時間に不満がありました
+time=08:24:39.817 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=08:24:39.817 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1573 score="[0 63 191 832 487]" criteria="[1542 595 1448 1304]"
+time=08:24:39.830 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=5
+time=08:24:39.831 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:39.833 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:41.598 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M237CDB71FNBGKP35CKQE7, got: 34800)"
+time=08:24:41.598 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:41.617 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=08:24:41.617 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1743 score="[0 101 214 909 519]" criteria="[1712 666 1566 1388]"
+time=08:24:41.734 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:41.735 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=6
+time=08:24:41.735 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=5
+time=08:24:43.402 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:43.404 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=8
+time=08:24:43.417 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=08:24:43.417 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1903 score="[0 138 240 972 553]" criteria="[1872 744 1669 1461]"
+time=08:24:43.422 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:43.423 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=08:24:43.425 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=5
+time=08:24:45.204 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=08:24:45.205 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:45.217 level=INFO msg=これまでに地域内の評判によって92人、既存ユーザーの招待経由で1420人が新規登録しました
+time=08:24:45.217 level=INFO msg=これまでに低評価なライドによって73人が利用をやめました
+time=08:24:45.217 level=INFO msg=1.5%のライドは椅子がマッチされるまでの時間、60.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、20.3%のライドは椅子の実移動時間に不満がありました
+time=08:24:45.217 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=08:24:45.217 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2092 score="[0 179 278 1046 589]" criteria="[2061 834 1790 1544]"
+time=08:24:45.282 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=7
+time=08:24:45.283 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:45.285 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=6
+time=08:24:47.004 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=08:24:47.005 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:47.017 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=08:24:47.017 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2247 score="[0 215 312 1106 614]" criteria="[2216 904 1880 1613]"
+time=08:24:47.046 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=7
+time=08:24:47.046 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:47.046 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:48.801 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:48.809 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:48.817 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=08:24:48.817 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2411 score="[0 242 346 1174 649]" criteria="[2380 983 1989 1700]"
+time=08:24:48.832 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=08:24:48.833 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=4
+time=08:24:48.836 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=7
+time=08:24:50.617 level=INFO msg=これまでに地域内の評判によって104人、既存ユーザーの招待経由で1650人が新規登録しました
+time=08:24:50.617 level=INFO msg=これまでに低評価なライドによって116人が利用をやめました
+time=08:24:50.617 level=INFO msg=1.2%のライドは椅子がマッチされるまでの時間、58.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、26.0%のライドは椅子の実移動時間に不満がありました
+time=08:24:50.617 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=08:24:50.617 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2611 score="[0 302 388 1241 680]" criteria="[2580 1076 2103 1762]"
+time=08:24:50.623 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:50.623 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:50.673 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=8
+time=08:24:50.676 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=7
+time=08:24:50.688 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=08:24:51.263 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4M23VDCW33QBTTQS4Z9FJ9Cの椅子は既にライド中です"
+time=08:24:51.268 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4M23VDCW33QBTTQS4Z9FJ9Cの椅子は既にライド中です"
+time=08:24:52.417 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=08:24:52.417 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2794 score="[0 346 424 1298 726]" criteria="[2763 1170 2215 1844]"
+time=08:24:52.426 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:52.428 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=6
+time=08:24:52.477 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=08:24:52.480 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=7
+time=08:24:52.482 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=7
+time=08:24:54.197 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:54.202 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=5
+time=08:24:54.217 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=08:24:54.217 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3028 score="[0 396 482 1378 772]" criteria="[2997 1297 2354 1934]"
+time=08:24:54.296 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=7
+time=08:24:54.296 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=10
+time=08:24:54.297 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=9
+time=08:24:56.017 level=INFO msg=これまでに地域内の評判によって116人、既存ユーザーの招待経由で1910人が新規登録しました
+time=08:24:56.017 level=INFO msg=これまでに低評価なライドによって168人が利用をやめました
+time=08:24:56.017 level=INFO msg=1.0%のライドは椅子がマッチされるまでの時間、56.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、30.2%のライドは椅子の実移動時間に不満がありました
+time=08:24:56.017 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=08:24:56.017 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3211 score="[0 428 531 1432 820]" criteria="[3180 1401 2463 2022]"
+time=08:24:56.022 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=08:24:56.024 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=08:24:56.105 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=08:24:56.105 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=6
+time=08:24:56.108 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=5
+time=08:24:56.675 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4M2499Y4DWARRDND8NSH3D3の椅子は既にライド中です"
+time=08:24:56.677 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4M2499Y4DWARRDND8NSH3D3の椅子は既にライド中です"
+time=08:24:56.682 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4M2499Y4DWARRDND8NSH3D3の椅子は既にライド中です"
+time=08:24:57.798 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=6
+time=08:24:57.798 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=5
+time=08:24:57.817 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=08:24:57.817 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3440 score="[0 482 600 1496 862]" criteria="[3409 1527 2579 2103]"
+time=08:24:57.870 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=8
+time=08:24:57.871 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=7
+time=08:24:57.871 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=08:24:59.612 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=08:24:59.614 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=08:24:59.617 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=08:24:59.617 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3638 score="[0 526 644 1551 917]" criteria="[3607 1638 2695 2195]"
+time=08:24:59.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=8
+time=08:25:01.409 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=5
+time=08:25:01.410 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=5
+time=08:25:01.417 level=INFO msg=これまでに地域内の評判によって126人、既存ユーザーの招待経由で2166人が新規登録しました
+time=08:25:01.417 level=INFO msg=これまでに低評価なライドによって215人が利用をやめました
+time=08:25:01.417 level=INFO msg=1.0%のライドは椅子がマッチされるまでの時間、54.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、34.0%のライドは椅子の実移動時間に不満がありました
+time=08:25:01.417 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=08:25:01.417 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3875 score="[0 572 721 1617 965]" criteria="[3837 1773 2818 2297]"
+time=08:25:06.508 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=1991 アクティブユーザー数=1825
+time=08:25:06.508 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=454 アクティブユーザー数=404
+time=08:25:06.508 level=INFO msg=最終オーナー情報 名前="LuxeLine Taxi" 売上=5746700 椅子数=151
+time=08:25:06.508 level=INFO msg=最終オーナー情報 名前=座り心地再生所 売上=5210200 椅子数=130
+time=08:25:06.508 level=INFO msg=最終オーナー情報 名前=晴れ道タクシー 売上=3402200 椅子数=105
+time=08:25:06.508 level=INFO msg=最終オーナー情報 名前=つばさ交通 売上=5517900 椅子数=140
+time=08:25:06.508 level=INFO msg=最終オーナー情報 名前=椅子と暮らし舎 売上=3706100 椅子数=110
+time=08:25:06.508 level=INFO msg=1.6%のライドは椅子がマッチされるまでの時間、53.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、34.7%のライドは椅子の実移動時間に不満がありました
+time=08:25:06.508 level=INFO msg=結果 pass=true スコア=292472 種別エラー数="map[17:1 24:1 30:5]"
+time=08:25:06.508 level=INFO msg=負荷走行が終了しました
+
+SCORE: 292472
+BENCHMARK_PASS
+2026-10-10T23:25:06.872902748Z	BENCHMARK_END
+
+SCORE: 292472
+BENCHMARK_PASS
