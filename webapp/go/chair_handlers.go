@@ -45,12 +45,27 @@ func chairPostChairs(w http.ResponseWriter, r *http.Request) {
 	chairID := ulid.Make().String()
 	accessToken := secureRandomStr(32)
 
-	_, err := db.ExecContext(
+	tx, err := db.BeginTxx(ctx, nil)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer tx.Rollback()
+
+	_, err = tx.ExecContext(
 		ctx,
 		"INSERT INTO chairs (id, owner_id, name, model, is_active, access_token) VALUES (?, ?, ?, ?, ?, ?)",
 		chairID, owner.ID, req.Name, req.Model, false, accessToken,
 	)
 	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if _, err := tx.ExecContext(ctx, "INSERT INTO chair_distance_totals (chair_id) VALUES (?)", chairID); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if err := tx.Commit(); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -104,12 +119,20 @@ func chairPostCoordinate(w http.ResponseWriter, r *http.Request) {
 
 	chair := ctx.Value("chair").(*Chair)
 
-	tx, err := db.Beginx()
+	tx, err := db.BeginTxx(ctx, nil)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 	defer tx.Rollback()
+
+	// Serialize location inserts before assigning their timestamps and IDs.
+	// The locking read also sees the preceding committed coordinate.
+	var lockedChairID string
+	if err := tx.GetContext(ctx, &lockedChairID, `SELECT chair_id FROM chair_distance_totals WHERE chair_id = ? FOR UPDATE`, chair.ID); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	chairLocationID := ulid.Make().String()
 	if _, err := tx.ExecContext(
@@ -123,6 +146,13 @@ func chairPostCoordinate(w http.ResponseWriter, r *http.Request) {
 
 	location := &ChairLocation{}
 	if err := tx.GetContext(ctx, location, `SELECT * FROM chair_locations WHERE id = ?`, chairLocationID); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE chair_distance_totals
+SET total_distance = total_distance + IFNULL(ABS(last_latitude - ?) + ABS(last_longitude - ?), 0),
+    last_latitude = ?, last_longitude = ?, updated_at = ?
+WHERE chair_id = ?`, req.Latitude, req.Longitude, req.Latitude, req.Longitude, location.CreatedAt, chair.ID); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}

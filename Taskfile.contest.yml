@@ -10,6 +10,28 @@
 version: '3'
 
 tasks:
+  check-chair-distance:
+    desc: ローカルの一時MySQLで距離集計の初期化・API・同時更新・rollbackを確認
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - |
+        set -eu
+        distance_container=$(docker run --rm -d -p 127.0.0.1::3306 -e MYSQL_ROOT_PASSWORD=distance-local-test -e MYSQL_DATABASE=isuride mysql:8.0.46)
+        trap 'docker rm -f "$distance_container" >/dev/null' EXIT
+        ready=0
+        for attempt in $(seq 1 60); do
+          if docker exec "$distance_container" mysqladmin --host=127.0.0.1 -uroot -pdistance-local-test ping --silent >/dev/null 2>&1; then ready=1; break; fi
+          sleep 1
+        done
+        test "$ready" = 1
+        distance_address=$(docker port "$distance_container" 3306/tcp)
+        export ISUCON_DB_HOST=127.0.0.1 ISUCON_DB_PORT="${distance_address##*:}"
+        export ISUCON_DB_USER=root ISUCON_DB_PASSWORD=distance-local-test ISUCON_DB_NAME=isuride
+        export CHAIR_DISTANCE_TEST_DSN="root:distance-local-test@tcp(127.0.0.1:$ISUCON_DB_PORT)/isuride?parseTime=true&multiStatements=true"
+        ../sql/init.sh
+        # The reference implementation's slog.Error call fails vet.
+        go test -vet=off -race -count=1 -v -run '^TestChairDistance$' .
+
   deploy-sql:
     desc: SQL初期化資材をAPP_HOSTSへ反映（DB再作成・サービス再起動なし）
     preconditions:
