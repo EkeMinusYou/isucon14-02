@@ -189,6 +189,7 @@ vars:
 tasks:
   worktree-link-raw:
     desc: primary worktreeのrawを共有するディレクトリリンクを作成
+    silent: true
     requires: { vars: [PRIMARY_WORKTREE] }
     env:
       RAW_PRIMARY_WORKTREE: '{{.PRIMARY_WORKTREE}}'
