@@ -88,7 +88,7 @@ func TestCurrentIndexesFIFOAndReplay(t *testing.T) {
 		at time.Time
 	}{{"new", at.Add(time.Second)}, {"z-old", at}, {"a-old", at}} {
 		row := Ride{ID: seed.id, UserID: seed.id, CreatedAt: seed.at, UpdatedAt: seed.at}
-		if err := s.publishCreatedRide(row, initialFare, RideStatus{ID: seed.id + "-0", RideID: seed.id, Status: "MATCHING", CreatedAt: seed.at}); err != nil {
+		if err := s.commit(stateRecord{CreatedRide: &createdRide{Ride: row, Fare: initialFare}, Statuses: []RideStatus{{ID: seed.id + "-0", RideID: seed.id, Status: "MATCHING", CreatedAt: seed.at}}}); err != nil {
 			t.Fatal(err)
 		}
 		assertCurrentIndexes(t, s, at)

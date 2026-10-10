@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/oklog/ulid/v2"
 )
 
 const (
@@ -24,7 +22,6 @@ type ownerPostOwnersResponse struct {
 }
 
 func ownerPostOwners(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
 	req := &ownerPostOwnersRequest{}
 	if err := bindJSON(r, req); err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -35,28 +32,12 @@ func ownerPostOwners(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ownerID := ulid.Make().String()
-	accessToken := secureRandomStr(32)
-	chairRegisterToken := secureRandomStr(32)
-
-	_, err := db.ExecContext(
-		ctx,
-		"INSERT INTO owners (id, name, access_token, chair_register_token) VALUES (?, ?, ?, ?)",
-		ownerID, req.Name, accessToken, chairRegisterToken,
-	)
+	registered, err := runtimeState.registerOwner(req.Name)
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+		writeStateError(w, err)
 		return
 	}
-
-	var registered Owner
-	if err := db.GetContext(ctx, &registered, "SELECT * FROM owners WHERE id = ?", ownerID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	runtimeState.mu.Lock()
-	runtimeState.owners[ownerID] = registered
-	runtimeState.mu.Unlock()
+	ownerID, accessToken, chairRegisterToken := registered.ID, registered.AccessToken, registered.ChairRegisterToken
 
 	http.SetCookie(w, &http.Cookie{
 		Path:  "/",

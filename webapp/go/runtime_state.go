@@ -53,36 +53,35 @@ const nearbyCompletionGrace = 100 * time.Millisecond
 // The single application owner serializes validation, WAL append and publication.
 // SQL and external payment calls never hold mu.
 type rideState struct {
-	coordinateCalls atomic.Uint64
-	metrics         *rideMetrics
-	dispatch        *dispatchMetrics
-	mu              sync.RWMutex
-	matchingMu      sync.Mutex
-	userLocks       sync.Map
-	database        *sqlx.DB
-	wal             *os.File
-	generation      string
-	sequence        uint64
-	ready           bool
-	failed          error
-	owners          map[string]Owner
-	users           map[string]User
-	userTokens      map[string]string
-	invitationUsers map[string]string
-	chairs          map[string]Chair
-	modelSpeeds     map[string]int
-	chairTokens     map[string]string
-	distances       map[string]distanceTotal
-	stats           map[string]chairStatsTotal
-	rides           map[string]*memoryRide
-	statuses        map[string]RideStatus
-	userRides       map[string][]string
-	chairRides      map[string][]string
-	sales           map[string][]salesPoint
-	appEvents       map[string]*notificationQueue
-	chairEvents     map[string]*notificationQueue
-	stop            chan struct{}
-	done            chan struct{}
+	accountState
+	// Immutable after initial startup; request normalization does not hold mu.
+	collationWeights []uint16
+	coordinateCalls  atomic.Uint64
+	metrics          *rideMetrics
+	dispatch         *dispatchMetrics
+	mu               sync.RWMutex
+	matchingMu       sync.Mutex
+	userLocks        sync.Map
+	database         *sqlx.DB
+	wal              *os.File
+	generation       string
+	sequence         uint64
+	ready            bool
+	failed           error
+	chairs           map[string]Chair
+	modelSpeeds      map[string]int
+	chairTokens      map[string]string
+	distances        map[string]distanceTotal
+	stats            map[string]chairStatsTotal
+	rides            map[string]*memoryRide
+	statuses         map[string]RideStatus
+	userRides        map[string][]string
+	chairRides       map[string][]string
+	sales            map[string][]salesPoint
+	appEvents        map[string]*notificationQueue
+	chairEvents      map[string]*notificationQueue
+	stop             chan struct{}
+	done             chan struct{}
 
 	waitingRides        []*memoryRide
 	userActiveRides     map[string]int
@@ -115,7 +114,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.ready = false
 	s.metrics = nil
 	s.dispatch = nil
-	if err := s.ensureCouponIndex(ctx); err != nil {
+	if err := s.loadCollation(ctx); err != nil {
 		return err
 	}
 	if _, err := s.database.ExecContext(ctx, generationSchema); err != nil {
@@ -133,38 +132,32 @@ func (s *rideState) restore(ctx context.Context) error {
 	if err := tx.GetContext(ctx, &generation, "SELECT generation FROM state_projection WHERE id = 1"); err != nil {
 		return err
 	}
-	var owners []Owner
-	var users []User
 	var chairs []Chair
 	var models []ChairModel
 	var distances []distanceTotal
 	var stats []chairStatsTotal
 	var rides []Ride
 	var statuses []RideStatus
-	var coupons []Coupon
 	for _, query := range []struct {
 		dest any
 		sql  string
 	}{
-		{&models, "SELECT * FROM chair_models"}, {&owners, "SELECT * FROM owners"}, {&users, "SELECT * FROM users"}, {&chairs, "SELECT * FROM chairs"},
+		{&models, "SELECT * FROM chair_models"}, {&chairs, "SELECT * FROM chairs"},
 		{&distances, "SELECT * FROM chair_distance_totals"}, {&stats, "SELECT * FROM chair_stats"},
 		{&rides, "SELECT * FROM rides ORDER BY created_at, id"},
 		{&statuses, `SELECT s.* FROM ride_statuses s JOIN rides r ON r.id = s.ride_id ORDER BY r.created_at, r.id, s.created_at, s.status, s.id`},
-		{&coupons, "SELECT * FROM coupons WHERE used_by IS NOT NULL"},
 	} {
 		if err := tx.SelectContext(ctx, query.dest, query.sql); err != nil {
 			return err
 		}
 	}
+	accounts, err := loadAccountSeed(ctx, tx)
+	if err != nil {
+		return err
+	}
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-	s.owners = map[string]Owner{}
-	for _, o := range owners {
-		s.owners[o.ID] = o
-	}
-	s.users, s.userTokens = map[string]User{}, map[string]string{}
-	s.invitationUsers = map[string]string{}
 	s.chairs, s.chairTokens = map[string]Chair{}, map[string]string{}
 	s.modelSpeeds = map[string]int{}
 	for _, model := range models {
@@ -178,9 +171,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.appEvents, s.chairEvents = map[string]*notificationQueue{}, map[string]*notificationQueue{}
 	s.resetCurrentIndexes()
 	s.generation, s.sequence, s.failed = generation, 0, nil
-	for _, u := range users {
-		s.addUser(u)
-	}
+	discounts := accounts.install(s)
 	for _, c := range chairs {
 		s.addChair(c)
 	}
@@ -189,10 +180,6 @@ func (s *rideState) restore(ctx context.Context) error {
 	}
 	for _, stats := range stats {
 		s.stats[stats.ChairID] = stats
-	}
-	discounts := map[string]int{}
-	for _, c := range coupons {
-		discounts[*c.UsedBy] = c.Discount
 	}
 	for _, r := range rides {
 		s.addRide(r, initialFare+max(0, calculateSale(r)-initialFare-discounts[r.ID]))
@@ -203,9 +190,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	if err := s.recoverWAL(); err != nil {
 		return err
 	}
-	// New DB-created rides can exist beyond an older ride's WAL.
-	// Rebuild recipient queues after replay, rather than appending old events
-	// behind the new ride's already-persistent MATCHING status.
+	// Rebuild ordered recipient queues and current indexes after replay.
 	s.rebuildIndexes()
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
@@ -246,8 +231,7 @@ func (s *rideState) rebuildIndexes() {
 			s.appendNotification("app", ride.UserID, s.statuses[id])
 		}
 	}
-	// SQL-created requests may commit late and be assigned after a younger
-	// request. Chair order follows assignment/completion, not request creation.
+	// Chair order follows assignment/completion, not request creation.
 	sort.Slice(rides, func(i, j int) bool {
 		if rides[i].UpdatedAt.Equal(rides[j].UpdatedAt) {
 			return rides[i].ID < rides[j].ID
@@ -271,12 +255,8 @@ func (s *rideState) rebuildIndexes() {
 	}
 }
 
-func (s *rideState) addUser(u User) {
-	s.users[u.ID], s.userTokens[u.AccessToken] = u, u.ID
-	s.invitationUsers[u.InvitationCode] = u.ID
-}
 func (s *rideState) addChair(c Chair) {
-	s.chairs[c.ID], s.chairTokens[c.AccessToken] = c, c.ID
+	s.chairs[c.ID], s.chairTokens[s.accountKey(c.AccessToken)] = c, c.ID
 	if s.dispatch != nil {
 		s.dispatch.changeChair(c.ID, func(state *chairMetricState) { state.active = c.IsActive })
 	}
@@ -345,9 +325,9 @@ func (s *rideState) addStatus(status RideStatus) {
 }
 
 func (s *rideState) apply(record stateRecord) {
+	s.applyAccounts(record.Accounts)
 	if seed := record.CreatedRide; seed != nil {
-		// Creation and coupon consumption commit in SQL before WAL publication.
-		// Recovery may therefore have already seeded this ride and its MATCHING.
+		// Initial SQL data may already contain an older WAL creation record.
 		if s.rides[seed.Ride.ID] == nil {
 			s.addRide(seed.Ride, seed.Fare)
 		}
@@ -425,18 +405,6 @@ func (s *rideState) apply(record stateRecord) {
 			s.refreshChairIndexes(id)
 		}
 	}
-}
-
-func (s *rideState) publishCreatedRide(ride Ride, fare int, status RideStatus) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if err := s.commit(stateRecord{CreatedRide: &createdRide{Ride: ride, Fare: fare}, Statuses: []RideStatus{status}}); err != nil {
-		// SQL already contains the new ride. Refuse further mutations until
-		// restart reconstructs it, rather than allowing a second active ride.
-		s.failed = err
-		return err
-	}
-	return nil
 }
 
 func (s *rideState) userMutex(id string) *sync.Mutex {

@@ -1,11 +1,8 @@
 package main
 
 import (
-	"database/sql"
 	"errors"
 	"net/http"
-
-	"github.com/oklog/ulid/v2"
 )
 
 type chairPostChairsRequest struct {
@@ -20,7 +17,6 @@ type chairPostChairsResponse struct {
 }
 
 func chairPostChairs(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
 	req := &chairPostChairsRequest{}
 	if err := bindJSON(r, req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -31,53 +27,12 @@ func chairPostChairs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	owner := &Owner{}
-	if err := db.GetContext(ctx, owner, "SELECT * FROM owners WHERE chair_register_token = ?", req.ChairRegisterToken); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeError(w, http.StatusUnauthorized, errors.New("invalid chair_register_token"))
-			return
-		}
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	chairID := ulid.Make().String()
-	accessToken := secureRandomStr(32)
-
-	tx, err := db.BeginTxx(ctx, nil)
+	registered, err := runtimeState.registerChair(*req)
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+		writeStateError(w, err)
 		return
 	}
-	defer tx.Rollback()
-
-	_, err = tx.ExecContext(
-		ctx,
-		"INSERT INTO chairs (id, owner_id, name, model, is_active, access_token) VALUES (?, ?, ?, ?, ?, ?)",
-		chairID, owner.ID, req.Name, req.Model, false, accessToken,
-	)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	if _, err := tx.ExecContext(ctx, "INSERT INTO chair_distance_totals (chair_id) VALUES (?)", chairID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	var registered Chair
-	if err := tx.GetContext(ctx, &registered, "SELECT * FROM chairs WHERE id = ?", chairID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	if err := tx.Commit(); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	runtimeState.mu.Lock()
-	runtimeState.addChair(registered)
-	runtimeState.distances[chairID] = distanceTotal{ChairID: chairID}
-	runtimeState.mu.Unlock()
+	chairID, accessToken := registered.ID, registered.AccessToken
 
 	http.SetCookie(w, &http.Cookie{
 		Path:  "/",
@@ -87,7 +42,7 @@ func chairPostChairs(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusCreated, &chairPostChairsResponse{
 		ID:      chairID,
-		OwnerID: owner.ID,
+		OwnerID: registered.OwnerID,
 	})
 }
 

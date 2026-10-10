@@ -2,74 +2,23 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"database/sql/driver"
-	"errors"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"github.com/jmoiron/sqlx"
 )
-
-type evaluationTestDriver struct{}
-type evaluationTestConn struct {
-	url  string
-	fail bool
-}
-type evaluationTestRows struct {
-	columns []string
-	values  []driver.Value
-	read    bool
-}
-
-func (evaluationTestDriver) Open(dsn string) (driver.Conn, error) {
-	return &evaluationTestConn{url: strings.TrimPrefix(dsn, "fail:"), fail: strings.HasPrefix(dsn, "fail:")}, nil
-}
-func (*evaluationTestConn) Prepare(string) (driver.Stmt, error) {
-	return nil, errors.New("unexpected prepare")
-}
-func (*evaluationTestConn) Close() error { return nil }
-func (*evaluationTestConn) Begin() (driver.Tx, error) {
-	return nil, errors.New("unexpected transaction")
-}
-func (c *evaluationTestConn) QueryContext(_ context.Context, query string, _ []driver.NamedValue) (driver.Rows, error) {
-	if c.fail {
-		return nil, errors.New("SQL fixture failure")
-	}
-	if strings.Contains(query, "payment_tokens") {
-		return &evaluationTestRows{columns: []string{"user_id", "token"}, values: []driver.Value{"u", "token"}}, nil
-	}
-	if strings.Contains(query, "settings") {
-		return &evaluationTestRows{columns: []string{"value"}, values: []driver.Value{c.url}}, nil
-	}
-	return nil, errors.New("unexpected SQL")
-}
-func (r *evaluationTestRows) Columns() []string { return r.columns }
-func (r *evaluationTestRows) Close() error      { return nil }
-func (r *evaluationTestRows) Next(v []driver.Value) error {
-	if r.read {
-		return io.EOF
-	}
-	r.read = true
-	copy(v, r.values)
-	return nil
-}
-func init() { sql.Register("evaluation-metrics-fixture", evaluationTestDriver{}) }
 
 func TestEvaluationMetricsHandlerStages(t *testing.T) {
 	for _, tc := range []struct {
 		name          string
-		failSQL       bool
+		failMetadata  bool
 		paymentStatus int
 		retries       int
 	}{
 		{name: "success", paymentStatus: 204},
-		{name: "SQL failure", failSQL: true, paymentStatus: 204},
+		{name: "missing payment configuration", failMetadata: true, paymentStatus: 204},
 		{name: "invalid payment", paymentStatus: 400},
 		{name: "expired key", paymentStatus: 422},
 		{name: "still processing", paymentStatus: 409, retries: 5},
@@ -81,15 +30,6 @@ func TestEvaluationMetricsHandlerStages(t *testing.T) {
 				w.WriteHeader(tc.paymentStatus)
 			}))
 			defer server.Close()
-			dsn := server.URL
-			if tc.failSQL {
-				dsn = "fail:" + dsn
-			}
-			database, err := sqlx.Open("evaluation-metrics-fixture", dsn)
-			if err != nil {
-				t.Fatal(err)
-			}
-			defer database.Close()
 			s := memoryTestState(t)
 			s.metrics = newRideMetrics()
 			s.resetDispatchMetrics()
@@ -97,7 +37,9 @@ func TestEvaluationMetricsHandlerStages(t *testing.T) {
 			seedMemoryRide(s, "r", "c", time.Now().Add(-time.Second))
 			s.addStatus(s.newStatus(s.rides["r"], "ARRIVED", time.Now()))
 			previousState, previousDB := runtimeState, db
-			runtimeState, db = s, database
+			runtimeState, db = s, nil
+			s.paymentTokens["u"] = PaymentToken{UserID: "u", Token: "token"}
+			s.paymentGatewayURL, s.paymentGatewayConfigured = server.URL, !tc.failMetadata
 			defer func() { runtimeState, db = previousState, previousDB }()
 			request := httptest.NewRequest(http.MethodPost, "/api/app/rides/r/evaluation", strings.NewReader(`{"evaluation":5}`))
 			request.SetPathValue("ride_id", "r")
@@ -113,9 +55,9 @@ func TestEvaluationMetricsHandlerStages(t *testing.T) {
 			if h := s.metrics.series["eval_lock_ok"]; h.count != 1 || h.sum < 10 {
 				t.Fatalf("mutex wait: %+v", h)
 			}
-			if tc.failSQL {
+			if tc.failMetadata {
 				if response.Code != 500 || payments.Load() != 0 || s.metrics.series["eval_sql_fail"].count != 1 || s.metrics.series["eval_total_fail"].count != 1 || s.metrics.series["eval_payment_ok"].count != 0 {
-					t.Fatal("SQL failure metrics")
+					t.Fatal("metadata failure metrics")
 				}
 			} else if tc.paymentStatus != 204 {
 				if response.Code != 502 || int(payments.Load()) != tc.retries+1 || s.latest(s.rides["r"]) != "ARRIVED" || s.stats["c"].Count != 0 {

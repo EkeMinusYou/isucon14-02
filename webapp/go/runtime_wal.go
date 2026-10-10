@@ -18,6 +18,7 @@ const maxWALRecordBytes = 1 << 20
 
 // Records contain immutable after-images. History rows are never coalesced.
 type stateRecord struct {
+	Accounts    *accountRecord   `json:"accounts,omitempty"`
 	Version     int              `json:"v"`
 	Generation  string           `json:"g"`
 	Sequence    uint64           `json:"s"`

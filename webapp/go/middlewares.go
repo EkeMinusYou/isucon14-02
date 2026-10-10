@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"net/http"
 )
@@ -15,7 +14,7 @@ func appAuthMiddleware(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, errors.New("app_session cookie is required"))
 			return
 		}
-		accessToken := c.Value
+		accessToken := runtimeState.accountKey(c.Value)
 		runtimeState.mu.RLock()
 		userID, ok := runtimeState.userTokens[accessToken]
 		user := runtimeState.users[userID]
@@ -43,18 +42,22 @@ func ownerAuthMiddleware(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, errors.New("owner_session cookie is required"))
 			return
 		}
-		accessToken := c.Value
-		owner := &Owner{}
-		if err := db.GetContext(ctx, owner, "SELECT * FROM owners WHERE access_token = ?", accessToken); err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				writeError(w, http.StatusUnauthorized, errors.New("invalid access token"))
-				return
-			}
-			writeError(w, http.StatusInternalServerError, err)
+		accessToken := runtimeState.accountKey(c.Value)
+		runtimeState.mu.RLock()
+		ownerID, ok := runtimeState.ownerTokens[accessToken]
+		owner := runtimeState.owners[ownerID]
+		ready := runtimeState.ready
+		runtimeState.mu.RUnlock()
+		if !ready {
+			writeError(w, http.StatusServiceUnavailable, errors.New("runtime state is unavailable"))
+			return
+		}
+		if !ok {
+			writeError(w, http.StatusUnauthorized, errors.New("invalid access token"))
 			return
 		}
 
-		ctx = context.WithValue(ctx, "owner", owner)
+		ctx = context.WithValue(ctx, "owner", &owner)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -67,7 +70,7 @@ func chairAuthMiddleware(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, errors.New("chair_session cookie is required"))
 			return
 		}
-		accessToken := c.Value
+		accessToken := runtimeState.accountKey(c.Value)
 		runtimeState.mu.RLock()
 		chairID, ok := runtimeState.chairTokens[accessToken]
 		chair := runtimeState.chairs[chairID]

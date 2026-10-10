@@ -13,6 +13,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 func startTestRuntime(t *testing.T) {
@@ -60,6 +62,18 @@ func readTestWAL(t *testing.T, s *rideState) []stateRecord {
 	return records
 }
 
+var testAccountWeights = func() []uint16 {
+	weights := make([]uint16, utf8.MaxRune+1)
+	for r := rune(0); r <= utf8.MaxRune; r++ {
+		if r > 0xffff {
+			weights[r] = 0xfffd
+		} else {
+			weights[r] = uint16(unicode.ToUpper(r))
+		}
+	}
+	return weights
+}()
+
 func memoryTestState(t *testing.T) *rideState {
 	t.Helper()
 	f, err := openStateWAL(t.TempDir())
@@ -67,12 +81,13 @@ func memoryTestState(t *testing.T) *rideState {
 		t.Fatal(err)
 	}
 	s := &rideState{wal: f, generation: "test", ready: true,
-		owners: map[string]Owner{}, users: map[string]User{}, userTokens: map[string]string{}, invitationUsers: map[string]string{},
 		chairs: map[string]Chair{}, modelSpeeds: map[string]int{}, chairTokens: map[string]string{}, distances: map[string]distanceTotal{}, stats: map[string]chairStatsTotal{},
 		rides: map[string]*memoryRide{}, statuses: map[string]RideStatus{}, userRides: map[string][]string{}, chairRides: map[string][]string{},
 		appEvents: map[string]*notificationQueue{}, chairEvents: map[string]*notificationQueue{},
 		sales: map[string][]salesPoint{},
 	}
+	s.collationWeights = testAccountWeights
+	s.resetAccounts()
 	s.resetCurrentIndexes()
 	if err := writeWALRecord(f, stateRecord{Version: 1, Generation: s.generation}); err != nil {
 		t.Fatal(err)

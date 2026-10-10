@@ -1,16 +1,12 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"errors"
 	"log/slog"
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/jmoiron/sqlx"
-	"github.com/oklog/ulid/v2"
 )
 
 type appPostUsersRequest struct {
@@ -27,7 +23,6 @@ type appPostUsersResponse struct {
 }
 
 func appPostUsers(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
 	req := &appPostUsersRequest{}
 	if err := bindJSON(r, req); err != nil {
 		writeError(w, http.StatusBadRequest, err)
@@ -38,104 +33,12 @@ func appPostUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var inviter User
-	if req.InvitationCode != nil && *req.InvitationCode != "" {
-		runtimeState.mu.RLock()
-		inviterID, exists := runtimeState.invitationUsers[*req.InvitationCode]
-		inviter = runtimeState.users[inviterID]
-		runtimeState.mu.RUnlock()
-		if !exists {
-			writeError(w, http.StatusBadRequest, errors.New("この招待コードは使用できません。"))
-			return
-		}
-		// Serialize invitation rewards with the inviter's coupon consumption.
-		// Acquire this lock before opening the SQL transaction and its snapshot.
-		lock := runtimeState.userMutex(inviter.ID)
-		lock.Lock()
-		defer lock.Unlock()
-	}
-
-	userID := ulid.Make().String()
-	accessToken := secureRandomStr(32)
-	invitationCode := secureRandomStr(15)
-
-	tx, err := db.Beginx()
+	registered, err := runtimeState.registerUser(*req)
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+		writeStateError(w, err)
 		return
 	}
-	defer tx.Rollback()
-
-	_, err = tx.ExecContext(
-		ctx,
-		"INSERT INTO users (id, username, firstname, lastname, date_of_birth, access_token, invitation_code) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		userID, req.Username, req.FirstName, req.LastName, req.DateOfBirth, accessToken, invitationCode,
-	)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	// 初回登録キャンペーンのクーポンを付与
-	_, err = tx.ExecContext(
-		ctx,
-		"INSERT INTO coupons (user_id, code, discount) VALUES (?, ?, ?)",
-		userID, "CP_NEW2024", 3000,
-	)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	// 招待コードを使った登録
-	if req.InvitationCode != nil && *req.InvitationCode != "" {
-		// The inviter's process lock protects the limit without SQL range locks.
-		var invitationCount int
-		err = tx.GetContext(ctx, &invitationCount, "SELECT COUNT(*) FROM coupons WHERE code = ?", "INV_"+*req.InvitationCode)
-		if err != nil {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-		if invitationCount >= 3 {
-			writeError(w, http.StatusBadRequest, errors.New("この招待コードは使用できません。"))
-			return
-		}
-
-		// 招待クーポン付与
-		_, err = tx.ExecContext(
-			ctx,
-			"INSERT INTO coupons (user_id, code, discount) VALUES (?, ?, ?)",
-			userID, "INV_"+*req.InvitationCode, 1500,
-		)
-		if err != nil {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-		// 招待した人にもRewardを付与
-		_, err = tx.ExecContext(
-			ctx,
-			"INSERT INTO coupons (user_id, code, discount) VALUES (?, ?, ?)",
-			inviter.ID, "RWD_"+*req.InvitationCode+"_"+ulid.Make().String(), 1000,
-		)
-		if err != nil {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-	}
-
-	var registered User
-	if err := tx.GetContext(ctx, &registered, "SELECT * FROM users WHERE id = ?", userID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	if err := tx.Commit(); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	runtimeState.mu.Lock()
-	runtimeState.addUser(registered)
-	runtimeState.mu.Unlock()
+	userID, accessToken, invitationCode := registered.ID, registered.AccessToken, registered.InvitationCode
 
 	http.SetCookie(w, &http.Cookie{
 		Path:  "/",
@@ -167,14 +70,8 @@ func appPostPaymentMethods(w http.ResponseWriter, r *http.Request) {
 
 	user := ctx.Value("user").(*User)
 
-	_, err := db.ExecContext(
-		ctx,
-		`INSERT INTO payment_tokens (user_id, token) VALUES (?, ?)`,
-		user.ID,
-		req.Token,
-	)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+	if err := runtimeState.registerPaymentToken(user.ID, req.Token); err != nil {
+		writeStateError(w, err)
 		return
 	}
 
@@ -254,128 +151,13 @@ func appPostRides(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := ctx.Value("user").(*User)
-	lock := runtimeState.userMutex(user.ID)
-	lock.Lock()
-	defer lock.Unlock()
-	if runtimeState.continuingRide(user.ID) {
-		writeError(w, http.StatusConflict, errors.New("ride already exists"))
-		return
-	}
-	rideID := ulid.Make().String()
-
-	tx, err := db.Beginx()
+	ride, fare, err := runtimeState.createRide(user.ID, *req.PickupCoordinate, *req.DestinationCoordinate)
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer tx.Rollback()
-
-	if _, err := tx.ExecContext(
-		ctx,
-		`INSERT INTO rides (id, user_id, pickup_latitude, pickup_longitude, destination_latitude, destination_longitude)
-				  VALUES (?, ?, ?, ?, ?, ?)`,
-		rideID, user.ID, req.PickupCoordinate.Latitude, req.PickupCoordinate.Longitude, req.DestinationCoordinate.Latitude, req.DestinationCoordinate.Longitude,
-	); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	matchingStatusID := ulid.Make().String()
-	if _, err := tx.ExecContext(
-		ctx,
-		`INSERT INTO ride_statuses (id, ride_id, status) VALUES (?, ?, ?)`,
-		matchingStatusID, rideID, "MATCHING",
-	); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	var rideCount int
-	if err := tx.GetContext(ctx, &rideCount, `SELECT COUNT(*) FROM rides WHERE user_id = ? `, user.ID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	var coupon Coupon
-	if rideCount == 1 {
-		// 初回利用で、初回利用クーポンがあれば必ず使う
-		if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND code = 'CP_NEW2024' AND used_by IS NULL", user.ID); err != nil {
-			if !errors.Is(err, sql.ErrNoRows) {
-				writeError(w, http.StatusInternalServerError, err)
-				return
-			}
-
-			// 無ければ他のクーポンを付与された順番に使う
-			if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND used_by IS NULL ORDER BY created_at LIMIT 1", user.ID); err != nil {
-				if !errors.Is(err, sql.ErrNoRows) {
-					writeError(w, http.StatusInternalServerError, err)
-					return
-				}
-			} else {
-				if _, err := tx.ExecContext(
-					ctx,
-					"UPDATE coupons SET used_by = ? WHERE user_id = ? AND code = ?",
-					rideID, user.ID, coupon.Code,
-				); err != nil {
-					writeError(w, http.StatusInternalServerError, err)
-					return
-				}
-			}
-		} else {
-			if _, err := tx.ExecContext(
-				ctx,
-				"UPDATE coupons SET used_by = ? WHERE user_id = ? AND code = 'CP_NEW2024'",
-				rideID, user.ID,
-			); err != nil {
-				writeError(w, http.StatusInternalServerError, err)
-				return
-			}
-		}
-	} else {
-		// 他のクーポンを付与された順番に使う
-		if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND used_by IS NULL ORDER BY created_at LIMIT 1", user.ID); err != nil {
-			if !errors.Is(err, sql.ErrNoRows) {
-				writeError(w, http.StatusInternalServerError, err)
-				return
-			}
-		} else {
-			if _, err := tx.ExecContext(
-				ctx,
-				"UPDATE coupons SET used_by = ? WHERE user_id = ? AND code = ?",
-				rideID, user.ID, coupon.Code,
-			); err != nil {
-				writeError(w, http.StatusInternalServerError, err)
-				return
-			}
-		}
-	}
-
-	ride := Ride{}
-	if err := tx.GetContext(ctx, &ride, "SELECT * FROM rides WHERE id = ?", rideID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	fare, err := calculateDiscountedFare(ctx, tx, user.ID, &ride, req.PickupCoordinate.Latitude, req.PickupCoordinate.Longitude, req.DestinationCoordinate.Latitude, req.DestinationCoordinate.Longitude)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	var matchingStatus RideStatus
-	if err := tx.GetContext(ctx, &matchingStatus, "SELECT * FROM ride_statuses WHERE id = ?", matchingStatusID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	if err := tx.Commit(); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if err := runtimeState.publishCreatedRide(ride, fare, matchingStatus); err != nil {
 		writeStateError(w, err)
 		return
 	}
+	rideID := ride.ID
+
 	notifications.publish("app", user.ID)
 
 	writeJSON(w, http.StatusAccepted, &appPostRidesResponse{
@@ -408,23 +190,7 @@ func appPostRidesEstimatedFare(w http.ResponseWriter, r *http.Request) {
 
 	user := ctx.Value("user").(*User)
 
-	tx, err := db.Beginx()
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer tx.Rollback()
-
-	discounted, err := calculateDiscountedFare(ctx, tx, user.ID, nil, req.PickupCoordinate.Latitude, req.PickupCoordinate.Longitude, req.DestinationCoordinate.Latitude, req.DestinationCoordinate.Longitude)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if err := tx.Commit(); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
+	discounted := runtimeState.estimatedFare(user.ID, *req.PickupCoordinate, *req.DestinationCoordinate)
 
 	writeJSON(w, http.StatusOK, &appPostRidesEstimatedFareResponse{
 		Fare:     discounted,
@@ -482,26 +248,16 @@ func appPostRideEvaluatation(w http.ResponseWriter, r *http.Request) {
 	}
 	measurement.visited[evalSQL] = true
 	stageStarted = time.Now()
-	var paymentToken PaymentToken
-	err = db.GetContext(ctx, &paymentToken, "SELECT * FROM payment_tokens WHERE user_id = ?", ride.UserID)
+	// Keep the existing stage series: eval_sql now measures the replacement
+	// metadata lookup. No SQL executes during this stage.
+	paymentToken, paymentGatewayURL, err := runtimeState.paymentConfiguration(ride.UserID)
 	measurement.elapsed[evalSQL] = time.Since(stageStarted)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeError(w, http.StatusBadRequest, errors.New("payment token not registered"))
-		} else {
-			writeError(w, http.StatusInternalServerError, err)
-		}
-		return
-	}
-	var paymentGatewayURL string
-	stageStarted = time.Now()
-	err = db.GetContext(ctx, &paymentGatewayURL, "SELECT value FROM settings WHERE name = 'payment_gateway_url'")
-	measurement.elapsed[evalSQL] += time.Since(stageStarted)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
+		writeStateError(w, err)
 		return
 	}
 	measurement.success[evalSQL] = true
+
 	measurement.visited[evalPayment] = true
 	stageStarted = time.Now()
 	retries, paymentErr := requestPaymentGatewayPostPayment(ctx, paymentGatewayURL, paymentToken.Token, paymentKey, &paymentGatewayPostPaymentRequest{Amount: fare})
@@ -638,47 +394,4 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 func calculateFare(pickupLatitude, pickupLongitude, destLatitude, destLongitude int) int {
 	meteredFare := farePerDistance * calculateDistance(pickupLatitude, pickupLongitude, destLatitude, destLongitude)
 	return initialFare + meteredFare
-}
-
-func calculateDiscountedFare(ctx context.Context, tx *sqlx.Tx, userID string, ride *Ride, pickupLatitude, pickupLongitude, destLatitude, destLongitude int) (int, error) {
-	var coupon Coupon
-	discount := 0
-	if ride != nil {
-		destLatitude = ride.DestinationLatitude
-		destLongitude = ride.DestinationLongitude
-		pickupLatitude = ride.PickupLatitude
-		pickupLongitude = ride.PickupLongitude
-
-		// すでにクーポンが紐づいているならそれの割引額を参照
-		if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND used_by = ?", userID, ride.ID); err != nil {
-			if !errors.Is(err, sql.ErrNoRows) {
-				return 0, err
-			}
-		} else {
-			discount = coupon.Discount
-		}
-	} else {
-		// 初回利用クーポンを最優先で使う
-		if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND code = 'CP_NEW2024' AND used_by IS NULL", userID); err != nil {
-			if !errors.Is(err, sql.ErrNoRows) {
-				return 0, err
-			}
-
-			// 無いなら他のクーポンを付与された順番に使う
-			if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND used_by IS NULL ORDER BY created_at LIMIT 1", userID); err != nil {
-				if !errors.Is(err, sql.ErrNoRows) {
-					return 0, err
-				}
-			} else {
-				discount = coupon.Discount
-			}
-		} else {
-			discount = coupon.Discount
-		}
-	}
-
-	meteredFare := farePerDistance * calculateDistance(pickupLatitude, pickupLongitude, destLatitude, destLongitude)
-	discountedMeteredFare := max(meteredFare-discount, 0)
-
-	return initialFare + discountedMeteredFare, nil
 }

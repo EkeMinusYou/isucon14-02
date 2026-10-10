@@ -11,8 +11,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"github.com/jmoiron/sqlx"
 )
 
 func TestPaymentRetryCountAndStatusContract(t *testing.T) {
@@ -98,13 +96,12 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent) // Replay of the already accepted key.
 	}))
 	defer server.Close()
-	database, err := sqlx.Open("evaluation-metrics-fixture", server.URL)
-	if err != nil {
+	if err := s.registerPaymentToken("u", "token"); err != nil {
 		t.Fatal(err)
 	}
-	defer database.Close()
+	s.paymentGatewayURL, s.paymentGatewayConfigured = server.URL, true
 	previousState, previousDB := runtimeState, db
-	runtimeState, db = s, database
+	runtimeState, db = s, nil
 	defer func() { runtimeState, db = previousState, previousDB }()
 	evaluate := func() *httptest.ResponseRecorder {
 		request := httptest.NewRequest(http.MethodPost, "/api/app/rides/r/evaluation", strings.NewReader(`{"evaluation":5}`))
@@ -121,6 +118,7 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 	// Restore the same persisted generation and replay the WAL after a restart.
 	restored := memoryTestState(t)
 	restored.generation = s.generation
+	restored.paymentGatewayURL, restored.paymentGatewayConfigured = server.URL, true
 	restored.addChair(s.chairs["c"])
 	restored.wal = s.wal
 	if err := restored.recoverWAL(); err != nil {

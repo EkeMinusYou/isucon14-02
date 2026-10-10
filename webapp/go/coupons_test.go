@@ -21,14 +21,7 @@ func TestConcurrentInvitationsAndCouponConsumption(t *testing.T) {
 		// Exercise the oldest-coupon path while invitation rewards are inserted.
 		db.MustExec(`INSERT INTO coupons (user_id, code, discount) VALUES (?, 'existing', 1000)`, id)
 	}
-	// Upgrade the schema of an existing database through the startup path.
-	db.MustExec("ALTER TABLE coupons DROP INDEX idx_coupons_code")
 	startTestRuntime(t)
-	var indexCount int
-	if err := db.Get(&indexCount, `SELECT COUNT(*) FROM information_schema.statistics
-		WHERE table_schema=DATABASE() AND table_name='coupons' AND index_name='idx_coupons_code'`); err != nil || indexCount != 1 {
-		t.Fatalf("coupon code index not restored: %d %v", indexCount, err)
-	}
 	var wg sync.WaitGroup
 	start := make(chan struct{})
 	results := make(chan int, inviters*attempts)
@@ -71,24 +64,25 @@ func TestConcurrentInvitationsAndCouponConsumption(t *testing.T) {
 	for i := 0; i < inviters; i++ {
 		id := fmt.Sprintf("inviter-%d", i)
 		var issued, rewards, consumed int
-		if err := db.Get(&issued, "SELECT COUNT(*) FROM coupons WHERE code = ?", "INV_"+id); err != nil {
-			t.Fatal(err)
+		issued = runtimeState.couponCounts[runtimeState.accountKey("INV_"+id)]
+		for _, coupon := range runtimeState.coupons[id] {
+			if strings.HasPrefix(coupon.Code, "RWD_") {
+				rewards++
+			}
+			if coupon.UsedBy != nil {
+				consumed++
+			}
 		}
-		if err := db.Get(&rewards, "SELECT COUNT(*) FROM coupons WHERE user_id = ? AND code LIKE 'RWD_%'", id); err != nil {
-			t.Fatal(err)
-		}
-		if err := db.Get(&consumed, "SELECT COUNT(*) FROM coupons WHERE user_id = ? AND used_by IS NOT NULL", id); err != nil {
-			t.Fatal(err)
-		}
+
 		if issued != 3 || rewards != 3 || consumed != 1 {
 			t.Fatalf("%s: invitations=%d rewards=%d consumed=%d", id, issued, rewards, consumed)
 		}
 	}
-	// Publication of invitation lookup survives a restart from the DB.
+	// Publication of invitation lookup survives a restart from SQL seeds plus WAL.
 	if err := runtimeState.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	if runtimeState.invitationUsers["inviter-0"] != "inviter-0" {
+	if runtimeState.invitationUsers[runtimeState.accountKey("inviter-0")] != "inviter-0" {
 		t.Fatal("invitation lookup was not restored")
 	}
 	res := httptest.NewRecorder()

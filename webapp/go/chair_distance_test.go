@@ -234,12 +234,12 @@ func TestChairDistance(t *testing.T) {
 		checkTotals()
 	})
 
-	t.Run("registration rollback", func(t *testing.T) {
+	t.Run("registration does not write SQL", func(t *testing.T) {
 		execSQL("CREATE TRIGGER reject_distance_chair BEFORE INSERT ON chair_distance_totals FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'test rollback'")
 		res := register()
 		execSQL("DROP TRIGGER reject_distance_chair")
-		if res.Code != http.StatusInternalServerError {
-			t.Fatalf("registration rollback: %d %s", res.Code, res.Body.String())
+		if res.Code != http.StatusCreated {
+			t.Fatalf("SQL-free registration: %d %s", res.Code, res.Body.String())
 		}
 		checkTotals()
 	})
