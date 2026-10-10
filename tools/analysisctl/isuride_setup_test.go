@@ -219,3 +219,27 @@ func TestISURIDESavedRunTypedSummaries(t *testing.T) {
 (select count(*)=31 and bool_and(parsed) from bench_info_coverage) as all_info_decoded;`
 	checkISURIDESummarySQL(t, fixtures, query)
 }
+
+func TestISURIDEChairGrowth(t *testing.T) {
+	fixtures := `insert into bench_error_logs values ('20261011-050000', 'time=05:00:01.000 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Owner East" 増加数=0
+time=05:00:02.000 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=Owner 増加数=unknown', 'bench.log');`
+	query := `select
+(select count(*)=1 and bool_and(parsed and owner_name='Owner East' and added_chairs=0 and value_semantics='event' and reason='sales_threshold') from bench_chair_growth where line_number=1) as quoted_zero,
+(select count(*)=1 and bool_and(not parsed and added_chairs is null) from bench_chair_growth where line_number=2) as unknown_count,
+(select count(*)=2 and count(*) filter (where not parsed)=1 from bench_info_coverage) as growth_coverage;`
+	checkISURIDESummarySQL(t, fixtures, query)
+	t.Run("saved RUN", func(t *testing.T) {
+		log, err := os.ReadFile("../../runs/20261011-041159/bench.log")
+		if os.IsNotExist(err) {
+			t.Skip("saved participant RUN is absent")
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		fixtures := "insert into bench_error_logs values ('20261011-041159', '" + strings.ReplaceAll(string(log), "'", "''") + "', 'bench.log');\n"
+		query := `select
+(select count(*)=1 and bool_and(parsed and owner_name='晴れ道タクシー' and added_chairs=1) from bench_chair_growth) as growth,
+(select count(*)=32 and bool_and(parsed) from bench_info_coverage) as complete_info;`
+		checkISURIDESummarySQL(t, fixtures, query)
+	})
+}

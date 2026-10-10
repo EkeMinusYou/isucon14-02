@@ -82,6 +82,23 @@ create or replace view bench_latest_dissatisfaction as
 select * from bench_dissatisfaction
 qualify row_number() over (partition by run_id order by line_number desc) = 1;
 
+-- Reported capacity additions are events, not cumulative chair counts.
+create or replace view bench_chair_growth as
+with parsed as (
+    select *, regexp_extract(line,
+        'msg=一定の売上が立ったためオーナーの椅子が増加します 名前=("(?:[^"\\]|\\.)*"|.*?) 増加数=([0-9]+)$',
+        ['name', 'added']) as fields
+    from bench_log_lines
+    where regexp_matches(line, '^time=\S+ level=INFO (?:source=\S+ )?msg=一定の売上が立ったためオーナーの椅子が増加します ')
+)
+select run_id, source_artifact, line_number, reported_at, elapsed_s, in_load_window,
+    'event' as value_semantics, 'sales_threshold' as reason,
+    isuride_log_name(fields.name) as owner_name,
+    try_cast(fields.added as bigint) as added_chairs,
+    owner_name is not null and added_chairs is not null as parsed,
+    line as raw_line
+from parsed;
+
 -- A Go map summary contains reported counts, not individual occurrence times.
 -- Validate a complete round trip before interpreting its entries. Unknown or
 -- malformed maps stay NULL; only an explicit map[] becomes an empty map/zero.
@@ -131,6 +148,7 @@ with decoded as (
     union all select run_id, line_number, 'registrations', parsed from bench_registrations
     union all select run_id, line_number, 'dissatisfaction', parsed from bench_dissatisfaction
     union all select run_id, line_number, 'completion', parsed from bench_completion
+    union all select run_id, line_number, 'chair_growth', parsed from bench_chair_growth
 )
 select l.run_id, l.source_artifact, l.line_number, l.reported_at,
     coalesce(d.record_type, case

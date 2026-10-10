@@ -35,6 +35,7 @@ templateに置いてあるのは`bench-patterns.json`、`user-transition-routes.
 | `bench_final_regions` | `region_name`、`registered_users`、`active_users` |
 | `bench_final_owners` | `owner_name`、`sales`、`chairs` |
 | `bench_registrations` | `registrations_reputation`、`registrations_invitation`（累計） |
+| `bench_chair_growth` | `owner_name`、`added_chairs`、`reason`、`elapsed_s`（売上条件による椅子増加イベント） |
 | `bench_dissatisfaction` | `matching_pct`、`pickup_pct`、`travel_pct`（百分率）、`elapsed_s` |
 | `bench_latest_dissatisfaction` | 上記不満率のRUNごとの最終報告行。途中終了でも「完走」とはみなさない |
 | `bench_completion` | `passed`、`score`、`error_types`（種別→件数のMAP）、`reported_error_count` |
