@@ -1,0 +1,73 @@
+
+# 150ms user time, 60ms system time, 48.69M rss, 466.15G vsz
+# Current date: Sun Oct 11 04:16:47 2026
+# Hostname: YusukenoMac-mini.local
+# Files: raw/mysql-slow-isucon-1.log
+# Overall: 115 total, 6 unique, 1.80 QPS, 3.39x concurrency ______________
+# Time range: 2026-10-10T19:15:36 to 2026-10-10T19:16:40
+# Attribute          total     min     max     avg     95%  stddev  median
+# ============     ======= ======= ======= ======= ======= ======= =======
+# Exec time           217s    51ms      3s      2s      3s      1s      2s
+# Lock time          201us       0     4us     1us     2us       0     1us
+# Rows sent            497       0     100    4.32    4.96    8.87    3.89
+# Rows examine      54.94k       0     599  489.17  511.45  130.40  511.45
+# Query size         2.81M     107 1011.33k  25.02k  918.49 143.07k  918.49
+
+# Profile
+# Rank Query ID                            Response time  Calls R/Call V/M
+# ==== =================================== ============== ===== ====== ===
+#    1 0x25D034CF58223D3C0432925663366D80  214.4567 98.8%    86 2.4937  0.06 SELECT chairs chair_locations
+# MISC 0xMISC                                2.6555  1.2%    29 0.0916   0.0 <5 ITEMS>
+
+# Query 1: 1.39 QPS, 3.46x concurrency, ID 0x25D034CF58223D3C0432925663366D80 at byte 2963560
+# This item is included in the report because it matches --limit.
+# Scores: V/M = 0.06
+# Time range: 2026-10-10T19:15:38 to 2026-10-10T19:16:40
+# Attribute    pct   total     min     max     avg     95%  stddev  median
+# ============ === ======= ======= ======= ======= ======= ======= =======
+# Count         74      86
+# Exec time     98    214s   154ms      3s      2s      3s   401ms      3s
+# Lock time     82   165us     1us     4us     1us     2us       0     1us
+# Rows sent     94     472       4     100    5.49    4.96   10.00    3.89
+# Rows examine  80  44.27k     524     599  527.10  511.45    8.64  511.45
+# Query size     2  77.77k     926     926     926     926       0     926
+# String:
+# Databases    isuride
+# Hosts        localhost
+# Users        isucon
+# Query_time distribution
+#   1us
+#  10us
+# 100us
+#   1ms
+#  10ms
+# 100ms  #
+#    1s  ################################################################
+#  10s+
+# Tables
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chairs'\G
+#    SHOW CREATE TABLE `isuride`.`chairs`\G
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chair_locations'\G
+#    SHOW CREATE TABLE `isuride`.`chair_locations`\G
+# EXPLAIN /*!50100 PARTITIONS*/
+SELECT id,
+       owner_id,
+       name,
+       access_token,
+       model,
+       is_active,
+       created_at,
+       updated_at,
+       IFNULL(total_distance, 0) AS total_distance,
+       total_distance_updated_at
+FROM chairs
+       LEFT JOIN (SELECT chair_id,
+                          SUM(IFNULL(distance, 0)) AS total_distance,
+                          MAX(created_at)          AS total_distance_updated_at
+                   FROM (SELECT chair_id,
+                                created_at,
+                                ABS(latitude - LAG(latitude) OVER (PARTITION BY chair_id ORDER BY created_at)) +
+                                ABS(longitude - LAG(longitude) OVER (PARTITION BY chair_id ORDER BY created_at)) AS distance
+                         FROM chair_locations) tmp
+                   GROUP BY chair_id) distance_table ON distance_table.chair_id = chairs.id
+WHERE owner_id = '01M4KKW08QA0BAFGT2F1D38T1R'\G
