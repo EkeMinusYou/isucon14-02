@@ -589,7 +589,13 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 	s.mu.RLock()
 	snapshotAt := time.Now()
 	nearbyChairs := []appGetNearbyChairsResponseChair{}
-	for id, chair := range s.chairs {
+	if len(s.nearbyMissingStatus) != 0 {
+		s.mu.RUnlock()
+		writeError(w, http.StatusInternalServerError, sql.ErrNoRows)
+		return
+	}
+	for id := range s.nearbyChairs {
+		chair := s.chairs[id]
 		available, err := s.nearbyAvailable(id, snapshotAt)
 		if err != nil {
 			s.mu.RUnlock()

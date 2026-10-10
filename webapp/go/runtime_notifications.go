@@ -1,10 +1,52 @@
 package main
 
 import (
+	"container/list"
 	"context"
 	"errors"
 	"time"
 )
+
+// Keep the complete ordered history for Last-Event-ID replay. The linked
+// pending positions also support ACKs arriving out of order across streams.
+type notificationQueue struct {
+	ids       []string
+	positions map[string]int
+	pending   list.List
+	unacked   map[string]*list.Element
+}
+
+func (s *rideState) notificationQueue(kind, id string) *notificationQueue {
+	if kind == "chair" {
+		return s.chairEvents[id]
+	}
+	return s.appEvents[id]
+}
+
+func (s *rideState) appendNotification(kind, id string, status RideStatus) {
+	queues, sent := s.appEvents, status.AppSentAt
+	if kind == "chair" {
+		queues, sent = s.chairEvents, status.ChairSentAt
+	}
+	queue := queues[id]
+	if queue == nil {
+		queue = &notificationQueue{positions: map[string]int{}, unacked: map[string]*list.Element{}}
+		queues[id] = queue
+	}
+	position := len(queue.ids)
+	queue.positions[status.ID] = position
+	queue.ids = append(queue.ids, status.ID)
+	if sent == nil {
+		queue.unacked[status.ID] = queue.pending.PushBack(position)
+	}
+}
+
+func (q *notificationQueue) ack(id string) {
+	if element := q.unacked[id]; element != nil {
+		q.pending.Remove(element)
+		delete(q.unacked, id)
+	}
+}
 
 func acknowledgeNotification(ctx context.Context, kind, statusID string) error {
 	return acknowledgeNotificationGeneration(ctx, kind, statusID, "")
@@ -44,28 +86,35 @@ func loadNotifications(ctx context.Context, kind, id, lastEventID string) ([]not
 	if !s.ready {
 		return nil, errors.New("runtime state is unavailable")
 	}
-	ids, rides := s.appEvents[id], s.userRides[id]
+	queue, rides := s.notificationQueue(kind, id), s.userRides[id]
 	if kind == "chair" {
-		ids, rides = s.chairEvents[id], s.chairRides[id]
+		rides = s.chairRides[id]
 	}
 	cursor := -1
-	if lastEventID != "" {
-		for i, statusID := range ids {
-			if statusID == lastEventID {
-				cursor = i
-				break
-			}
+	if lastEventID != "" && queue != nil {
+		if position, ok := queue.positions[lastEventID]; ok {
+			cursor = position
 		}
 	}
 	var events []notificationEvent
-	for i, statusID := range ids {
+	appendEvent := func(statusID string) {
 		status := s.statuses[statusID]
-		pending := status.AppSentAt == nil
-		if kind == "chair" {
-			pending = status.ChairSentAt == nil
+		events = append(events, notificationEvent{statusID: status.ID, eventID: status.ID, generation: s.generation, data: s.notificationData(kind, s.rides[status.RideID], status.Status)})
+	}
+	if queue != nil {
+		// Pending events before the cursor remain required. Merge them with
+		// the entire replay suffix in recipient order, without duplicates.
+		for element := queue.pending.Front(); element != nil; element = element.Next() {
+			position := element.Value.(int)
+			if cursor >= 0 && position > cursor {
+				break
+			}
+			appendEvent(queue.ids[position])
 		}
-		if pending || (cursor >= 0 && i > cursor) {
-			events = append(events, notificationEvent{statusID: status.ID, eventID: status.ID, generation: s.generation, data: s.notificationData(kind, s.rides[status.RideID], status.Status)})
+		if cursor >= 0 {
+			for _, statusID := range queue.ids[cursor+1:] {
+				appendEvent(statusID)
+			}
 		}
 	}
 	if len(events) == 0 {
