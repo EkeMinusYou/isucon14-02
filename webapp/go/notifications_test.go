@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -97,8 +98,8 @@ func insertTestRide(t *testing.T, id, createdAt string, assigned bool) {
 		chair = "c"
 	}
 	db.MustExec(`INSERT INTO rides (id, user_id, chair_id, pickup_latitude, pickup_longitude,
-		destination_latitude, destination_longitude, created_at)
-		VALUES (?, 'u', ?, 0, 0, 10, 10, ?)`, id, chair, createdAt)
+		destination_latitude, destination_longitude, created_at, updated_at)
+		VALUES (?, 'u', ?, 0, 0, 10, 10, ?, ?)`, id, chair, createdAt, createdAt)
 }
 
 func insertTestStatus(ride, id, status string) {
@@ -115,12 +116,13 @@ func TestNotificationsHistoryAndStats(t *testing.T) {
 		insertTestStatus("a", fmt.Sprintf("z%d", 9-i), status)
 	}
 	insertTestStatus("b", "b0", "MATCHING")
-	db.MustExec(`UPDATE rides SET evaluation = 4 WHERE id = 'a'`)
+	db.MustExec(`UPDATE rides SET evaluation = 4, updated_at = '2026-01-01 00:00:00' WHERE id = 'a'`)
 	backfill, err := os.ReadFile("../sql/4-chair-stats.sql")
 	if err != nil {
 		t.Fatal(err)
 	}
 	db.MustExec(string(backfill))
+	startTestRuntime(t)
 	for _, kind := range []string{"app", "chair"} {
 		id := "u"
 		if kind == "chair" {
@@ -179,6 +181,7 @@ func TestNotificationsFailedWrite(t *testing.T) {
 	notificationTestDB(t)
 	insertTestRide(t, "a", "2026-01-01", true)
 	insertTestStatus("a", "a0", "MATCHING")
+	startTestRuntime(t)
 	serveNotifications(&failingNotificationWriter{header: make(http.Header)}, httptest.NewRequest("GET", "/", nil), "chair", "c")
 	var pending int
 	db.Get(&pending, `SELECT COUNT(*) FROM ride_statuses WHERE chair_sent_at IS NULL`)
@@ -191,6 +194,7 @@ func TestNotificationStreamWakeup(t *testing.T) {
 	notificationTestDB(t)
 	insertTestRide(t, "a", "2026-01-01", false)
 	insertTestStatus("a", "a0", "MATCHING")
+	startTestRuntime(t)
 	// Match the production logger wrapper to verify ResponseController forwarding.
 	server := httptest.NewServer(middleware.Logger(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		serveNotifications(w, r, "app", "u")
@@ -226,14 +230,25 @@ func TestNotificationStreamWakeup(t *testing.T) {
 	if data := read(); data.Status != "MATCHING" || data.Chair != nil {
 		t.Fatalf("initial state: %+v", data)
 	}
-	db.MustExec(`UPDATE rides SET chair_id = 'c' WHERE id = 'a'`)
-	notifications.publish("app", "u")
+	if err := runtimeState.match(); err != nil {
+		t.Fatal(err)
+	}
 	if data := read(); data.Chair == nil || data.Status != "MATCHING" {
 		t.Fatalf("assignment must notify even without a status transition: %+v", data)
 	}
-	for i, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
-		insertTestStatus("a", fmt.Sprintf("next%d", i), status)
+	if err := runtimeState.chairStatus("c", "a", "ENROUTE"); err != nil {
+		t.Fatal(err)
 	}
+	if _, err := runtimeState.coordinate("c", Coordinate{0, 0}); err != nil {
+		t.Fatal(err)
+	}
+	if err := runtimeState.chairStatus("c", "a", "CARRYING"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := runtimeState.coordinate("c", Coordinate{10, 10}); err != nil {
+		t.Fatal(err)
+	}
+
 	notifications.publish("app", "u")
 	for _, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
 		if data := read(); data.Status != status {
@@ -246,7 +261,7 @@ func TestNotificationStreamWakeup(t *testing.T) {
 	server.Close()
 }
 
-func TestChairStatsCompletionTransaction(t *testing.T) {
+func TestChairStatsCompletionAndProjection(t *testing.T) {
 	notificationTestDB(t)
 	insertTestRide(t, "a", "2026-01-01", true)
 	for i, status := range []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
@@ -257,6 +272,7 @@ func TestChairStatsCompletionTransaction(t *testing.T) {
 	}))
 	defer payment.Close()
 	db.MustExec(`INSERT INTO settings (name, value) VALUES ('payment_gateway_url', ?)`, payment.URL)
+	startTestRuntime(t)
 	appSub, stopApp := notifications.subscribe("app", "u")
 	defer stopApp()
 	chairSub, stopChair := notifications.subscribe("chair", "c")
@@ -264,6 +280,7 @@ func TestChairStatsCompletionTransaction(t *testing.T) {
 	evaluate := func() int {
 		req := httptest.NewRequest("POST", "/", strings.NewReader(`{"evaluation":5}`))
 		req.SetPathValue("ride_id", "a")
+		req = req.WithContext(context.WithValue(req.Context(), "user", &User{ID: "u"}))
 		res := httptest.NewRecorder()
 		appPostRideEvaluatation(res, req)
 		return res.Code
@@ -288,6 +305,7 @@ func TestChairStatsCompletionTransaction(t *testing.T) {
 	if len(appSub.wake) != 1 || len(chairSub.wake) != 1 {
 		t.Fatal("committed completion must wake both recipients")
 	}
+	flushTestRuntime(t)
 	// Reopen the connection to read persisted values, independently of Go memory.
 	var name string
 	if err := db.Get(&name, "SELECT DATABASE()"); err != nil {
@@ -310,4 +328,33 @@ func TestChairStatsCompletionTransaction(t *testing.T) {
 	if err != nil || stats.TotalRidesCount != 1 || stats.TotalEvaluationAvg != 5 {
 		t.Fatalf("invalid completion stats: %+v, %v", stats, err)
 	}
+}
+
+type executableGet interface {
+	Get(dest interface{}, query string, args ...interface{}) error
+	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
+}
+
+func getLatestRideStatus(ctx context.Context, tx executableGet, rideID string) (string, error) {
+	status := ""
+	if err := tx.GetContext(ctx, &status, `SELECT status FROM ride_statuses WHERE ride_id = ? ORDER BY created_at DESC, status DESC, id DESC LIMIT 1`, rideID); err != nil {
+		return "", err
+	}
+	return status, nil
+}
+
+func getChairStats(ctx context.Context, tx *sqlx.Tx, chairID string) (appGetNotificationResponseChairStats, error) {
+	var totals struct {
+		Count      int `db:"total_rides_count"`
+		Evaluation int `db:"total_evaluation"`
+	}
+	err := tx.GetContext(ctx, &totals, `SELECT total_rides_count, total_evaluation FROM chair_stats WHERE chair_id = ?`, chairID)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return appGetNotificationResponseChairStats{}, err
+	}
+	stats := appGetNotificationResponseChairStats{TotalRidesCount: totals.Count}
+	if totals.Count > 0 {
+		stats.TotalEvaluationAvg = float64(totals.Evaluation) / float64(totals.Count)
+	}
+	return stats, nil
 }

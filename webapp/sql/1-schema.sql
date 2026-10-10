@@ -158,6 +158,16 @@ CREATE TABLE coupons
   discount   INTEGER      NOT NULL COMMENT '割引額',
   created_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '付与日時',
   used_by    VARCHAR(26)  NULL COMMENT 'クーポンが適用されたライドのID',
-  PRIMARY KEY (user_id, code)
+  PRIMARY KEY (user_id, code),
+  INDEX idx_coupons_code (code)
 )
   COMMENT 'クーポンテーブル';
+
+-- A new generation prevents replay of pre-initialization WAL records.
+DROP TABLE IF EXISTS state_projection;
+CREATE TABLE state_projection (
+  id TINYINT NOT NULL PRIMARY KEY,
+  generation VARCHAR(36) NOT NULL,
+  applied_seq BIGINT UNSIGNED NOT NULL DEFAULT 0
+);
+INSERT INTO state_projection (id, generation) VALUES (1, UUID());

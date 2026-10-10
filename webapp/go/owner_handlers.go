@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"errors"
 	"net/http"
 	"strconv"
@@ -50,6 +49,15 @@ func ownerPostOwners(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var registered Owner
+	if err := db.GetContext(ctx, &registered, "SELECT * FROM owners WHERE id = ?", ownerID); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	runtimeState.mu.Lock()
+	runtimeState.owners[ownerID] = registered
+	runtimeState.mu.Unlock()
+
 	http.SetCookie(w, &http.Cookie{
 		Path:  "/",
 		Name:  "owner_session",
@@ -80,7 +88,6 @@ type ownerGetSalesResponse struct {
 }
 
 func ownerGetSales(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
 	since := time.Unix(0, 0)
 	until := time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
 	if r.URL.Query().Get("since") != "" {
@@ -102,42 +109,26 @@ func ownerGetSales(w http.ResponseWriter, r *http.Request) {
 
 	owner := r.Context().Value("owner").(*Owner)
 
-	tx, err := db.Beginx()
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer tx.Rollback()
-
-	chairs := []Chair{}
-	if err := tx.SelectContext(ctx, &chairs, "SELECT * FROM chairs WHERE owner_id = ?", owner.ID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	res := ownerGetSalesResponse{
-		TotalSales: 0,
-	}
-
+	s := runtimeState
+	s.mu.RLock()
+	res := ownerGetSalesResponse{}
 	modelSalesByModel := map[string]int{}
-	for _, chair := range chairs {
-		rides := []Ride{}
-		if err := tx.SelectContext(ctx, &rides, "SELECT rides.* FROM rides JOIN ride_statuses ON rides.id = ride_statuses.ride_id WHERE chair_id = ? AND status = 'COMPLETED' AND updated_at BETWEEN ? AND ? + INTERVAL 999 MICROSECOND", chair.ID, since, until); err != nil {
-			writeError(w, http.StatusInternalServerError, err)
-			return
+	for _, chair := range s.chairs {
+		if chair.OwnerID != owner.ID {
+			continue
 		}
-
-		sales := sumSales(rides)
+		sales := 0
+		for _, id := range s.chairRides[chair.ID] {
+			ride := s.rides[id]
+			if s.latest(ride) == "COMPLETED" && !ride.UpdatedAt.Before(since) && !ride.UpdatedAt.After(until.Add(999*time.Microsecond)) {
+				sales += calculateSale(ride.Ride)
+			}
+		}
 		res.TotalSales += sales
-
-		res.Chairs = append(res.Chairs, chairSales{
-			ID:    chair.ID,
-			Name:  chair.Name,
-			Sales: sales,
-		})
-
+		res.Chairs = append(res.Chairs, chairSales{ID: chair.ID, Name: chair.Name, Sales: sales})
 		modelSalesByModel[chair.Model] += sales
 	}
+	s.mu.RUnlock()
 
 	models := []modelSales{}
 	for model, sales := range modelSalesByModel {
@@ -151,29 +142,8 @@ func ownerGetSales(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, res)
 }
 
-func sumSales(rides []Ride) int {
-	sale := 0
-	for _, ride := range rides {
-		sale += calculateSale(ride)
-	}
-	return sale
-}
-
 func calculateSale(ride Ride) int {
 	return calculateFare(ride.PickupLatitude, ride.PickupLongitude, ride.DestinationLatitude, ride.DestinationLongitude)
-}
-
-type chairWithDetail struct {
-	ID                     string       `db:"id"`
-	OwnerID                string       `db:"owner_id"`
-	Name                   string       `db:"name"`
-	AccessToken            string       `db:"access_token"`
-	Model                  string       `db:"model"`
-	IsActive               bool         `db:"is_active"`
-	CreatedAt              time.Time    `db:"created_at"`
-	UpdatedAt              time.Time    `db:"updated_at"`
-	TotalDistance          int          `db:"total_distance"`
-	TotalDistanceUpdatedAt sql.NullTime `db:"total_distance_updated_at"`
 }
 
 type ownerGetChairResponse struct {
@@ -194,40 +164,21 @@ func ownerGetChairs(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	owner := ctx.Value("owner").(*Owner)
 
-	chairs := []chairWithDetail{}
-	if err := db.SelectContext(ctx, &chairs, `SELECT chairs.id,
-       owner_id,
-       name,
-       access_token,
-       model,
-       is_active,
-       created_at,
-       chairs.updated_at,
-       IFNULL(total_distance, 0) AS total_distance,
-       chair_distance_totals.updated_at AS total_distance_updated_at
-FROM chairs
-       LEFT JOIN chair_distance_totals ON chair_distance_totals.chair_id = chairs.id
-WHERE owner_id = ?
-`, owner.ID); err != nil {
-		writeError(w, http.StatusInternalServerError, err)
-		return
-	}
-
+	s := runtimeState
+	s.mu.RLock()
 	res := ownerGetChairResponse{}
-	for _, chair := range chairs {
-		c := ownerGetChairResponseChair{
-			ID:            chair.ID,
-			Name:          chair.Name,
-			Model:         chair.Model,
-			Active:        chair.IsActive,
-			RegisteredAt:  chair.CreatedAt.UnixMilli(),
-			TotalDistance: chair.TotalDistance,
+	for _, chair := range s.chairs {
+		if chair.OwnerID != owner.ID {
+			continue
 		}
-		if chair.TotalDistanceUpdatedAt.Valid {
-			t := chair.TotalDistanceUpdatedAt.Time.UnixMilli()
-			c.TotalDistanceUpdatedAt = &t
+		d := s.distances[chair.ID]
+		c := ownerGetChairResponseChair{ID: chair.ID, Name: chair.Name, Model: chair.Model, Active: chair.IsActive, RegisteredAt: chair.CreatedAt.UnixMilli(), TotalDistance: d.TotalDistance}
+		if d.UpdatedAt.Valid {
+			at := d.UpdatedAt.Time.UnixMilli()
+			c.TotalDistanceUpdatedAt = &at
 		}
 		res.Chairs = append(res.Chairs, c)
 	}
+	s.mu.RUnlock()
 	writeJSON(w, http.StatusOK, res)
 }

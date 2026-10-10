@@ -33,7 +33,9 @@ func TestChairDistance(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	startTestRuntime(t)
 	checkTotals := func() {
+		flushTestRuntime(t)
 		t.Helper()
 		var mismatches int
 		// Independently recompute the distance and final coordinate from history.
@@ -125,6 +127,7 @@ WHERE d.chair_id IS NULL
 	}
 	execSQL("TRUNCATE chair_distance_totals")
 	execSQL(string(backfill))
+	reloadTestRuntime(t)
 	t.Run("empty single repeated and tied history", func(t *testing.T) {
 		checkTotals()
 		chairs := ownerChairs("distance-owner").Chairs
@@ -180,6 +183,7 @@ WHERE d.chair_id IS NULL
 				t.Fatalf("concurrent coordinate: %d %s", res.Code, res.Body.String())
 			}
 		}
+		flushTestRuntime(t)
 		var locations int
 		if err := db.Get(&locations, "SELECT COUNT(*) FROM chair_locations WHERE chair_id = ?", registered.ID); err != nil || locations != count+6 {
 			t.Fatalf("location count = %d, error = %v", locations, err)
@@ -187,13 +191,17 @@ WHERE d.chair_id IS NULL
 		checkTotals()
 	})
 
-	t.Run("coordinate rollback and ride status", func(t *testing.T) {
+	t.Run("projection failure preserves accepted coordinate and ride status", func(t *testing.T) {
 		execSQL("INSERT INTO rides (id, user_id, chair_id, pickup_latitude, pickup_longitude, destination_latitude, destination_longitude) VALUES ('distance-ride', 'test', ?, 100, 100, 200, 200)", registered.ID)
 		execSQL("INSERT INTO ride_statuses (id, ride_id, status) VALUES ('distance-status', 'distance-ride', 'ENROUTE')")
+		reloadTestRuntime(t)
 		execSQL("CREATE TRIGGER reject_distance_status BEFORE INSERT ON ride_statuses FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'test rollback'")
 		res := coordinate(registered.ID, 100, 100)
+		if err := runtimeState.flush(context.Background()); err == nil {
+			t.Fatal("projection should fail without discarding the accepted update")
+		}
 		execSQL("DROP TRIGGER reject_distance_status")
-		if res.Code != http.StatusInternalServerError {
+		if res.Code != http.StatusOK {
 			t.Fatalf("rollback response: %d %s", res.Code, res.Body.String())
 		}
 		var locations int
@@ -204,6 +212,7 @@ WHERE d.chair_id IS NULL
 		if res := coordinate(registered.ID, 100, 100); res.Code != http.StatusOK {
 			t.Fatalf("pickup: %d %s", res.Code, res.Body.String())
 		}
+		flushTestRuntime(t)
 		var pickup int
 		if err := db.Get(&pickup, "SELECT COUNT(*) FROM ride_statuses WHERE ride_id = 'distance-ride' AND status = 'PICKUP'"); err != nil || pickup != 1 {
 			t.Fatalf("pickup statuses = %d, error = %v", pickup, err)
@@ -227,11 +236,20 @@ WHERE d.chair_id IS NULL
 		if err != nil {
 			t.Fatal(err)
 		}
+		runtimeState.database = db
 		checkTotals()
 		ownerChairs("distance-owner")
 	})
 
 	t.Run("initialize resets totals", func(t *testing.T) {
+		if res := coordinate("distance-history", 123, 456); res.Code != http.StatusOK {
+			t.Fatal("coordinate before initialize failed")
+		}
+		if len(runtimeState.pending) == 0 {
+			t.Fatal("test needs an unprojected update")
+		}
+		sub, unsubscribe := notifications.subscribe("chair", "distance-history")
+		defer unsubscribe()
 		req := httptest.NewRequest(http.MethodPost, "/api/initialize", strings.NewReader(`{"payment_server":"http://localhost:12345"}`))
 		res := httptest.NewRecorder()
 		postInitialize(res, req)
@@ -239,6 +257,14 @@ WHERE d.chair_id IS NULL
 			t.Fatalf("initialize: %d %s", res.Code, res.Body.String())
 		}
 		checkTotals()
+		select {
+		case <-sub.done:
+		default:
+			t.Fatal("initialize did not close the old stream")
+		}
+		if runtimeState.sequence != 0 {
+			t.Fatal("initialize replayed an old WAL generation")
+		}
 		if len(ownerChairs("distance-owner").Chairs) != 0 {
 			t.Fatal("test chairs remain after initialization")
 		}

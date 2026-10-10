@@ -1,15 +1,20 @@
 package main
 
 import (
+	"context"
 	crand "crypto/rand"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strconv"
+	"syscall"
+	"time"
 
 	measurement "github.com/EkeMinusYou/isucon-template/tools/measurement/app"
 	"github.com/go-chi/chi/v5"
@@ -22,8 +27,29 @@ var db *sqlx.DB
 
 func main() {
 	mux := setup()
+	server := &http.Server{Addr: ":8080", Handler: mux}
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	defer signal.Stop(signals)
+	stopped := make(chan error, 1)
+	go func() { stopped <- server.ListenAndServe() }()
 	slog.Info("Listening on :8080")
-	http.ListenAndServe(":8080", mux)
+	select {
+	case <-signals:
+		notifications.reset()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		if err := server.Shutdown(ctx); err != nil {
+			slog.Error("shutdown HTTP server", "error", err)
+		}
+		cancel()
+	case err := <-stopped:
+		if !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("serve HTTP", "error", err)
+		}
+	}
+	if err := runtimeState.close(); err != nil {
+		slog.Error("close runtime state", "error", err)
+	}
 }
 
 func setup() http.Handler {
@@ -67,6 +93,16 @@ func setup() http.Handler {
 	}
 	db = _db
 	db.SetMaxIdleConns(32)
+	directory := os.Getenv("ISURIDE_STATE_DIR")
+	if directory == "" {
+		directory = "../../state"
+	}
+	runtimeState, err = newRideState(context.Background(), db, directory)
+	if err != nil {
+		panic(err)
+	}
+	runtimeState.start()
+
 	measurementServer, err := measurement.Start(measurement.Options{
 		MaxProfileSeconds: 180,
 		Pools:             []measurement.Pool{{DB: db, DatabaseHost: host, Name: "main", Role: "primary"}},
@@ -77,6 +113,7 @@ func setup() http.Handler {
 	_ = measurementServer // The debug listener lives for the application lifetime.
 
 	mux := chi.NewRouter()
+	mux.Use(runtimeStateMiddleware)
 	mux.Use(measurementSessionMiddleware)
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
@@ -140,10 +177,26 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	stateLifecycle.Lock()
+	defer stateLifecycle.Unlock()
+	runtimeState.mu.Lock()
+	runtimeState.ready = false
+	runtimeState.mu.Unlock()
 	notifications.reset()
 
 	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
 		writeError(w, http.StatusInternalServerError, fmt.Errorf("failed to initialize: %s: %w", string(out), err))
+		return
+	}
+	// Initialization discards the previous generation, including accepted
+	// records that have not yet reached the DB projection.
+	if _, err := db.ExecContext(ctx, projectionSchema); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO state_projection (id,generation,applied_seq)
+		VALUES (1,UUID(),0) ON DUPLICATE KEY UPDATE generation=VALUES(generation),applied_seq=0`); err != nil {
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -152,6 +205,13 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	runtimeState.mu.Lock()
+	err := runtimeState.restore(ctx)
+	runtimeState.mu.Unlock()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
 	writeJSON(w, http.StatusOK, postInitializeResponse{Language: "go"})
 }
 

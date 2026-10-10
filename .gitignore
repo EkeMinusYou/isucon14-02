@@ -50,3 +50,6 @@ etc/hosts/*/env.sh
 
 # Python bytecode cache
 __pycache__/
+
+# contest: owner-local WAL stays outside application deployment assets.
+/state/

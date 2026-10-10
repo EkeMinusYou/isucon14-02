@@ -2,57 +2,25 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"strconv"
 	"strings"
+	"sync"
 	"testing"
-
-	"github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
+	"time"
 )
 
 func TestAppGetNearbyChairs(t *testing.T) {
-	address := os.Getenv("ISURIDE_TEST_MYSQL_ADDR")
-	if address == "" {
-		t.Skip("run task test-nearby-chairs with a disposable local MySQL")
-	}
-	cfg := mysql.NewConfig()
-	cfg.User, cfg.Net, cfg.Addr, cfg.ParseTime = "root", "tcp", address, true
-	cfg.DBName = "isuride_nearby_test"
-	testDB, err := sqlx.Connect("mysql", cfg.FormatDSN())
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer testDB.Close()
-	// Session counters belong to this one connection.
-	testDB.SetMaxOpenConns(1)
-	testDB.SetMaxIdleConns(1)
-	previousDB := db
-	db = testDB
-	t.Cleanup(func() { db = previousDB })
-	exec := func(query string, args ...any) {
-		t.Helper()
-		if _, err := testDB.Exec(query, args...); err != nil {
-			t.Fatal(err)
-		}
-	}
-	for _, ddl := range []string{
-		`CREATE TABLE chairs (id VARCHAR(26) PRIMARY KEY, name VARCHAR(30), model TEXT, is_active TINYINT(1))`,
-		`CREATE TABLE rides (id VARCHAR(26) PRIMARY KEY, chair_id VARCHAR(26), created_at DATETIME(6), updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6))`,
-		`CREATE TABLE ride_statuses (id VARCHAR(26) PRIMARY KEY, ride_id VARCHAR(26), status ENUM('MATCHING', 'ENROUTE', 'PICKUP', 'CARRYING', 'ARRIVED', 'COMPLETED') NOT NULL, created_at DATETIME(6), INDEX (ride_id, created_at))`,
-		`CREATE TABLE chair_locations (id VARCHAR(26) PRIMARY KEY, chair_id VARCHAR(26), latitude INTEGER, longitude INTEGER, created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), INDEX (chair_id, created_at))`,
-		`CREATE TABLE chair_distance_totals (chair_id VARCHAR(26) PRIMARY KEY, total_distance BIGINT NOT NULL DEFAULT 0, last_latitude INTEGER NULL, last_longitude INTEGER NULL, updated_at DATETIME(6) NULL)`,
-	} {
-		exec(ddl)
-	}
+	s := memoryTestState(t)
+	previousState, previousDB := runtimeState, db
+	runtimeState, db = s, nil
+	t.Cleanup(func() { runtimeState, db = previousState, previousDB })
 	chair := func(id string, active bool, latitude, longitude int) {
-		exec(`INSERT INTO chairs VALUES (?, ?, 'model', ?)`, id, "name-"+id, active)
-		exec(`INSERT INTO chair_locations VALUES (?, ?, ?, ?, '2026-01-01 00:00:01')`, "loc-"+id, id, latitude, longitude)
-		exec(`INSERT INTO chair_distance_totals (chair_id, last_latitude, last_longitude, updated_at) VALUES (?, ?, ?, '2026-01-01 00:00:01')`, id, latitude, longitude)
+		s.addChair(Chair{ID: id, Name: "name-" + id, Model: "model", IsActive: active})
+		s.distances[id] = distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: int64(latitude), Valid: true}, Longitude: sql.NullInt64{Int64: int64(longitude), Valid: true}, UpdatedAt: sql.NullTime{Time: time.Date(2026, 1, 1, 0, 0, 1, 0, time.UTC), Valid: true}}
 	}
 	coordinate := func(id string, latitude, longitude int) {
 		t.Helper()
@@ -66,27 +34,14 @@ func TestAppGetNearbyChairs(t *testing.T) {
 		}
 	}
 	ride := func(id, chairID, status string, second int) {
-		createdAt := fmt.Sprintf("2026-01-01 00:00:%02d", second)
-		exec(`INSERT INTO rides (id, chair_id, created_at) VALUES (?, ?, ?)`, id, chairID, createdAt)
+		at := time.Date(2026, 1, 1, 0, 0, second, 0, time.UTC)
+		s.addRide(Ride{ID: id, ChairID: sql.NullString{String: chairID, Valid: true}, CreatedAt: at, UpdatedAt: at}, initialFare)
 		if status != "" {
-			exec(`INSERT INTO ride_statuses VALUES (?, ?, ?, ?)`, "status-"+id, id, status, createdAt)
+			s.addStatus(RideStatus{ID: "status-" + id, RideID: id, Status: status, CreatedAt: at})
 		}
-	}
-	selectCount := func() int {
-		t.Helper()
-		var name, value string
-		if err := testDB.QueryRow(`SHOW SESSION STATUS LIKE 'Com_select'`).Scan(&name, &value); err != nil {
-			t.Fatal(err)
-		}
-		count, err := strconv.Atoi(value)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return count
 	}
 	check := func(query string, expectedStatus int, expected map[string]Coordinate) {
 		t.Helper()
-		before := selectCount()
 		response := httptest.NewRecorder()
 		appGetNearbyChairs(response, httptest.NewRequest(http.MethodGet, "/api/app/nearby-chairs?"+query, nil))
 		if response.Code != expectedStatus {
@@ -94,9 +49,6 @@ func TestAppGetNearbyChairs(t *testing.T) {
 		}
 		if expectedStatus != http.StatusOK {
 			return
-		}
-		if got := selectCount() - before; got != 3 {
-			t.Fatalf("SELECT count = %d, want 3", got)
 		}
 		var result appGetNearbyChairsResponse
 		if err := json.Unmarshal(response.Body.Bytes(), &result); err != nil {
@@ -122,7 +74,7 @@ func TestAppGetNearbyChairs(t *testing.T) {
 		chair("inactive", false, 0, 0)
 		chair("finished", true, 0, 0)
 		ride("finished-old", "finished", "ARRIVED", 1)
-		exec(`INSERT INTO ride_statuses VALUES ('finished-new', 'finished-old', 'COMPLETED', '2026-01-01 00:00:02')`)
+		s.addStatus(RideStatus{ID: "finished-new", RideID: "finished-old", Status: "COMPLETED", CreatedAt: time.Date(2026, 1, 1, 0, 0, 2, 0, time.UTC)})
 		ride("finished-next", "finished", "COMPLETED", 3)
 		// A completed newer ride must not hide an older unfinished ride.
 		chair("busy", true, 0, 0)
@@ -133,8 +85,7 @@ func TestAppGetNearbyChairs(t *testing.T) {
 			chair(id, true, 0, 0)
 			ride("ride-"+id, id, status, 1)
 		}
-		exec(`INSERT INTO chairs VALUES ('no-location', 'name-no-location', 'model', TRUE)`)
-		exec(`INSERT INTO chair_distance_totals (chair_id) VALUES ('no-location')`)
+		s.addChair(Chair{ID: "no-location", Name: "name-no-location", Model: "model", IsActive: true})
 		chair("moved", true, 100, 100)
 		coordinate("moved", -1, -1)
 		chair("moved-away", true, 0, 0)
@@ -145,7 +96,7 @@ func TestAppGetNearbyChairs(t *testing.T) {
 		check("latitude=0&longitude=0&distance=0", http.StatusOK, map[string]Coordinate{"idle": {}, "finished": {}})
 		check("latitude=0&longitude=0&distance=-1", http.StatusOK, map[string]Coordinate{})
 	})
-	t.Run("fresh state and constant query count", func(t *testing.T) {
+	t.Run("fresh state without SQL", func(t *testing.T) {
 		coordinate("idle", 200, 200)
 		ride("moved-busy", "moved", "ENROUTE", 4)
 		for i := 0; i < 100; i++ {
@@ -163,5 +114,113 @@ func TestAppGetNearbyChairs(t *testing.T) {
 	})
 	for _, query := range []string{"", "latitude=x&longitude=0", "latitude=0&longitude=x", "latitude=0&longitude=0&distance=x"} {
 		check(query, http.StatusBadRequest, nil)
+	}
+}
+
+func TestNearbyCompletionPublication(t *testing.T) {
+	s := memoryTestState(t)
+	s.addChair(Chair{ID: "c", IsActive: true})
+	seedMemoryRide(s, "r", "c", time.Now().Add(-time.Hour))
+	for _, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
+		s.addStatus(s.newStatus(s.rides["r"], status, time.Now().UTC()))
+	}
+	if _, err := s.complete("r", 5); err != nil {
+		t.Fatal(err)
+	}
+	// A blocked evaluation response must remain hidden even beyond the grace.
+	if available, err := s.nearbyAvailable("c", time.Now().Add(time.Hour)); available || err != nil {
+		t.Fatalf("unflushed completion became available: %v %v", available, err)
+	}
+	s.finishCompletionResponse("r")
+	ready := s.rides["r"].NearbyAvailableAt
+	for _, elapsed := range []time.Duration{time.Millisecond, 6 * time.Millisecond, nearbyCompletionGrace - time.Nanosecond} {
+		if available, err := s.nearbyAvailable("c", ready.Add(-nearbyCompletionGrace+elapsed)); available || err != nil {
+			t.Fatalf("completion published at %v: %v %v", elapsed, available, err)
+		}
+	}
+	if available, err := s.nearbyAvailable("c", ready); !available || err != nil {
+		t.Fatalf("completion stayed hidden after grace: %v %v", available, err)
+	}
+	// A newly assigned ride must never be hidden by the old completion grace.
+	seedMemoryRide(s, "next", "c", time.Now().UTC())
+	if available, err := s.nearbyAvailable("c", ready.Add(time.Hour)); available || err != nil {
+		t.Fatalf("busy chair became available: %v %v", available, err)
+	}
+}
+
+type heldEvaluationResponse struct {
+	*httptest.ResponseRecorder
+	flushing chan struct{}
+	release  chan struct{}
+}
+
+func (w *heldEvaluationResponse) FlushError() error {
+	close(w.flushing)
+	<-w.release
+	w.ResponseRecorder.Flush()
+	return nil
+}
+
+func TestNearbyWhileEvaluationResponseIsBlocked(t *testing.T) {
+	notificationTestDB(t)
+	insertTestRide(t, "r", "2026-01-01", true)
+	for i, status := range []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
+		insertTestStatus("r", fmt.Sprintf("s%d", i), status)
+	}
+	payment := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusNoContent) }))
+	defer payment.Close()
+	db.MustExec(`INSERT INTO settings (name, value) VALUES ('payment_gateway_url', ?)`, payment.URL)
+	db.MustExec(`INSERT INTO payment_tokens (user_id, token) VALUES ('u', 'payment')`)
+	startTestRuntime(t)
+	if _, err := runtimeState.coordinate("c", Coordinate{}); err != nil {
+		t.Fatal(err)
+	}
+	response := &heldEvaluationResponse{ResponseRecorder: httptest.NewRecorder(), flushing: make(chan struct{}), release: make(chan struct{})}
+	release := sync.OnceFunc(func() { close(response.release) })
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(`{"evaluation":5}`))
+		req.SetPathValue("ride_id", "r")
+		req = req.WithContext(context.WithValue(req.Context(), "user", &User{ID: "u"}))
+		appPostRideEvaluatation(response, req)
+	}()
+	defer func() { release(); <-done }()
+	select {
+	case <-response.flushing:
+	case <-done:
+		t.Fatalf("evaluation returned before flush: %d %s", response.Code, response.Body.String())
+	case <-time.After(5 * time.Second):
+		t.Fatal("evaluation did not reach response flush")
+	}
+	res := httptest.NewRecorder()
+	appGetNearbyChairs(res, httptest.NewRequest(http.MethodGet, "/api/app/nearby-chairs?latitude=0&longitude=0", nil))
+	var nearby appGetNearbyChairsResponse
+	if res.Code != http.StatusOK || json.Unmarshal(res.Body.Bytes(), &nearby) != nil || len(nearby.Chairs) != 0 {
+		t.Fatalf("unflushed evaluation exposed chair: %d %s", res.Code, res.Body.String())
+	}
+	release()
+	<-done
+	if response.Code != http.StatusOK || !response.Flushed {
+		t.Fatalf("evaluation response was not flushed: %+v", response)
+	}
+	s := runtimeState
+	s.mu.RLock()
+	ready := s.rides["r"].NearbyAvailableAt
+	available, err := s.nearbyAvailable("c", ready)
+	s.mu.RUnlock()
+	if !available || err != nil {
+		t.Fatalf("flushed completion did not reopen chair: %v %v", available, err)
+	}
+	flushTestRuntime(t)
+	if err := s.restore(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	completed := s.statuses[s.rides["r"].Statuses[len(s.rides["r"].Statuses)-1]].CreatedAt
+	if available, err := s.nearbyAvailable("c", completed.Add(6*time.Millisecond)); available || err != nil {
+		t.Fatalf("recovery lost completion grace: %v %v", available, err)
+	}
+	if available, err := s.nearbyAvailable("c", completed.Add(nearbyCompletionGrace)); !available || err != nil {
+		t.Fatalf("recovered completion stayed hidden: %v %v", available, err)
 	}
 }
