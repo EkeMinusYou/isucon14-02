@@ -108,6 +108,7 @@ func ownerGetSales(w http.ResponseWriter, r *http.Request) {
 	}
 
 	owner := r.Context().Value("owner").(*Owner)
+	until = until.Add(999 * time.Microsecond)
 
 	s := runtimeState
 	s.mu.RLock()
@@ -117,13 +118,7 @@ func ownerGetSales(w http.ResponseWriter, r *http.Request) {
 		if chair.OwnerID != owner.ID {
 			continue
 		}
-		sales := 0
-		for _, id := range s.chairRides[chair.ID] {
-			ride := s.rides[id]
-			if s.latest(ride) == "COMPLETED" && !ride.UpdatedAt.Before(since) && !ride.UpdatedAt.After(until.Add(999*time.Microsecond)) {
-				sales += calculateSale(ride.Ride)
-			}
-		}
+		sales := s.salesBetween(chair.ID, since, until)
 		res.TotalSales += sales
 		res.Chairs = append(res.Chairs, chairSales{ID: chair.ID, Name: chair.Name, Sales: sales})
 		modelSalesByModel[chair.Model] += sales
