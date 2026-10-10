@@ -83,7 +83,7 @@ func TestMatching(t *testing.T) {
 		t.Helper()
 		notifications.reset()
 		pool.MustExec(string(schema))
-		pool.MustExec(`INSERT INTO chair_models (name, speed) VALUES ('model', 1), ('fast', 4)`)
+		pool.MustExec("INSERT INTO chair_models (name, speed) VALUES ('model', 2), ('fast', 10)")
 		pool.MustExec(`INSERT INTO users
 			(id, username, firstname, lastname, date_of_birth, access_token, invitation_code)
 			VALUES ('user', 'user', 'Test', 'User', '2000-01-01', 'token', 'invite')`)
@@ -91,11 +91,11 @@ func TestMatching(t *testing.T) {
 	chair := func(id string, active bool) {
 		pool.MustExec(`INSERT INTO chairs (id, owner_id, name, model, is_active, access_token)
 			VALUES (?, 'owner', ?, 'model', ?, ?)`, id, id, active, id)
-		pool.MustExec(`INSERT INTO chair_distance_totals (chair_id) VALUES (?)`, id)
+		pool.MustExec(`INSERT INTO chair_distance_totals (chair_id, last_latitude, last_longitude)
+			VALUES (?, 0, 0)`, id)
 	}
 	location := func(id string, latitude, longitude int) {
-		pool.MustExec(`UPDATE chair_distance_totals SET last_latitude = ?, last_longitude = ? WHERE chair_id = ?`,
-			latitude, longitude, id)
+		pool.MustExec(`UPDATE chair_distance_totals SET last_latitude = ?, last_longitude = ? WHERE chair_id = ?`, latitude, longitude, id)
 	}
 	ride := func(id string, chairID any, createdAt time.Time) {
 		pool.MustExec(`INSERT INTO rides (id, user_id, chair_id, pickup_latitude,
@@ -118,8 +118,25 @@ func TestMatching(t *testing.T) {
 			t.Fatalf("%s: got %d, want %d", query, got, want)
 		}
 	}
+	waitForLock := func(t *testing.T) {
+		t.Helper()
+		deadline := time.Now().Add(5 * time.Second)
+		for {
+			var waits int
+			if err := pool.Get(&waits, "SELECT COUNT(*) FROM performance_schema.data_lock_waits"); err != nil {
+				t.Fatal(err)
+			}
+			if waits > 0 {
+				return
+			}
+			if time.Now().After(deadline) {
+				t.Fatal("matcher did not wait for the chair transaction")
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
+	}
 
-	t.Run("PickupTimeUsesAllCandidatesAndPreservesOldestFirst", func(t *testing.T) {
+	t.Run("BatchTravelTimeUsesAllKnownCandidates", func(t *testing.T) {
 		reset(t)
 		chair("a-near", true)
 		location("a-near", 0, 3)
@@ -127,6 +144,7 @@ func TestMatching(t *testing.T) {
 		location("z-fast", 4, 4)
 		pool.MustExec(`UPDATE chairs SET model = 'fast' WHERE id = 'z-fast'`)
 		chair("unknown-position", true)
+		pool.MustExec("UPDATE chair_distance_totals SET last_latitude = NULL, last_longitude = NULL WHERE chair_id = 'unknown-position'")
 		chair("unknown-model", true)
 		location("unknown-model", 0, 0)
 		pool.MustExec(`UPDATE chairs SET model = 'missing' WHERE id = 'unknown-model'`)
@@ -136,10 +154,10 @@ func TestMatching(t *testing.T) {
 		if status := request(); status != http.StatusNoContent {
 			t.Fatalf("matching status: %d", status)
 		}
-		// The older ride gets ETA 8/4 instead of 3/1 even though the newer
-		// ride is already at that chair's position. Each chair is used once.
-		assertCount(t, `SELECT COUNT(*) FROM rides WHERE id = 'oldest' AND chair_id = 'z-fast'`, 1)
-		assertCount(t, `SELECT COUNT(*) FROM rides WHERE id = 'newer' AND chair_id = 'a-near'`, 1)
+		// Reserve the fast chair for the ride at its current position, minimizing
+		// the total time of the batch instead of greedily serving the first ride.
+		assertCount(t, `SELECT COUNT(*) FROM rides WHERE id = 'oldest' AND chair_id = 'a-near'`, 1)
+		assertCount(t, `SELECT COUNT(*) FROM rides WHERE id = 'newer' AND chair_id = 'z-fast'`, 1)
 	})
 
 	t.Run("ManhattanDistanceAndFractionalPickupTime", func(t *testing.T) {
@@ -162,6 +180,7 @@ func TestMatching(t *testing.T) {
 	t.Run("UnknownMetadataRemainsAvailableAsFallback", func(t *testing.T) {
 		reset(t)
 		chair("no-position", true)
+		pool.MustExec("UPDATE chair_distance_totals SET last_latitude = NULL, last_longitude = NULL WHERE chair_id = 'no-position'")
 		chair("no-model", true)
 		location("no-model", 0, 0)
 		pool.MustExec(`UPDATE chairs SET model = 'missing' WHERE id = 'no-model'`)
@@ -233,6 +252,40 @@ func TestMatching(t *testing.T) {
 		}
 	})
 
+	t.Run("TravelTimeAssignmentPreservesRideCoordinates", func(t *testing.T) {
+		reset(t)
+		chair("fast", true)
+		chair("slow", true)
+		pool.MustExec("UPDATE chairs SET model = 'fast' WHERE id = 'fast'")
+		ride("short", nil, time.Unix(1_700_000_000, 0))
+		ride("long", nil, time.Unix(1_700_000_001, 0))
+		pool.MustExec("UPDATE rides SET destination_latitude = 100, destination_longitude = 0 WHERE id = 'long'")
+		if status := request(); status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'long' AND chair_id = 'fast' AND pickup_latitude = 0 AND pickup_longitude = 0 AND destination_latitude = 100 AND destination_longitude = 0", 1)
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'short' AND chair_id = 'slow' AND pickup_latitude = 0 AND pickup_longitude = 0 AND destination_latitude = 1 AND destination_longitude = 1", 1)
+	})
+
+	t.Run("UnknownMetadataDoesNotDisplaceKnownChair", func(t *testing.T) {
+		reset(t)
+		chair("no-position", true)
+		pool.MustExec("UPDATE chair_distance_totals SET last_latitude = NULL, last_longitude = NULL WHERE chair_id = 'no-position'")
+		chair("no-model", true)
+		chair("zero-speed", true)
+		pool.MustExec("UPDATE chair_distance_totals SET last_latitude = NULL, last_longitude = NULL WHERE chair_id = 'no-position'")
+		pool.MustExec("UPDATE chairs SET model = 'unknown' WHERE id = 'no-model'")
+		pool.MustExec("INSERT INTO chair_models (name, speed) VALUES ('stationary', 0)")
+		pool.MustExec("UPDATE chairs SET model = 'stationary' WHERE id = 'zero-speed'")
+		chair("known", true)
+		location("known", 1000000, 1000000)
+		ride("waiting", nil, time.Unix(1_700_000_000, 0))
+		if status := request(); status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'waiting' AND chair_id = 'known'", 1)
+	})
+
 	t.Run("CompletionNotificationGatesReuse", func(t *testing.T) {
 		reset(t)
 		for _, id := range []string{"new", "completed", "unsent", "busy"} {
@@ -284,20 +337,7 @@ func TestMatching(t *testing.T) {
 		activity.MustExec("UPDATE chairs SET is_active = FALSE WHERE id = 'chair'")
 		result := make(chan int, 1)
 		go func() { result <- request() }()
-		deadline := time.Now().Add(5 * time.Second)
-		for {
-			var waits int
-			if err := pool.Get(&waits, "SELECT COUNT(*) FROM performance_schema.data_lock_waits"); err != nil {
-				t.Fatal(err)
-			}
-			if waits > 0 {
-				break
-			}
-			if time.Now().After(deadline) {
-				t.Fatal("matcher did not wait for the activity transaction")
-			}
-			time.Sleep(10 * time.Millisecond)
-		}
+		waitForLock(t)
 		if err := activity.Commit(); err != nil {
 			t.Fatal(err)
 		}
@@ -305,6 +345,59 @@ func TestMatching(t *testing.T) {
 			t.Fatalf("matching status: %d", status)
 		}
 		assertCount(t, "SELECT COUNT(*) FROM rides WHERE chair_id IS NOT NULL", 0)
+	})
+
+	t.Run("PositionsRefreshedAfterLockWait", func(t *testing.T) {
+		reset(t)
+		chair("chair-a", true)
+		chair("chair-b", true)
+		pool.MustExec("UPDATE chair_distance_totals SET last_latitude = 10 WHERE chair_id = 'chair-b'")
+		ride("ride-a", nil, time.Unix(1_700_000_000, 0))
+		ride("ride-b", nil, time.Unix(1_700_000_001, 0))
+		pool.MustExec("UPDATE rides SET pickup_latitude = 10, destination_latitude = 11 WHERE id = 'ride-b'")
+		positions := pool.MustBegin()
+		defer positions.Rollback()
+		positions.MustExec("SELECT id FROM chairs WHERE id = 'chair-a' FOR UPDATE")
+		result := make(chan int, 1)
+		go func() { result <- request() }()
+		waitForLock(t)
+		positions.MustExec("UPDATE chair_distance_totals SET last_latitude = IF(chair_id = 'chair-a', 10, 0)")
+		if err := positions.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		if status := <-result; status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'ride-a' AND chair_id = 'chair-b'", 1)
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'ride-b' AND chair_id = 'chair-a'", 1)
+	})
+
+	t.Run("OccupancyRecheckedAndOldestRideKeptAfterLockWait", func(t *testing.T) {
+		reset(t)
+		chair("chair-a", true)
+		chair("chair-b", true)
+		ride("old-long", nil, time.Unix(1_700_000_000, 0))
+		ride("new-short", nil, time.Unix(1_700_000_001, 0))
+		pool.MustExec("UPDATE rides SET destination_latitude = 100 WHERE id = 'old-long'")
+		otherMatcher := pool.MustBegin()
+		defer otherMatcher.Rollback()
+		otherMatcher.MustExec("SELECT id FROM chairs WHERE id = 'chair-a' FOR UPDATE")
+		result := make(chan int, 1)
+		go func() { result <- request() }()
+		waitForLock(t)
+		otherMatcher.MustExec(`INSERT INTO rides (id, user_id, chair_id, pickup_latitude,
+			pickup_longitude, destination_latitude, destination_longitude)
+			VALUES ('previous', 'user', 'chair-a', 0, 0, 1, 1)`)
+		otherMatcher.MustExec("INSERT INTO ride_statuses (id, ride_id, status) VALUES ('previous-matching', 'previous', 'MATCHING')")
+		if err := otherMatcher.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		if status := <-result; status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'old-long' AND chair_id = 'chair-b'", 1)
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE id = 'new-short' AND chair_id IS NULL", 1)
+		assertCount(t, "SELECT COUNT(*) FROM rides WHERE chair_id = 'chair-a'", 1)
 	})
 
 	t.Run("FailedBatchRollsBack", func(t *testing.T) {
