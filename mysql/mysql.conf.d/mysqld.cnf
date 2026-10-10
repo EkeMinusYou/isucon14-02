@@ -12,6 +12,11 @@
 # The following values assume you have at least 32M ram
 
 [mysqld]
+innodb_buffer_pool_size = 1G
+innodb_flush_log_at_trx_commit = 2
+innodb_flush_method = O_DIRECT
+disable-log-bin = 1
+max_connections = 10000
 #
 # * Basic Settings
 #
