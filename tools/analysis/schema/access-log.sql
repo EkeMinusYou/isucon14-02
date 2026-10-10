@@ -26,7 +26,7 @@ with routes as (
         -- # <<< contest values <<<
     ] as patterns
 ),
-requests as (
+requests as materialized (
     select
         regexp_extract(filename, 'runs/([^/]+)/', 1) as run_id,
         regexp_replace(regexp_extract(filename, '/access-([^/]+)$', 1),
@@ -61,6 +61,14 @@ requests as (
             'session_id': 'VARCHAR'
         })
 ),
+-- Parse each log once and normalize each distinct URI once. Repeated requests
+-- often share the same URI throughout a RUN.
+normalized_routes as materialized (
+    select
+        r.uri,
+        coalesce(list_filter(g.patterns, lambda p: regexp_matches(r.uri, p))[1], r.uri) as route
+    from (select distinct uri from requests) r, routes g
+),
 buckets as (
     select
         r.run_id,
@@ -71,7 +79,7 @@ buckets as (
              as timestamptz) as ts,
         cast(5 as integer) as bucket_seconds,
         r.method,
-        coalesce(list_filter(g.patterns, lambda p: regexp_matches(r.uri, p))[1], r.uri) as route,
+        g.route,
         count(*) as requests,
         count(*) filter (where r.status between 200 and 299) as status_2xx,
         count(*) filter (where r.status between 300 and 399) as status_3xx,
@@ -82,7 +90,8 @@ buckets as (
         sum(r.upstream_time_sec) as sum_upstream_time_sec,
         count(r.upstream_time_sec) as upstream_time_samples,
         sum(r.body_bytes) as sum_body_bytes
-    from requests r, routes g
+    from requests r
+    join normalized_routes g on r.uri is not distinct from g.uri
     where r.logged_at_epoch is not null
     group by all
 ),
