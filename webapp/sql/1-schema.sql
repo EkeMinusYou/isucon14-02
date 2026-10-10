@@ -168,7 +168,6 @@ CREATE TABLE coupons
 DROP TABLE IF EXISTS state_projection;
 CREATE TABLE state_projection (
   id TINYINT NOT NULL PRIMARY KEY,
-  generation VARCHAR(36) NOT NULL,
-  applied_seq BIGINT UNSIGNED NOT NULL DEFAULT 0
+  generation VARCHAR(36) NOT NULL
 );
 INSERT INTO state_projection (id, generation) VALUES (1, UUID());

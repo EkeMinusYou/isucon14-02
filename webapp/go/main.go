@@ -190,13 +190,13 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Initialization discards the previous generation, including accepted
-	// records that have not yet reached the DB projection.
-	if _, err := db.ExecContext(ctx, projectionSchema); err != nil {
+	// records persisted exclusively in the WAL.
+	if _, err := db.ExecContext(ctx, generationSchema); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO state_projection (id,generation,applied_seq)
-		VALUES (1,UUID(),0) ON DUPLICATE KEY UPDATE generation=VALUES(generation),applied_seq=0`); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO state_projection (id,generation)
+		VALUES (1,UUID()) ON DUPLICATE KEY UPDATE generation=VALUES(generation)`); err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}

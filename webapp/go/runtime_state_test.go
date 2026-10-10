@@ -28,19 +28,36 @@ func startTestRuntime(t *testing.T) {
 
 func reloadTestRuntime(t *testing.T) {
 	t.Helper()
-	flushTestRuntime(t)
 	if err := runtimeState.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 }
 
-func flushTestRuntime(t *testing.T) {
+// Read immutable history from disk without retaining a projection backlog.
+func readTestWAL(t *testing.T, s *rideState) []stateRecord {
 	t.Helper()
-	for len(runtimeState.pending) != 0 {
-		if err := runtimeState.flush(context.Background()); err != nil {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	f, err := os.Open(s.wal.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	if _, err := readWALRecord(f); err != nil {
+		t.Fatal(err)
+	}
+	var records []stateRecord
+	for {
+		record, err := readWALRecord(f)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
 			t.Fatal(err)
 		}
+		records = append(records, record)
 	}
+	return records
 }
 
 func memoryTestState(t *testing.T) *rideState {
@@ -114,7 +131,7 @@ func TestCoordinatesAndTransitionsWithoutDB(t *testing.T) {
 		t.Fatal("incorrect distance or stats")
 	}
 	var locations int
-	for _, record := range s.pending {
+	for _, record := range readTestWAL(t, s) {
 		if record.Location != nil {
 			locations++
 		}
@@ -138,16 +155,17 @@ func TestConcurrentCoordinatesRetainOrderedHistory(t *testing.T) {
 		}(i)
 	}
 	wg.Wait()
-	if len(s.pending) != 64 {
+	records := readTestWAL(t, s)
+	if len(records) != 64 {
 		t.Fatal("accepted history missing")
 	}
 	distance := 0
-	for i, record := range s.pending {
+	for i, record := range records {
 		if record.Sequence != uint64(i+1) {
 			t.Fatal("unordered WAL")
 		}
 		if i > 0 {
-			prev := s.pending[i-1].Location
+			prev := records[i-1].Location
 			if !record.Location.CreatedAt.After(prev.CreatedAt) {
 				t.Fatal("coordinates need strictly increasing timestamps")
 			}
@@ -168,7 +186,7 @@ func TestFailedWALDoesNotPublish(t *testing.T) {
 	if _, err := s.coordinate("c", Coordinate{1, 2}); err == nil {
 		t.Fatal("closed WAL accepted a coordinate")
 	}
-	if s.sequence != 0 || len(s.pending) != 0 || s.distances["c"].UpdatedAt.Valid {
+	if s.sequence != 0 || s.distances["c"].UpdatedAt.Valid {
 		t.Fatal("failed append changed memory")
 	}
 }
@@ -192,7 +210,7 @@ func TestWALFramingAndRecovery(t *testing.T) {
 			case "sequence":
 				writeWALRecord(s.wal, stateRecord{Version: 1, Generation: "test", Sequence: 3})
 			}
-			s.pending, s.sequence = nil, 0
+			s.sequence = 0
 			s.distances = map[string]distanceTotal{}
 			err := s.recoverWAL()
 			if damaged == "checksum" || damaged == "sequence" {
@@ -200,7 +218,7 @@ func TestWALFramingAndRecovery(t *testing.T) {
 					t.Fatal("corrupt WAL accepted")
 				}
 			} else {
-				if err != nil || s.sequence != 1 || len(s.pending) != 1 || !s.distances["c"].UpdatedAt.Valid {
+				if err != nil || s.sequence != 1 || !s.distances["c"].UpdatedAt.Valid {
 					t.Fatalf("recovery: %v", err)
 				}
 				info, _ := s.wal.Stat()
@@ -225,9 +243,10 @@ func TestWALExclusiveOwner(t *testing.T) {
 	}
 }
 
-func TestRuntimeRecoveryAndProjection(t *testing.T) {
+func TestRuntimeRecoveryFromWAL(t *testing.T) {
 	notificationTestDB(t)
-	insertTestRide(t, "a", "2026-01-01", true)
+	insertTestRide(t, "a", "2026-01-01", false)
+	db.MustExec(`UPDATE chairs SET is_active=0 WHERE id='c'`)
 	insertTestStatus("a", "a0", "MATCHING")
 	db.MustExec(`INSERT INTO chair_distance_totals (chair_id) VALUES ('c')`)
 	directory := t.TempDir()
@@ -238,6 +257,12 @@ func TestRuntimeRecoveryAndProjection(t *testing.T) {
 	previous := runtimeState
 	runtimeState = s
 	t.Cleanup(func() { runtimeState.close(); runtimeState = previous })
+	if err := s.activity("c", true); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.match(); err != nil {
+		t.Fatal(err)
+	}
 	if err := s.chairStatus("c", "a", "ENROUTE"); err != nil {
 		t.Fatal(err)
 	}
@@ -257,10 +282,13 @@ func TestRuntimeRecoveryAndProjection(t *testing.T) {
 	if err != nil || len(events) != 6 {
 		t.Fatalf("history: %v %v", events, err)
 	}
-	for _, event := range events {
+	for _, event := range events[:len(events)-1] {
 		if err := acknowledgeNotification(context.Background(), "chair", event.statusID); err != nil {
 			t.Fatal(err)
 		}
+	}
+	if err := acknowledgeNotification(context.Background(), "app", events[0].statusID); err != nil {
+		t.Fatal(err)
 	}
 	sequence := s.sequence
 	if err := s.close(); err != nil {
@@ -272,29 +300,34 @@ func TestRuntimeRecoveryAndProjection(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if s.sequence != sequence || s.latest(s.rides["a"]) != "COMPLETED" || s.distances["c"].TotalDistance != 20 || s.stats["c"].Count != 1 {
+	if s.sequence != sequence || s.latest(s.rides["a"]) != "COMPLETED" || s.distances["c"].TotalDistance != 20 || s.stats["c"].Count != 1 || !s.chairs["c"].IsActive || s.rides["a"].ChairID.String != "c" {
 		t.Fatal("unprojected state not recovered")
 	}
 	replay, err := loadNotifications(context.Background(), "chair", "c", events[3].eventID)
 	if err != nil || len(replay) != 2 {
 		t.Fatalf("cursor replay after restart: %v %v", replay, err)
 	}
-	// A SQL failure must leave the projection marker and all rows unchanged.
-	db.MustExec(`CREATE TRIGGER reject_projection BEFORE INSERT ON ride_statuses FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'test failure'`)
-	if err := s.flush(context.Background()); err == nil {
-		t.Fatal("projection should fail")
-	}
+	// The DB stays at its seed state even after all accepted mutations.
 	var count int
-	db.Get(&count, `SELECT COUNT(*) FROM chair_locations`)
-	if count != 0 || s.applied != 0 || len(s.pending) == 0 {
-		t.Fatal("failed projection committed partial rows")
+	if err := db.Get(&count, `SELECT COUNT(*) FROM chair_locations`); err != nil || count != 0 {
+		t.Fatalf("coordinate SQL projection: %d %v", count, err)
 	}
-	db.MustExec(`DROP TRIGGER reject_projection`)
-	flushTestRuntime(t)
-	db.Get(&count, `SELECT COUNT(*) FROM ride_statuses WHERE ride_id='a'`)
-	if count != 6 {
-		t.Fatal("projection lost transitions")
+	if err := db.Get(&count, `SELECT COUNT(*) FROM ride_statuses WHERE ride_id='a'`); err != nil || count != 1 {
+		t.Fatalf("status SQL projection: %d %v", count, err)
 	}
+	if _, reusable := s.matchingChairs["c"]; reusable {
+		t.Fatal("chair reused before recovered completion ACK")
+	}
+	if s.statuses[events[0].statusID].AppSentAt == nil {
+		t.Fatal("app ACK not recovered")
+	}
+	if err := acknowledgeNotification(context.Background(), "chair", events[len(events)-1].statusID); err != nil {
+		t.Fatal(err)
+	}
+	if _, reusable := s.matchingChairs["c"]; !reusable {
+		t.Fatal("completion ACK did not release chair")
+	}
+	// A second ordinary restart must neither lose nor double-count history.
 	if err := s.close(); err != nil {
 		t.Fatal(err)
 	}
@@ -303,52 +336,52 @@ func TestRuntimeRecoveryAndProjection(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if len(s.pending) != 0 || s.stats["c"].Count != 1 || s.distances["c"].TotalDistance != 20 {
-		t.Fatal("projected WAL applied twice")
-	}
-	// Simulate an ambiguous commit by replaying its immutable batch again.
-	if _, err := s.coordinate("c", Coordinate{20, 20}); err != nil {
-		t.Fatal(err)
-	}
-	batch := append([]stateRecord(nil), s.pending...)
-	flushTestRuntime(t)
-	s.pending = batch
-	flushTestRuntime(t)
-	db.Get(&count, `SELECT COUNT(*) FROM chair_locations`)
-	if count != 3 {
-		t.Fatal("projection retry duplicated history")
+	if _, reusable := s.matchingChairs["c"]; s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 4 || s.distances["c"].TotalDistance != 20 || !reusable {
+		t.Fatal("full WAL replay duplicated totals")
 	}
 	if err := s.close(); err != nil {
 		t.Fatal(err)
 	}
 	// A deliberate DB initialization invalidates the old generation's WAL.
-	db.MustExec(`UPDATE state_projection SET generation=UUID(),applied_seq=0`)
+	db.MustExec(`UPDATE state_projection SET generation=UUID()`)
 	s, err = newRideState(context.Background(), db, directory)
 	if err != nil {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if s.sequence != 0 || len(s.pending) != 0 {
+	if s.sequence != 0 || s.latest(s.rides["a"]) != "MATCHING" || s.distances["c"].UpdatedAt.Valid {
 		t.Fatal("old generation replayed")
+	}
+	if err := acknowledgeNotificationGeneration(context.Background(), "chair", events[0].statusID, events[0].generation); err == nil {
+		t.Fatal("old-generation ACK accepted")
 	}
 	if _, err := os.Stat(filepath.Join(directory, "state.wal")); err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestProjectionBacklogRejectsBeforeAppend(t *testing.T) {
+func TestWALAcceptsBeyondFormerProjectionLimit(t *testing.T) {
 	s := memoryTestState(t)
 	s.addChair(Chair{ID: "c"})
-	s.pending = make([]stateRecord, 32768)
-	if _, err := s.coordinate("c", Coordinate{1, 1}); err == nil {
-		t.Fatal("full backlog accepted a coordinate")
+	for i := 0; i < 32769; i++ {
+		if _, err := s.coordinate("c", Coordinate{i, i}); err != nil {
+			t.Fatal(err)
+		}
 	}
-	if s.sequence != 0 || s.distances["c"].UpdatedAt.Valid {
-		t.Fatal("backlog rejection changed state")
+	if s.sequence != 32769 || s.distances["c"].TotalDistance != 65536 {
+		t.Fatal("accepted history missing")
+	}
+	s.sequence = 0
+	s.distances = map[string]distanceTotal{}
+	if err := s.recoverWAL(); err != nil {
+		t.Fatal(err)
+	}
+	if s.sequence != 32769 || s.distances["c"].TotalDistance != 65536 {
+		t.Fatal("long WAL not recovered")
 	}
 }
 
-func TestNewRideAndCouponBeforeOldCompletionProjection(t *testing.T) {
+func TestNewRideAndCouponWithWALCompletion(t *testing.T) {
 	notificationTestDB(t)
 	insertTestRide(t, "old", "2026-01-01", true)
 	insertTestStatus("old", "old0", "MATCHING")
@@ -458,52 +491,22 @@ func TestRecoveredChairOrderFollowsAssignment(t *testing.T) {
 	}
 }
 
-func TestBackgroundProjection(t *testing.T) {
-	notificationTestDB(t)
-	s, err := newRideState(context.Background(), db, t.TempDir())
-	if err != nil {
-		t.Fatal(err)
-	}
-	previous := runtimeState
-	runtimeState = s
+func TestBackgroundWALSyncWithoutSQLProjection(t *testing.T) {
+	s := memoryTestState(t)
+	s.addChair(Chair{ID: "c"})
 	s.start()
-	t.Cleanup(func() { s.close(); runtimeState = previous })
-	var wg sync.WaitGroup
 	for i := 0; i < 128; i++ {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-			if _, err := s.coordinate("c", Coordinate{i, -i}); err != nil {
-				t.Error(err)
-			}
-		}(i)
-	}
-	wg.Wait()
-	deadline := time.Now().Add(5 * time.Second)
-	for {
-		s.mu.RLock()
-		applied, sequence, pending := s.applied, s.sequence, len(s.pending)
-		s.mu.RUnlock()
-		if applied == sequence && pending == 0 {
-			break
+		if _, err := s.coordinate("c", Coordinate{i, -i}); err != nil {
+			t.Fatal(err)
 		}
-		if time.Now().After(deadline) {
-			t.Fatal("background worker did not project accepted records")
-		}
-		time.Sleep(10 * time.Millisecond)
 	}
-	var count int
-	if err := db.Get(&count, `SELECT COUNT(*) FROM chair_locations WHERE chair_id='c'`); err != nil || count != 128 {
-		t.Fatalf("projected history: %d %v", count, err)
-	}
-	var expected, actual int
-	if err := db.Get(&expected, `SELECT SUM(IFNULL(distance,0)) FROM (
-		SELECT ABS(latitude-LAG(latitude) OVER (ORDER BY created_at,id)) + ABS(longitude-LAG(longitude) OVER (ORDER BY created_at,id)) distance
-		FROM chair_locations WHERE chair_id='c') steps`); err != nil {
+	// Let the unchanged sync interval fire; no SQL connection is available.
+	time.Sleep(550 * time.Millisecond)
+	if err := s.checkReady(); err != nil {
 		t.Fatal(err)
 	}
-	if err := db.Get(&actual, `SELECT total_distance FROM chair_distance_totals WHERE chair_id='c'`); err != nil || expected != actual {
-		t.Fatalf("background distance: %d != %d %v", actual, expected, err)
+	if err := s.close(); err != nil {
+		t.Fatal(err)
 	}
 }
 

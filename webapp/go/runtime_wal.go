@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"hash/crc32"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"syscall"
@@ -112,9 +113,6 @@ func (s *rideState) recoverWAL() error {
 	}
 	header, err := readWALRecord(s.wal)
 	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) || (err == nil && header.Generation != s.generation) {
-		if s.applied != 0 {
-			return errors.New("missing WAL for an existing DB projection")
-		}
 		if err := s.wal.Truncate(0); err != nil {
 			return err
 		}
@@ -154,13 +152,7 @@ func (s *rideState) recoverWAL() error {
 			return errors.New("state WAL generation or sequence mismatch")
 		}
 		s.sequence = record.Sequence
-		if record.Sequence > s.applied {
-			s.apply(record)
-			s.pending = append(s.pending, record)
-		}
-	}
-	if s.sequence < s.applied {
-		return errors.New("state WAL ends before DB projection")
+		s.apply(record)
 	}
 	return nil
 }
@@ -170,9 +162,6 @@ func (s *rideState) commit(record stateRecord) error {
 	if !s.ready || s.failed != nil {
 		return errors.New("state WAL is unavailable")
 	}
-	if len(s.pending) >= 32768 {
-		return errors.New("state DB projection backlog is full")
-	}
 	record.Version, record.Generation, record.Sequence = 1, s.generation, s.sequence+1
 	if err := writeWALRecord(s.wal, record); err != nil {
 		s.failed = err
@@ -180,6 +169,46 @@ func (s *rideState) commit(record stateRecord) error {
 	}
 	s.sequence = record.Sequence
 	s.apply(record)
-	s.pending = append(s.pending, record)
 	return nil
+}
+
+func (s *rideState) start() {
+	s.stop, s.done = make(chan struct{}), make(chan struct{})
+	go func() {
+		defer close(s.done)
+		syncTicker := time.NewTicker(500 * time.Millisecond)
+		defer syncTicker.Stop()
+		for {
+			select {
+			case <-s.stop:
+				return
+			case <-syncTicker.C:
+				stateLifecycle.RLock()
+				// Sync does not hold the mutation mutex or wait in request handlers.
+				if err := s.wal.Sync(); err != nil {
+					s.mu.Lock()
+					s.failed = err
+					s.mu.Unlock()
+					slog.Error("sync runtime WAL", "error", err)
+				}
+				stateLifecycle.RUnlock()
+			}
+		}
+	}()
+}
+
+func (s *rideState) close() error {
+	if s.stop != nil {
+		close(s.stop)
+		<-s.done
+		s.stop = nil
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.ready = false
+	if err := s.wal.Sync(); err != nil {
+		s.wal.Close()
+		return err
+	}
+	return s.wal.Close()
 }

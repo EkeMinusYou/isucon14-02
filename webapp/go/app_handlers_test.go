@@ -212,7 +212,6 @@ func TestNearbyWhileEvaluationResponseIsBlocked(t *testing.T) {
 	if !available || err != nil {
 		t.Fatalf("flushed completion did not reopen chair: %v %v", available, err)
 	}
-	flushTestRuntime(t)
 	if err := s.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}

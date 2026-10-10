@@ -3,13 +3,13 @@ package main
 import (
 	"bufio"
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -261,7 +261,7 @@ func TestNotificationStreamWakeup(t *testing.T) {
 	server.Close()
 }
 
-func TestChairStatsCompletionAndProjection(t *testing.T) {
+func TestChairStatsCompletionAndWALRecovery(t *testing.T) {
 	notificationTestDB(t)
 	insertTestRide(t, "a", "2026-01-01", true)
 	for i, status := range []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
@@ -305,28 +305,20 @@ func TestChairStatsCompletionAndProjection(t *testing.T) {
 	if len(appSub.wake) != 1 || len(chairSub.wake) != 1 {
 		t.Fatal("committed completion must wake both recipients")
 	}
-	flushTestRuntime(t)
-	// Reopen the connection to read persisted values, independently of Go memory.
-	var name string
-	if err := db.Get(&name, "SELECT DATABASE()"); err != nil {
+	// Reopen the WAL and rebuild from SQL to check completion independently of memory.
+	directory := filepath.Dir(runtimeState.wal.Name())
+	if err := runtimeState.close(); err != nil {
 		t.Fatal(err)
 	}
-	config, err := mysql.ParseDSN(os.Getenv("MYSQL_TEST_DSN"))
+	s, err := newRideState(context.Background(), db, directory)
 	if err != nil {
 		t.Fatal(err)
 	}
-	config.DBName = name
-	config.ParseTime = true
-	reopened, err := sqlx.Connect("mysql", config.FormatDSN())
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer reopened.Close()
-	tx := reopened.MustBegin()
-	defer tx.Rollback()
-	stats, err := getChairStats(context.Background(), tx, "c")
-	if err != nil || stats.TotalRidesCount != 1 || stats.TotalEvaluationAvg != 5 {
-		t.Fatalf("invalid completion stats: %+v, %v", stats, err)
+	runtimeState = s
+	t.Cleanup(func() { s.close() })
+	stats := s.stats["c"]
+	if stats.Count != 1 || stats.Evaluation != 5 || s.latest(s.rides["a"]) != "COMPLETED" {
+		t.Fatalf("invalid recovered completion: %+v", stats)
 	}
 }
 
@@ -341,20 +333,4 @@ func getLatestRideStatus(ctx context.Context, tx executableGet, rideID string) (
 		return "", err
 	}
 	return status, nil
-}
-
-func getChairStats(ctx context.Context, tx *sqlx.Tx, chairID string) (appGetNotificationResponseChairStats, error) {
-	var totals struct {
-		Count      int `db:"total_rides_count"`
-		Evaluation int `db:"total_evaluation"`
-	}
-	err := tx.GetContext(ctx, &totals, `SELECT total_rides_count, total_evaluation FROM chair_stats WHERE chair_id = ?`, chairID)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return appGetNotificationResponseChairStats{}, err
-	}
-	stats := appGetNotificationResponseChairStats{TotalRidesCount: totals.Count}
-	if totals.Count > 0 {
-		stats.TotalEvaluationAvg = float64(totals.Evaluation) / float64(totals.Count)
-	}
-	return stats, nil
 }

@@ -85,7 +85,6 @@ func TestConcurrentInvitationsAndCouponConsumption(t *testing.T) {
 		}
 	}
 	// Publication of invitation lookup survives a restart from the DB.
-	flushTestRuntime(t)
 	if err := runtimeState.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}

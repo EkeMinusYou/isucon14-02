@@ -118,13 +118,13 @@ deployments:
   sql-assets:
     uploads:
       - label: official initialization assets
-        role: app
+        role: sql_assets
         local: '{var:sql_dir}/'
         remote: '{var:remote_home}/{var:sql_dir}/'
         delete: true
     activations:
       - label: set initialization asset ownership
-        role: app
+        role: sql_assets
         script: |
           set -eu
           sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/{var:sql_dir}

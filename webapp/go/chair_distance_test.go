@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 	"testing"
@@ -34,29 +35,44 @@ func TestChairDistance(t *testing.T) {
 		}
 	}
 	startTestRuntime(t)
-	checkTotals := func() {
-		flushTestRuntime(t)
+	historyTotals := func() map[string]distanceTotal {
 		t.Helper()
-		var mismatches int
-		// Independently recompute the distance and final coordinate from history.
-		err := db.Get(&mismatches, `SELECT COUNT(*) FROM chairs c
-LEFT JOIN chair_distance_totals d ON d.chair_id = c.id
-LEFT JOIN (
-    SELECT chair_id, SUM(IFNULL(distance, 0)) AS distance, MAX(created_at) AS updated_at
-    FROM (
-        SELECT chair_id, created_at,
-               ABS(latitude - LAG(latitude) OVER (PARTITION BY chair_id ORDER BY created_at, id)) +
-               ABS(longitude - LAG(longitude) OVER (PARTITION BY chair_id ORDER BY created_at, id)) AS distance
-        FROM chair_locations
-    ) steps GROUP BY chair_id
-) expected ON expected.chair_id = c.id
-WHERE d.chair_id IS NULL
-   OR d.total_distance <> IFNULL(expected.distance, 0)
-   OR NOT (d.updated_at <=> expected.updated_at)
-   OR NOT (d.last_latitude <=> (SELECT latitude FROM chair_locations WHERE chair_id = c.id ORDER BY created_at DESC, id DESC LIMIT 1))
-   OR NOT (d.last_longitude <=> (SELECT longitude FROM chair_locations WHERE chair_id = c.id ORDER BY created_at DESC, id DESC LIMIT 1))`)
-		if err != nil || mismatches != 0 {
-			t.Fatalf("distance mismatches = %d, error = %v", mismatches, err)
+		var locations []ChairLocation
+		if err := db.Select(&locations, "SELECT * FROM chair_locations"); err != nil {
+			t.Fatal(err)
+		}
+		for _, record := range readTestWAL(t, runtimeState) {
+			if record.Location != nil {
+				locations = append(locations, *record.Location)
+			}
+		}
+		sort.Slice(locations, func(i, j int) bool {
+			if locations[i].CreatedAt.Equal(locations[j].CreatedAt) {
+				return locations[i].ID < locations[j].ID
+			}
+			return locations[i].CreatedAt.Before(locations[j].CreatedAt)
+		})
+		totals := map[string]distanceTotal{}
+		for _, l := range locations {
+			d := totals[l.ChairID]
+			if d.Latitude.Valid {
+				d.TotalDistance += calculateDistance(int(d.Latitude.Int64), int(d.Longitude.Int64), l.Latitude, l.Longitude)
+			}
+			d.Latitude = sql.NullInt64{Int64: int64(l.Latitude), Valid: true}
+			d.Longitude = sql.NullInt64{Int64: int64(l.Longitude), Valid: true}
+			d.UpdatedAt = sql.NullTime{Time: l.CreatedAt, Valid: true}
+			totals[l.ChairID] = d
+		}
+		return totals
+	}
+	checkTotals := func() {
+		t.Helper()
+		expected := historyTotals()
+		for id := range runtimeState.chairs {
+			d, e := runtimeState.distances[id], expected[id]
+			if d.TotalDistance != e.TotalDistance || d.Latitude != e.Latitude || d.Longitude != e.Longitude || d.UpdatedAt.Valid != e.UpdatedAt.Valid || (d.UpdatedAt.Valid && !d.UpdatedAt.Time.Equal(e.UpdatedAt.Time)) {
+				t.Fatalf("distance differs from SQL seed + WAL for %s: %+v != %+v", id, d, e)
+			}
 		}
 	}
 	ownerChairs := func(ownerID string) ownerGetChairResponse {
@@ -72,14 +88,9 @@ WHERE d.chair_id IS NULL
 		if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
 			t.Fatal(err)
 		}
+		totals := historyTotals()
 		for _, chair := range body.Chairs {
-			var expected struct {
-				TotalDistance int          `db:"total_distance"`
-				UpdatedAt     sql.NullTime `db:"updated_at"`
-			}
-			if err := db.Get(&expected, "SELECT total_distance, updated_at FROM chair_distance_totals WHERE chair_id = ?", chair.ID); err != nil {
-				t.Fatal(err)
-			}
+			expected := totals[chair.ID]
 			if chair.TotalDistance != expected.TotalDistance || (chair.TotalDistanceUpdatedAt != nil) != expected.UpdatedAt.Valid {
 				t.Fatalf("owner response differs for %s: %+v", chair.ID, chair)
 			}
@@ -183,39 +194,42 @@ WHERE d.chair_id IS NULL
 				t.Fatalf("concurrent coordinate: %d %s", res.Code, res.Body.String())
 			}
 		}
-		flushTestRuntime(t)
 		var locations int
-		if err := db.Get(&locations, "SELECT COUNT(*) FROM chair_locations WHERE chair_id = ?", registered.ID); err != nil || locations != count+6 {
-			t.Fatalf("location count = %d, error = %v", locations, err)
+		for _, record := range readTestWAL(t, runtimeState) {
+			if record.Location != nil && record.Location.ChairID == registered.ID {
+				locations++
+			}
+		}
+		if locations != count+6 {
+			t.Fatalf("WAL location count = %d", locations)
 		}
 		checkTotals()
 	})
 
-	t.Run("projection failure preserves accepted coordinate and ride status", func(t *testing.T) {
+	t.Run("SQL projection is unnecessary for coordinates and ride status", func(t *testing.T) {
 		execSQL("INSERT INTO rides (id, user_id, chair_id, pickup_latitude, pickup_longitude, destination_latitude, destination_longitude) VALUES ('distance-ride', 'test', ?, 100, 100, 200, 200)", registered.ID)
 		execSQL("INSERT INTO ride_statuses (id, ride_id, status) VALUES ('distance-status', 'distance-ride', 'ENROUTE')")
 		reloadTestRuntime(t)
 		execSQL("CREATE TRIGGER reject_distance_status BEFORE INSERT ON ride_statuses FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'test rollback'")
 		res := coordinate(registered.ID, 100, 100)
-		if err := runtimeState.flush(context.Background()); err == nil {
-			t.Fatal("projection should fail without discarding the accepted update")
-		}
 		execSQL("DROP TRIGGER reject_distance_status")
 		if res.Code != http.StatusOK {
-			t.Fatalf("rollback response: %d %s", res.Code, res.Body.String())
+			t.Fatalf("coordinate response: %d %s", res.Code, res.Body.String())
 		}
 		var locations int
-		if err := db.Get(&locations, "SELECT COUNT(*) FROM chair_locations WHERE chair_id = ?", registered.ID); err != nil || locations != 22 {
-			t.Fatalf("rollback location count = %d, error = %v", locations, err)
+		if err := db.Get(&locations, "SELECT COUNT(*) FROM chair_locations WHERE chair_id = ?", registered.ID); err != nil || locations != 0 {
+			t.Fatalf("unexpected location SQL writes = %d, error = %v", locations, err)
 		}
 		checkTotals()
 		if res := coordinate(registered.ID, 100, 100); res.Code != http.StatusOK {
 			t.Fatalf("pickup: %d %s", res.Code, res.Body.String())
 		}
-		flushTestRuntime(t)
-		var pickup int
-		if err := db.Get(&pickup, "SELECT COUNT(*) FROM ride_statuses WHERE ride_id = 'distance-ride' AND status = 'PICKUP'"); err != nil || pickup != 1 {
-			t.Fatalf("pickup statuses = %d, error = %v", pickup, err)
+		if runtimeState.latest(runtimeState.rides["distance-ride"]) != "PICKUP" {
+			t.Fatal("WAL pickup status missing")
+		}
+		reloadTestRuntime(t)
+		if runtimeState.latest(runtimeState.rides["distance-ride"]) != "PICKUP" {
+			t.Fatal("pickup lost after restart")
 		}
 		checkTotals()
 	})
@@ -230,13 +244,14 @@ WHERE d.chair_id IS NULL
 		checkTotals()
 	})
 
-	t.Run("reconnect reads persisted totals", func(t *testing.T) {
+	t.Run("restart reads WAL totals", func(t *testing.T) {
 		db.Close()
 		db, err = sqlx.Connect("mysql", dsn)
 		if err != nil {
 			t.Fatal(err)
 		}
 		runtimeState.database = db
+		reloadTestRuntime(t)
 		checkTotals()
 		ownerChairs("distance-owner")
 	})
@@ -245,8 +260,8 @@ WHERE d.chair_id IS NULL
 		if res := coordinate("distance-history", 123, 456); res.Code != http.StatusOK {
 			t.Fatal("coordinate before initialize failed")
 		}
-		if len(runtimeState.pending) == 0 {
-			t.Fatal("test needs an unprojected update")
+		if runtimeState.sequence == 0 {
+			t.Fatal("test needs a WAL update")
 		}
 		sub, unsubscribe := notifications.subscribe("chair", "distance-history")
 		defer unsubscribe()

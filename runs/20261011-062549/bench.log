@@ -1,0 +1,269 @@
+2026-10-10T21:25:53.752965211Z	BENCHMARK_START
+time=06:25:54.345 level=INFO msg=負荷走行を開始します
+time=06:25:54.345 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=06:25:59.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=06:25:59.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=06:26:01.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=06:26:01.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=1
+time=06:26:01.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=06:26:01.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=06:26:01.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=17 score="[0 0 0 10 7]" criteria="[17 7 17 17]"
+time=06:26:03.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=1
+time=06:26:03.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=1
+time=06:26:03.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=2
+time=06:26:03.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=06:26:03.464 level=INFO msg=これまでに地域内の評判によって6人、既存ユーザーの招待経由で30人が新規登録しました
+time=06:26:03.464 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、59.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=06:26:03.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=06:26:03.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=32 score="[0 0 0 19 13]" criteria="[32 13 32 32]"
+time=06:26:05.238 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=06:26:05.238 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=2
+time=06:26:05.240 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=1
+time=06:26:05.240 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=06:26:05.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=06:26:05.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=47 score="[0 0 1 27 19]" criteria="[47 19 47 46]"
+time=06:26:07.037 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=2
+time=06:26:07.038 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=06:26:07.041 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=1
+time=06:26:07.041 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=1
+time=06:26:07.041 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=06:26:07.065 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=06:26:07.065 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=65 score="[0 0 1 39 25]" criteria="[65 25 65 64]"
+time=06:26:08.837 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=06:26:08.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=1
+time=06:26:08.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=1
+time=06:26:08.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=06:26:08.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=1
+time=06:26:08.864 level=INFO msg=これまでに地域内の評判によって18人、既存ユーザーの招待経由で83人が新規登録しました
+time=06:26:08.864 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、60.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=06:26:08.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=06:26:08.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=87 score="[0 0 1 52 34]" criteria="[87 34 87 86]"
+time=06:26:10.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=06:26:10.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=1
+time=06:26:10.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=1
+time=06:26:10.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=1
+time=06:26:10.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=06:26:10.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=06:26:10.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=109 score="[0 0 1 72 36]" criteria="[109 36 109 108]"
+time=06:26:12.438 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=06:26:12.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=4
+time=06:26:12.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=3
+time=06:26:12.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=1
+time=06:26:12.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=1
+time=06:26:12.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=06:26:12.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=145 score="[0 0 7 95 43]" criteria="[135 47 145 144]"
+time=06:26:14.242 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=2
+time=06:26:14.242 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=1
+time=06:26:14.242 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=2
+time=06:26:14.242 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=4
+time=06:26:14.242 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=3
+time=06:26:14.265 level=INFO msg=これまでに地域内の評判によって30人、既存ユーザーの招待経由で154人が新規登録しました
+time=06:26:14.265 level=INFO msg=18.0%のライドは椅子がマッチされるまでの時間、66.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=06:26:14.265 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=06:26:14.265 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=183 score="[0 0 21 114 48]" criteria="[150 61 183 182]"
+time=06:26:16.045 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=3
+time=06:26:16.047 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=4
+time=06:26:16.047 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=06:26:16.047 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=4
+time=06:26:16.047 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=3
+time=06:26:16.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=06:26:16.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=234 score="[0 0 49 137 48]" criteria="[159 75 234 233]"
+time=06:26:17.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=2
+time=06:26:17.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=3
+time=06:26:17.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=4
+time=06:26:17.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=4
+time=06:26:17.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=4
+time=06:26:17.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=06:26:17.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=304 score="[0 0 86 169 49]" criteria="[162 106 304 303]"
+time=06:26:19.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=4
+time=06:26:19.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:19.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=4
+time=06:26:19.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=4
+time=06:26:19.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=06:26:19.664 level=INFO msg=これまでに地域内の評判によって42人、既存ユーザーの招待経由で253人が新規登録しました
+time=06:26:19.664 level=INFO msg=52.5%のライドは椅子がマッチされるまでの時間、61.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=06:26:19.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=06:26:19.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=398 score="[0 0 125 205 68]" criteria="[189 154 398 396]"
+time=06:26:21.441 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=06:26:21.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:21.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:21.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:21.442 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:21.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=06:26:21.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=514 score="[0 0 141 250 123]" criteria="[280 220 514 510]"
+time=06:26:23.249 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:23.249 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:23.249 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:23.249 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:23.249 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:23.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=06:26:23.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=660 score="[0 0 147 284 229]" criteria="[420 329 660 653]"
+time=06:26:25.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=4
+time=06:26:25.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:25.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=5
+time=06:26:25.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=06:26:25.045 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:25.064 level=INFO msg=これまでに地域内の評判によって54人、既存ユーザーの招待経由で590人が新規登録しました
+time=06:26:25.064 level=INFO msg=29.9%のライドは椅子がマッチされるまでの時間、45.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=06:26:25.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=06:26:25.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=804 score="[0 0 148 321 335]" criteria="[564 435 804 796]"
+time=06:26:26.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:26.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:26.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:26.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:26.846 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=6
+time=06:26:26.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=06:26:26.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=984 score="[0 0 153 404 427]" criteria="[697 569 984 976]"
+time=06:26:28.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=7
+time=06:26:28.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:28.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=7
+time=06:26:28.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=8
+time=06:26:28.645 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=7
+time=06:26:28.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=06:26:28.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1211 score="[0 0 170 605 436]" criteria="[738 749 1211 1201]"
+time=06:26:30.441 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=7
+time=06:26:30.441 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=7
+time=06:26:30.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:30.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:30.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:30.464 level=INFO msg=これまでに地域内の評判によって66人、既存ユーザーの招待経由で1095人が新規登録しました
+time=06:26:30.464 level=INFO msg=47.7%のライドは椅子がマッチされるまでの時間、33.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=06:26:30.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=06:26:30.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1423 score="[0 1 184 802 436]" criteria="[744 941 1423 1411]"
+time=06:26:32.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=7
+time=06:26:32.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:32.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=6
+time=06:26:32.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:32.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:32.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=06:26:32.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1640 score="[0 1 186 1017 436]" criteria="[744 1157 1640 1627]"
+time=06:26:34.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=4
+time=06:26:34.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:34.044 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:34.045 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=4
+time=06:26:34.045 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:34.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=06:26:34.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1824 score="[0 1 186 1201 436]" criteria="[744 1341 1824 1811]"
+time=06:26:35.854 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:35.855 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=7
+time=06:26:35.857 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:35.858 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=4
+time=06:26:35.858 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:35.864 level=INFO msg=これまでに地域内の評判によって78人、既存ユーザーの招待経由で1609人が新規登録しました
+time=06:26:35.864 level=INFO msg=63.2%のライドは椅子がマッチされるまでの時間、23.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=06:26:35.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=06:26:35.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2021 score="[0 1 189 1395 436]" criteria="[744 1537 2021 2006]"
+time=06:26:37.642 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:37.642 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:37.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=6
+time=06:26:37.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=06:26:37.644 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=8
+time=06:26:37.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=06:26:37.665 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2236 score="[0 1 191 1608 436]" criteria="[744 1752 2236 2219]"
+time=06:26:38.279 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=06:26:39.445 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:39.452 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:39.452 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=7
+time=06:26:39.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:39.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:39.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=06:26:39.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2444 score="[0 1 193 1814 436]" criteria="[744 1959 2444 2426]"
+time=06:26:41.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:41.245 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:41.245 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=5
+time=06:26:41.246 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=06:26:41.247 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=7
+time=06:26:41.264 level=INFO msg=これまでに地域内の評判によって90人、既存ユーザーの招待経由で2128人が新規登録しました
+time=06:26:41.264 level=INFO msg=71.8%のライドは椅子がマッチされるまでの時間、18.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=06:26:41.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=06:26:41.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2638 score="[0 1 197 2004 436]" criteria="[744 2153 2638 2616]"
+time=06:26:41.619 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=06:26:43.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:43.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:43.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=4
+time=06:26:43.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:43.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=06:26:43.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=06:26:43.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2836 score="[0 1 197 2202 436]" criteria="[744 2351 2836 2814]"
+time=06:26:44.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=7
+time=06:26:44.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=06:26:44.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=7
+time=06:26:44.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:44.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=4
+time=06:26:44.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=06:26:44.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3036 score="[0 1 198 2401 436]" criteria="[744 2551 3036 3013]"
+time=06:26:46.642 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:46.642 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=4
+time=06:26:46.642 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:46.642 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=6
+time=06:26:46.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=7
+time=06:26:46.664 level=INFO msg=これまでに地域内の評判によって102人、既存ユーザーの招待経由で2637人が新規登録しました
+time=06:26:46.664 level=INFO msg=77.0%のライドは椅子がマッチされるまでの時間、15.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=06:26:46.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=06:26:46.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3231 score="[0 1 201 2593 436]" criteria="[744 2746 3231 3205]"
+time=06:26:48.447 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=4
+time=06:26:48.447 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:48.447 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:48.447 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:48.447 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=6
+time=06:26:48.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=06:26:48.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3423 score="[0 1 204 2782 436]" criteria="[744 2938 3423 3394]"
+time=06:26:50.257 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=5
+time=06:26:50.257 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=8
+time=06:26:50.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:50.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=5
+time=06:26:50.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:50.265 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=06:26:50.265 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3632 score="[0 1 209 2986 436]" criteria="[744 3147 3632 3598]"
+time=06:26:51.534 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=06:26:52.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:52.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=7
+time=06:26:52.054 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=5
+time=06:26:52.055 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:52.055 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:52.064 level=INFO msg=これまでに地域内の評判によって114人、既存ユーザーの招待経由で3134人が新規登録しました
+time=06:26:52.064 level=INFO msg=80.6%のライドは椅子がマッチされるまでの時間、12.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=06:26:52.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=06:26:52.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3838 score="[0 1 213 3188 436]" criteria="[744 3353 3838 3800]"
+time=06:26:53.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:53.844 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=4
+time=06:26:53.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=5
+time=06:26:53.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=5
+time=06:26:53.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:53.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=06:26:53.864 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4027 score="[0 1 216 3374 436]" criteria="[744 3542 4027 3986]"
+time=06:26:54.082 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=06:26:54.723 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=06:26:55.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=06:26:55.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=5
+time=06:26:55.649 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:55.649 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=7
+time=06:26:55.649 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=6
+time=06:26:55.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=06:26:55.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4225 score="[0 1 217 3571 436]" criteria="[744 3740 4225 4183]"
+time=06:26:57.444 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenDrive 増加数=7
+time=06:26:57.445 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=06:26:57.445 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=06:26:57.445 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=GoEase 増加数=6
+time=06:26:57.445 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=06:26:57.464 level=INFO msg=これまでに地域内の評判によって126人、既存ユーザーの招待経由で3626人が新規登録しました
+time=06:26:57.464 level=INFO msg=83.2%のライドは椅子がマッチされるまでの時間、11.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=06:26:57.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=06:26:57.464 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4429 score="[0 1 219 3773 436]" criteria="[744 3944 4429 4385]"
+time=06:27:03.065 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=2356 アクティブユーザー数=2356
+time=06:27:03.065 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1550 アクティブユーザー数=1550
+time=06:27:03.065 level=INFO msg=最終オーナー情報 名前="SitWell Designs" 売上=5851200 椅子数=165
+time=06:27:03.065 level=INFO msg=最終オーナー情報 名前=ZenDrive 売上=5172900 椅子数=148
+time=06:27:03.065 level=INFO msg=最終オーナー情報 名前=レトロ椅子館 売上=5047000 椅子数=144
+time=06:27:03.065 level=INFO msg=最終オーナー情報 名前=GoEase 売上=4540400 椅子数=132
+time=06:27:03.065 level=INFO msg=最終オーナー情報 名前=座和インダストリー 売上=6846500 椅子数=189
+time=06:27:03.065 level=INFO msg=83.8%のライドは椅子がマッチされるまでの時間、10.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=06:27:03.066 level=INFO msg=結果 pass=true スコア=289926 種別エラー数=map[17:5]
+time=06:27:03.066 level=INFO msg=負荷走行が終了しました
+
+SCORE: 289926
+BENCHMARK_PASS
+2026-10-10T21:27:03.501852655Z	BENCHMARK_END
+
+SCORE: 289926
+BENCHMARK_PASS

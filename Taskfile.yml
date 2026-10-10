@@ -71,6 +71,7 @@ vars:
   CONF_SRC: isucon-1
   # Extra deployctl roles and vars for contest-specific deployments.
   DEPLOYCTL_FLAGS: >-
+    -role sql_assets={{concat (splitList " " .APP_HOSTS) (splitList " " .MYSQL_HOSTS) | uniq | join ","}}
     -role matcher={{splitList " " .MATCHER_HOSTS | join ","}}
     -role payment_mock={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
     -var matcher_hosts={{splitList " " .MATCHER_HOSTS | join ","}}

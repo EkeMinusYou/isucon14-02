@@ -55,14 +55,11 @@ type rideState struct {
 	metrics         *rideMetrics
 	dispatch        *dispatchMetrics
 	mu              sync.RWMutex
-	flushMu         sync.Mutex
 	userLocks       sync.Map
 	database        *sqlx.DB
 	wal             *os.File
 	generation      string
 	sequence        uint64
-	applied         uint64
-	pending         []stateRecord
 	ready           bool
 	failed          error
 	owners          map[string]Owner
@@ -92,10 +89,10 @@ type rideState struct {
 	nearbyMissingStatus map[string]struct{}
 }
 
-const projectionSchema = `CREATE TABLE IF NOT EXISTS state_projection (
+// Only the initialization generation lives in SQL; runtime mutations live in WAL.
+const generationSchema = `CREATE TABLE IF NOT EXISTS state_projection (
  id TINYINT NOT NULL PRIMARY KEY,
- generation VARCHAR(36) NOT NULL,
- applied_seq BIGINT UNSIGNED NOT NULL DEFAULT 0
+ generation VARCHAR(36) NOT NULL
 )`
 
 func newRideState(ctx context.Context, database *sqlx.DB, directory string) (*rideState, error) {
@@ -118,7 +115,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	if err := s.ensureCouponIndex(ctx); err != nil {
 		return err
 	}
-	if _, err := s.database.ExecContext(ctx, projectionSchema); err != nil {
+	if _, err := s.database.ExecContext(ctx, generationSchema); err != nil {
 		return err
 	}
 	if _, err := s.database.ExecContext(ctx, `INSERT IGNORE INTO state_projection (id, generation) VALUES (1, UUID())`); err != nil {
@@ -129,11 +126,8 @@ func (s *rideState) restore(ctx context.Context) error {
 		return err
 	}
 	defer tx.Rollback()
-	var marker struct {
-		Generation string `db:"generation"`
-		Applied    uint64 `db:"applied_seq"`
-	}
-	if err := tx.GetContext(ctx, &marker, "SELECT generation, applied_seq FROM state_projection WHERE id = 1"); err != nil {
+	var generation string
+	if err := tx.GetContext(ctx, &generation, "SELECT generation FROM state_projection WHERE id = 1"); err != nil {
 		return err
 	}
 	var owners []Owner
@@ -180,8 +174,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.sales = nil
 	s.appEvents, s.chairEvents = map[string]*notificationQueue{}, map[string]*notificationQueue{}
 	s.resetCurrentIndexes()
-	s.generation, s.applied, s.sequence = marker.Generation, marker.Applied, 0
-	s.pending, s.failed = nil, nil
+	s.generation, s.sequence, s.failed = generation, 0, nil
 	for _, u := range users {
 		s.addUser(u)
 	}
@@ -207,7 +200,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	if err := s.recoverWAL(); err != nil {
 		return err
 	}
-	// New DB-created rides can exist beyond an older ride's unprojected WAL.
+	// New DB-created rides can exist beyond an older ride's WAL.
 	// Rebuild recipient queues after replay, rather than appending old events
 	// behind the new ride's already-persistent MATCHING status.
 	s.rebuildIndexes()

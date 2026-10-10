@@ -199,10 +199,7 @@ func TestSalesSQLAndWALRecovery(t *testing.T) {
 	if all.TotalSales != 2*fare || period.TotalSales != fare {
 		t.Fatal("completion totals differ")
 	}
-	for _, projected := range []bool{false, true} {
-		if projected {
-			flushTestRuntime(t)
-		}
+	for restart := 1; restart <= 2; restart++ {
 		if err := s.close(); err != nil {
 			t.Fatal(err)
 		}
@@ -212,15 +209,15 @@ func TestSalesSQLAndWALRecovery(t *testing.T) {
 		}
 		runtimeState = s
 		if got := requestOwnerSales(t, "o", ""); !reflect.DeepEqual(got, all) {
-			t.Fatalf("projected=%v: restored total %+v != %+v", projected, got, all)
+			t.Fatalf("restart=%d: restored total %+v != %+v", restart, got, all)
 		}
 		if got := requestOwnerSales(t, "o", query); !reflect.DeepEqual(got, period) {
-			t.Fatalf("projected=%v: restored period %+v != %+v", projected, got, period)
+			t.Fatalf("restart=%d: restored period %+v != %+v", restart, got, period)
 		}
 	}
 	// Initialize replaces SQL data and generation; old WAL sales must disappear.
 	db.MustExec(`DELETE FROM ride_statuses; DELETE FROM rides; DELETE FROM coupons;
-		UPDATE state_projection SET generation=UUID(), applied_seq=0`)
+		UPDATE state_projection SET generation=UUID()`)
 	insertTestRide(t, "fresh", "2026-01-03", true)
 	insertTestStatus("fresh", "fresh-complete", "COMPLETED")
 	if err := s.restore(context.Background()); err != nil {

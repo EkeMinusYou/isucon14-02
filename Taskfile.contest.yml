@@ -34,7 +34,7 @@ tasks:
     cmds: [go test -race ./...]
 
   check-chair-distance:
-    desc: ローカルの一時MySQLでWAL復元・DB一括反映・通知・距離集計・初期化を確認
+    desc: ローカルの一時MySQLでWAL正本からの復元・通知・距離集計・初期化を確認
     dir: '{{.APP_DIR}}'
     cmds:
       - |
@@ -56,7 +56,7 @@ tasks:
         go test -race -count=1 -v .
 
   deploy-sql:
-    desc: SQL初期化資材をAPP_HOSTSへ反映（DB再作成・サービス再起動なし）
+    desc: SQL初期化資材をAPP_HOSTSとMYSQL_HOSTSへ反映（DB再作成・サービス再起動なし）
     preconditions:
       - sh: test ! -f '{{.RUN_STATE_FILE}}'
         msg: active benchmark exists; run task after-bench or task abort-run
