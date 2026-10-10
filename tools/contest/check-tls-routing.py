@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise generated configurations with nginx 1.24 and an HTTP/SSE fixture."""
+"""Exercise generated kernel NAT and nginx 1.24 with an HTTP/SSE fixture."""
 import collections
 import http.client
 import ipaddress
@@ -35,12 +35,13 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
     containers = []
     network = False
     try:
+        command('docker', 'build', '-t', 'isuride-tls-check:local',
+                str(ROOT / 'tools/contest/tls-routing'),
+                env=dict(os.environ, BUILDX_CONFIG=str(ROOT / '.task/tls-buildx')))
         architecture = docker('version', '--format', '{{.Server.Arch}}')
         environment = dict(os.environ, CGO_ENABLED='0', GOOS='linux', GOARCH=architecture)
-        command('go', 'build', '-o', str(work / 'tls-router'), '.',
-                cwd=ROOT / 'tools/contest/tls-router', env=environment)
-        command('go', 'build', '-o', str(work / 'http'), 'testdata/http.go',
-                cwd=ROOT / 'tools/contest/tls-router', env=environment)
+        command('go', 'build', '-o', str(work / 'http'), 'http.go',
+                cwd=ROOT / 'tools/contest/tls-routing', env=environment)
         for name in ('official', 'dummy'):
             command('openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes',
                     '-keyout', str(work / (name + '.key')),
@@ -52,6 +53,11 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
         network = True
         subnet = json.loads(docker('network', 'inspect', NAME))[0]['IPAM']['Config'][0]['Subnet']
         addresses = [str(ipaddress.ip_network(subnet)[i]) for i in (2, 3)]
+        rules = (ROOT / 'tools/contest/generated/isuride-tls.nft').read_text()
+        rules = rules.replace('172.31.7.50', addresses[0]).replace('172.31.5.116', addresses[1])
+        (work / 'isuride-tls.nft').write_text(rules)
+        shutil.copyfile(ROOT / 'tools/contest/generated/isuride-tls-forward.service',
+                        work / 'isuride-tls-forward.service')
         for index, host in enumerate(('isucon-2', 'isucon-3')):
             config = work / host
             shutil.copytree(ROOT / 'tools/contest/generated/nginx' / host, config, symlinks=True)
@@ -77,11 +83,15 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
                     '--entrypoint', 'sh']
             script = "nginx -t && exec nginx -g 'daemon off;'"
             if index == 0:
-                args += ['-p', '127.0.0.1::443']
-                script = (f'/fixture/http & /fixture/tls-router -listen {addresses[0]}:443 '
-                          f'-backends {addresses[0]}:8443,{addresses[1]}:8443 & ' + script)
-            docker(*args, 'nginx:1.24.0', '-c', script)
+                args += ['-p', '127.0.0.1::443', '--cap-add', 'NET_ADMIN',
+                         '--sysctl', 'net.ipv4.ip_forward=1',
+                         '--sysctl', 'net.ipv4.conf.all.send_redirects=0',
+                         '--sysctl', 'net.ipv4.conf.default.send_redirects=0']
+                script = ('nft --check --file /fixture/isuride-tls.nft && '
+                          'nft --file /fixture/isuride-tls.nft || exit; '
+                          '/fixture/http & ' + script)
             containers.append(name)
+            docker(*args, 'isuride-tls-check:local', '-c', script)
 
         context = ssl.create_default_context(cafile=str(work / 'official.crt'))
         context.minimum_version = ssl.TLSVersion.TLSv1_3
@@ -114,6 +124,13 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
                 time.sleep(0.1)
             assert docker('exec', container, 'nginx', '-t') == ''
 
+        # Replacement is atomic and touches only the table owned by this solution.
+        docker('exec', containers[0], 'nft', 'add', 'table', 'ip', 'fixture_unrelated')
+        docker('exec', containers[0], 'nft', '--file', '/fixture/isuride-tls.nft')
+        docker('exec', containers[0], 'nft', 'list', 'table', 'ip', 'fixture_unrelated')
+        # Verify the deployment unit, including executable paths and boot ordering.
+        docker('exec', containers[0], 'systemd-analyze', 'verify', '/fixture/isuride-tls-forward.service')
+
         static = (ROOT / 'webapp/public/index.html').read_bytes()
         for sequence in range(8):
             response, payload = request(entry, f'/api/entry-{sequence}')
@@ -122,6 +139,7 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
         assert response.status == 200
         response.read()
         original_socket = connection.sock
+        docker('exec', containers[0], 'nft', '--file', '/fixture/isuride-tls.nft')
         connection.request('GET', '/api/keepalive-1')
         response = connection.getresponse()
         assert response.status == 200
@@ -167,7 +185,7 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
                 assert response.read() == b''
                 connection.close()
 
-        # Matcher bypasses the TCP relay and retains the original localhost ACL.
+        # Matcher bypasses NAT and retains the original localhost ACL.
         status = docker('exec', containers[0], 'curl', '-sk', '--resolve',
                         'isuride.xiv.isucon.net:443:127.0.0.1', '-o', '/dev/null',
                         '-w', '%{http_code}', 'https://isuride.xiv.isucon.net/api/internal/_network-check')
@@ -179,6 +197,35 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
                         '-w', '%{http_code}', 'https://isuride.xiv.isucon.net/api/internal/_network-check')
         assert status == '403'
         expected['/api/internal/_network-check'] += 1
+
+        # A fresh network namespace loses NAT state, as on an OS restart.
+        docker('restart', containers[0])
+        time.sleep(1)
+        # Docker may allocate new ephemeral host ports on restart.
+        entry = port(containers[0], 443)
+        docker('exec', containers[0], 'nft', 'list', 'table', 'ip', 'isuride_tls')
+        assert docker('exec', containers[0], 'cat', '/proc/sys/net/ipv4/ip_forward') == '1'
+        response, payload = request(entry, '/index.html')
+        assert response.status == 200 and payload == static
+
+        # Two consecutive entry connections select both endpoints. Keep their
+        # streams open beyond nginx's 60-second idle timeout with regular events.
+        # Replacing the NAT table while streaming must preserve conntrack affinity.
+        streams = []
+        for path in ('/api/app/notification', '/api/chair/notification'):
+            connection, response = request(entry, path + '?events=65', stream=True)
+            assert response.status == 200
+            streams.append((connection, response))
+        print('Checking two 65-second SSE streams across a NAT reload...', flush=True)
+        for event in range(65):
+            for connection, response in streams:
+                assert response.readline() == f'data: {event}\n'.encode()
+                assert response.readline() == b'\n'
+            if event == 1:
+                docker('exec', containers[0], 'nft', '--file', '/fixture/isuride-tls.nft')
+        for connection, response in streams:
+            assert response.read() == b''
+            connection.close()
 
         time.sleep(1.2)
         all_rows = []
@@ -210,7 +257,7 @@ with tempfile.TemporaryDirectory(prefix=NAME) as temporary:
         assert set(counts) == {'isucon-2', 'isucon-3'}
         assert sum(map(int, counts.values())) == len(all_rows)
         print('Existing DuckDB per-ingress schema: both hosts and total request count OK')
-        print('TLS passthrough, both endpoints, SSE order/flush, internal ACL and single HTTP accounting: PASS')
+        print('Kernel NAT, both TLS endpoints, restart restoration, reload affinity, 65-second SSE, internal ACL and single HTTP accounting: PASS')
     finally:
         for container in containers:
             subprocess.run(['docker', 'rm', '-f', container], stdout=subprocess.DEVNULL, check=False)

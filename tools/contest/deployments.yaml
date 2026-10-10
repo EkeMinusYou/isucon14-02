@@ -58,33 +58,42 @@ deployments:
         excludes: [tls/]
         delete: true
         validate: sudo nginx -t
-      - label: encrypted TCP entry binary
-        role: tls_router
-        local: tools/contest/tls-router/tls-router
-        remote: '{var:remote_home}/tls-router'
-      - label: encrypted TCP entry unit
-        role: tls_router
-        local: tools/contest/generated/isuride-tls-router.service
-        remote: /etc/systemd/system/isuride-tls-router.service
+      - label: kernel TCP connection distribution
+        role: tls_forward
+        local: tools/contest/generated/isuride-tls.nft
+        remote: '{var:remote_home}/isuride-tls.nft'
+        validate: 'sudo nft --check --file {var:remote_home}/isuride-tls.nft'
+      - label: persistent IPv4 forwarding settings
+        role: tls_forward
+        local: tools/contest/generated/isuride-tls.sysctl
+        remote: '{var:remote_home}/isuride-tls.sysctl'
+      - label: kernel TCP entry unit
+        role: tls_forward
+        local: tools/contest/generated/isuride-tls-forward.service
+        remote: /etc/systemd/system/isuride-tls-forward.service
+        validate: sudo systemd-analyze verify /etc/systemd/system/isuride-tls-forward.service
     activations:
-      - label: restart TLS endpoints and the assigned TCP entry
+      - label: replace the TCP relay with kernel NAT and restart TLS endpoints
         role: nginx
         script: |
           set -eu
           sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/webapp/public
-          # Restart releases the former wildcard :443 before splitting listeners.
+          # The old relay and its unit are removed, not retained as a fallback.
+          if sudo systemctl cat isuride-tls-router >/dev/null 2>&1; then
+            sudo systemctl disable --now isuride-tls-router
+          fi
+          sudo rm -f /etc/systemd/system/isuride-tls-router.service {var:remote_home}/tls-router
+          sudo systemctl daemon-reload
+          case ',{var:tls_forward_hosts},' in
+            *',{host},'*)
+              sudo systemctl enable isuride-tls-forward
+              sudo systemctl restart isuride-tls-forward
+              sudo systemctl is-active --quiet isuride-tls-forward
+              ;;
+          esac
           sudo systemctl enable nginx
           sudo systemctl restart nginx
           sudo systemctl is-active --quiet nginx
-          case ',{var:tls_router_hosts},' in
-            *',{host},'*)
-              sudo systemd-analyze verify /etc/systemd/system/isuride-tls-router.service
-              sudo systemctl daemon-reload
-              sudo systemctl enable isuride-tls-router
-              sudo systemctl restart isuride-tls-router
-              sudo systemctl is-active --quiet isuride-tls-router
-              ;;
-          esac
           # Requires=nginx can stop the matcher during an nginx restart.
           case ',{var:matcher_hosts},' in
             *',{host},'*)
@@ -219,11 +228,11 @@ deployments:
             *',{host},'*) ;;
             *) sudo systemctl disable --now isuride-payment_mock ;;
           esac
-          case ',{var:tls_router_hosts},' in
+          case ',{var:tls_forward_hosts},' in
             *',{host},'*) ;;
             *)
-              if sudo systemctl cat isuride-tls-router >/dev/null 2>&1; then
-                sudo systemctl disable --now isuride-tls-router
+              if sudo systemctl cat isuride-tls-forward >/dev/null 2>&1; then
+                sudo systemctl disable --now isuride-tls-forward
               fi
               ;;
           esac
@@ -242,13 +251,13 @@ deployments:
           set -eu
           sudo systemctl enable --now isuride-payment_mock
           sudo systemctl is-active --quiet isuride-payment_mock
-      - label: enable the encrypted TCP entry on its assigned host
-        role: tls_router
+      - label: restore kernel TCP distribution on the entry host
+        role: tls_forward
         script: |
           set -eu
           sudo systemctl daemon-reload
-          sudo systemctl enable --now isuride-tls-router
-          sudo systemctl is-active --quiet isuride-tls-router
+          sudo systemctl enable --now isuride-tls-forward
+          sudo systemctl is-active --quiet isuride-tls-forward
 
 plans:
   deploy-all:

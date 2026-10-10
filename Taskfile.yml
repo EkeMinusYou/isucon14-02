@@ -36,7 +36,7 @@ vars:
   CONFIG_CHECK_CONFIG: tools/contest/config-check.yaml
   SETUP_SECRET_ALLOWLIST: ''
   # Services whose metrics and journals measurectl collects on every host.
-  MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql,isuride-matcher,isuride-payment_mock,isuride-tls-router'
+  MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql,isuride-matcher,isuride-payment_mock'
   # <<< contest values <<<
 
   SSH_USER: ubuntu
@@ -63,10 +63,9 @@ vars:
   APP_TRAFFIC_HOSTS: isucon-1
   # The first nginx host owns the external entry; the matcher remains single.
   NGINX_HOSTS: isucon-2 isucon-3
-  TLS_ROUTER_HOSTS: isucon-2
+  TLS_FORWARD_HOSTS: isucon-2
   TLS_BACKEND_PORT: '8443'
-  # Budget both endpoint hosts' connections, two sockets and Linux splice pipes.
-  TLS_ROUTER_NOFILE: '262144'
+  TLS_ENTRY_INTERFACE: ens5
   # MYSQL_HOST is the detailed measurement source and default DB connection.
   MYSQL_HOST: isucon-3
   # Deployment and service enable/disable targets.
@@ -79,12 +78,12 @@ vars:
     -role sql_assets={{concat (splitList " " .APP_HOSTS) (splitList " " .MYSQL_HOSTS) | uniq | join ","}}
     -role matcher={{splitList " " .MATCHER_HOSTS | join ","}}
     -role payment_mock={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
-    -role tls_router={{splitList " " .TLS_ROUTER_HOSTS | join ","}}
+    -role tls_forward={{splitList " " .TLS_FORWARD_HOSTS | join ","}}
     -var matcher_hosts={{splitList " " .MATCHER_HOSTS | join ","}}
     -var payment_mock_hosts={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
-    -var tls_router_hosts={{splitList " " .TLS_ROUTER_HOSTS | join ","}}
+    -var tls_forward_hosts={{splitList " " .TLS_FORWARD_HOSTS | join ","}}
     -var app_ip={{index .IP (splitList " " .APP_HOSTS | first)}}
-    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock,isuride-tls-router:tls_router
+    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock,isuride-tls-forward:tls_forward
   # Arguments passed to the contest smoke binary on ENTRY_HOST.
   SMOKE_ARGS: '-base https://isuride.xiv.isucon.net'
   # <<< contest values <<<

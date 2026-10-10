@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -17,7 +18,11 @@ func main() {
 		if r.URL.Path == "/api/app/notification" || r.URL.Path == "/api/chair/notification" {
 			w.Header().Set("Content-Type", "text/event-stream")
 			w.Header().Set("X-Accel-Buffering", "no")
-			for i := 0; i < 3; i++ {
+			events := 3
+			if count, err := strconv.Atoi(r.URL.Query().Get("events")); err == nil && count > 0 && count <= 65 {
+				events = count
+			}
+			for i := 0; i < events; i++ {
 				fmt.Fprintf(w, "data: %d\n\n", i)
 				w.(http.Flusher).Flush()
 				time.Sleep(time.Second)

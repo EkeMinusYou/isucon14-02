@@ -1,0 +1,257 @@
+2026-10-10T22:46:58.356218129Z	BENCHMARK_START
+time=07:46:58.698 level=INFO msg=負荷走行を開始します
+time=07:46:58.698 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=07:47:04.145 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=07:47:04.145 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=07:47:05.917 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=07:47:05.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=07:47:05.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=07:47:05.945 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=07:47:05.945 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=19 score="[0 0 0 10 9]" criteria="[19 9 19 19]"
+time=07:47:07.718 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=07:47:07.718 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=1
+time=07:47:07.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=07:47:07.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=07:47:07.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=07:47:07.745 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で37人が新規登録しました
+time=07:47:07.745 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、64.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=07:47:07.745 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=07:47:07.745 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=37 score="[0 0 0 24 13]" criteria="[37 13 37 37]"
+time=07:47:09.517 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=07:47:09.518 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=07:47:09.518 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=2
+time=07:47:09.519 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=07:47:09.520 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=07:47:09.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=07:47:09.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=54 score="[0 0 0 34 20]" criteria="[54 20 54 54]"
+time=07:47:11.318 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=3
+time=07:47:11.320 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=07:47:11.320 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=07:47:11.320 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=07:47:11.320 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=1
+time=07:47:11.345 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=07:47:11.345 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=80 score="[0 0 0 53 27]" criteria="[80 27 80 80]"
+time=07:47:13.118 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=07:47:13.118 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=07:47:13.120 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=07:47:13.120 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=07:47:13.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=1
+time=07:47:13.144 level=INFO msg=これまでに地域内の評判によって19人、既存ユーザーの招待経由で103人が新規登録しました
+time=07:47:13.144 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、63.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=07:47:13.144 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=07:47:13.144 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=107 score="[0 0 0 68 39]" criteria="[107 39 107 107]"
+time=07:47:14.917 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=07:47:14.918 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=07:47:14.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=07:47:14.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=3
+time=07:47:14.921 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=3
+time=07:47:14.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=07:47:14.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=147 score="[0 0 2 92 53]" criteria="[147 53 146 146]"
+time=07:47:16.718 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=4
+time=07:47:16.718 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=3
+time=07:47:16.718 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=07:47:16.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=5
+time=07:47:16.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=4
+time=07:47:16.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=07:47:16.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=202 score="[0 0 12 128 62]" criteria="[182 73 200 201]"
+time=07:47:18.520 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=4
+time=07:47:18.520 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=4
+time=07:47:18.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=5
+time=07:47:18.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=07:47:18.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=07:47:18.544 level=INFO msg=これまでに地域内の評判によって31人、既存ユーザーの招待経由で231人が新規登録しました
+time=07:47:18.545 level=INFO msg=17.6%のライドは椅子がマッチされるまでの時間、58.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.7%のライドは椅子の実移動時間に不満がありました
+time=07:47:18.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=07:47:18.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=273 score="[0 0 22 168 83]" criteria="[225 113 271 271]"
+time=07:47:20.318 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=6
+time=07:47:20.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=6
+time=07:47:20.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=5
+time=07:47:20.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=3
+time=07:47:20.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=3
+time=07:47:20.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=07:47:20.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=357 score="[0 0 31 203 123]" criteria="[299 157 354 353]"
+time=07:47:22.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=07:47:22.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=6
+time=07:47:22.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=07:47:22.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=07:47:22.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=4
+time=07:47:22.144 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=07:47:22.144 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=471 score="[0 0 46 262 163]" criteria="[375 223 468 464]"
+time=07:47:23.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=7
+time=07:47:23.920 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=07:47:23.921 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=6
+time=07:47:23.922 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=5
+time=07:47:23.922 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=7
+time=07:47:23.944 level=INFO msg=これまでに地域内の評判によって43人、既存ユーザーの招待経由で485人が新規登録しました
+time=07:47:23.944 level=INFO msg=28.1%のライドは椅子がマッチされるまでの時間、48.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.1%のライドは椅子の実移動時間に不満がありました
+time=07:47:23.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=07:47:23.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=613 score="[0 1 70 339 203]" criteria="[441 316 610 603]"
+time=07:47:25.718 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=6
+time=07:47:25.719 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=6
+time=07:47:25.720 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=9
+time=07:47:25.721 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=5
+time=07:47:25.721 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=6
+time=07:47:25.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=07:47:25.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=779 score="[0 1 102 428 248]" criteria="[511 427 776 767]"
+time=07:47:27.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=7
+time=07:47:27.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=6
+time=07:47:27.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=6
+time=07:47:27.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=07:47:27.523 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=7
+time=07:47:27.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=07:47:27.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=969 score="[0 1 156 559 253]" criteria="[538 545 965 954]"
+time=07:47:29.323 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=6
+time=07:47:29.326 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=07:47:29.329 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=8
+time=07:47:29.330 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=8
+time=07:47:29.330 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=8
+time=07:47:29.344 level=INFO msg=これまでに地域内の評判によって55人、既存ユーザーの招待経由で871人が新規登録しました
+time=07:47:29.344 level=INFO msg=54.9%のライドは椅子がマッチされるまでの時間、41.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.9%のライドは椅子の実移動時間に不満がありました
+time=07:47:29.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=07:47:29.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1209 score="[0 2 222 732 253]" criteria="[545 713 1205 1191]"
+time=07:47:31.127 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=07:47:31.128 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=8
+time=07:47:31.129 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=9
+time=07:47:31.130 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=8
+time=07:47:31.132 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=9
+time=07:47:31.145 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=07:47:31.145 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1509 score="[0 3 279 974 253]" criteria="[548 957 1505 1485]"
+time=07:47:32.959 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=8
+time=07:47:32.959 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=7
+time=07:47:32.979 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=10
+time=07:47:32.984 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=07:47:32.991 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=9
+time=07:47:32.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=07:47:32.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1787 score="[0 7 350 1177 253]" criteria="[549 1181 1783 1737]"
+time=07:47:34.727 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=10
+time=07:47:34.728 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=9
+time=07:47:34.733 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=9
+time=07:47:34.734 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=07:47:34.734 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=12
+time=07:47:34.744 level=INFO msg=これまでに地域内の評判によって67人、既存ユーザーの招待経由で1420人が新規登録しました
+time=07:47:34.744 level=INFO msg=これまでに低評価なライドによって12人が利用をやめました
+time=07:47:34.744 level=INFO msg=73.8%のライドは椅子がマッチされるまでの時間、32.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、3.3%のライドは椅子の実移動時間に不満がありました
+time=07:47:34.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=07:47:34.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2102 score="[1 34 446 1368 253]" criteria="[550 1427 2085 1980]"
+time=07:47:36.535 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=07:47:36.543 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=8
+time=07:47:36.545 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=12
+time=07:47:36.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=07:47:36.544 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2448 score="[8 60 540 1587 253]" criteria="[550 1715 2411 2237]"
+time=07:47:36.546 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=9
+time=07:47:36.549 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=07:47:38.323 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=8
+time=07:47:38.325 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=8
+time=07:47:38.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=07:47:38.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2785 score="[20 75 628 1809 253]" criteria="[550 2002 2731 2487]"
+time=07:47:38.389 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=8
+time=07:47:38.389 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=12
+time=07:47:38.389 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=11
+time=07:47:40.132 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=07:47:40.134 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=11
+time=07:47:40.134 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=10
+time=07:47:40.134 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=9
+time=07:47:40.136 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=07:47:40.145 level=INFO msg=これまでに地域内の評判によって79人、既存ユーザーの招待経由で1884人が新規登録しました
+time=07:47:40.145 level=INFO msg=これまでに低評価なライドによって54人が利用をやめました
+time=07:47:40.145 level=INFO msg=82.5%のライドは椅子がマッチされるまでの時間、26.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、9.6%のライドは椅子の実移動時間に不満がありました
+time=07:47:40.145 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=07:47:40.145 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3136 score="[46 85 834 1918 253]" criteria="[550 2299 3054 2616]"
+time=07:47:41.927 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=11
+time=07:47:41.927 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=9
+time=07:47:41.928 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=13
+time=07:47:41.929 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=12
+time=07:47:41.930 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=9
+time=07:47:41.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=07:47:41.944 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3495 score="[63 125 1045 2009 253]" criteria="[550 2587 3380 2737]"
+time=07:47:43.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=12
+time=07:47:43.724 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=14
+time=07:47:43.741 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=14
+time=07:47:43.741 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=15
+time=07:47:43.741 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=17
+time=07:47:43.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=07:47:43.744 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3958 score="[98 163 1359 2085 253]" criteria="[550 2968 3792 2838]"
+time=07:47:45.593 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=11
+time=07:47:45.595 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=07:47:45.604 level=INFO msg=これまでに地域内の評判によって91人、既存ユーザーの招待経由で2107人が新規登録しました
+time=07:47:45.604 level=INFO msg=これまでに低評価なライドによって126人が利用をやめました
+time=07:47:45.604 level=INFO msg=87.5%のライドは椅子がマッチされるまでの時間、23.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、18.7%のライドは椅子の実移動時間に不満がありました
+time=07:47:45.604 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=07:47:45.604 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4393 score="[131 185 1626 2198 253]" criteria="[550 3349 4184 2960]"
+time=07:47:45.628 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=15
+time=07:47:45.628 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=12
+time=07:47:45.628 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=15
+time=07:47:47.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=9
+time=07:47:47.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=07:47:47.401 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=11
+time=07:47:47.402 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=07:47:47.403 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=13
+time=07:47:47.404 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=07:47:47.404 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4783 score="[152 198 1910 2270 253]" criteria="[550 3703 4546 3041]"
+time=07:47:49.191 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=11
+time=07:47:49.192 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=14
+time=07:47:49.204 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=07:47:49.204 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5226 score="[181 224 2253 2315 253]" criteria="[550 4103 4937 3097]"
+time=07:47:49.212 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=12
+time=07:47:49.212 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=07:47:49.215 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=15
+time=07:47:50.992 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=13
+time=07:47:50.993 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=11
+time=07:47:50.993 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=11
+time=07:47:50.993 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=10
+time=07:47:50.993 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=07:47:51.004 level=INFO msg=これまでに地域内の評判によって108人、既存ユーザーの招待経由で2253人が新規登録しました
+time=07:47:51.004 level=INFO msg=これまでに低評価なライドによって180人が利用をやめました
+time=07:47:51.004 level=INFO msg=90.2%のライドは椅子がマッチされるまでの時間、20.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、25.3%のライドは椅子の実移動時間に不満がありました
+time=07:47:51.004 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=07:47:51.004 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5636 score="[215 257 2567 2344 253]" criteria="[550 4469 5285 3131]"
+time=07:47:52.797 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=14
+time=07:47:52.798 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=11
+time=07:47:52.804 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=07:47:52.804 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6069 score="[255 304 2908 2349 253]" criteria="[550 4855 5629 3145]"
+time=07:47:52.810 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=16
+time=07:47:52.810 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=13
+time=07:47:52.811 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=13
+time=07:47:54.592 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=11
+time=07:47:54.592 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=16
+time=07:47:54.593 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M007BBAYA18RN3TAQMZR67, got: 34200)"
+time=07:47:54.604 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=07:47:54.604 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6520 score="[277 392 3244 2354 253]" criteria="[550 5283 5968 3153]"
+time=07:47:56.404 level=INFO msg=これまでに地域内の評判によって126人、既存ユーザーの招待経由で2270人が新規登録しました
+time=07:47:56.404 level=INFO msg=これまでに低評価なライドによって257人が利用をやめました
+time=07:47:56.404 level=INFO msg=92.2%のライドは椅子がマッチされるまでの時間、18.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、32.3%のライドは椅子の実移動時間に不満がありました
+time=07:47:56.404 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=07:47:56.404 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7035 score="[320 466 3630 2366 253]" criteria="[550 5754 6364 3168]"
+time=07:47:56.435 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=31
+time=07:47:56.480 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=33
+time=07:47:56.484 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=14
+time=07:47:56.495 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=29
+time=07:47:58.204 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=32
+time=07:47:58.204 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=07:47:58.204 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7467 score="[342 519 3980 2373 253]" criteria="[550 6163 6718 3179]"
+time=07:48:00.004 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=07:48:00.004 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7876 score="[359 644 4244 2376 253]" criteria="[550 6555 6984 3183]"
+time=07:48:00.016 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ZenSeat 増加数=21
+time=07:48:01.804 level=INFO msg=これまでに地域内の評判によって144人、既存ユーザーの招待経由で2282人が新規登録しました
+time=07:48:01.804 level=INFO msg=これまでに低評価なライドによって304人が利用をやめました
+time=07:48:01.804 level=INFO msg=93.4%のライドは椅子がマッチされるまでの時間、16.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、37.6%のライドは椅子の実移動時間に不満がありました
+time=07:48:01.804 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=07:48:01.804 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8371 score="[393 834 4509 2382 253]" criteria="[550 7016 7254 3190]"
+time=07:48:02.004 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=35
+time=07:48:07.345 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=1518 アクティブユーザー数=1355
+time=07:48:07.345 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=928 アクティブユーザー数=784
+time=07:48:07.345 level=INFO msg=最終オーナー情報 名前="Sit Second Life" 売上=10407900 椅子数=237
+time=07:48:07.345 level=INFO msg=最終オーナー情報 名前=晴れ道タクシー 売上=9478200 椅子数=251
+time=07:48:07.345 level=INFO msg=最終オーナー情報 名前=ZenSeat 売上=8725100 椅子数=219
+time=07:48:07.345 level=INFO msg=最終オーナー情報 名前="SitWell Designs" 売上=11680200 椅子数=262
+time=07:48:07.345 level=INFO msg=最終オーナー情報 名前=快旅タクシー 売上=11413900 椅子数=269
+time=07:48:07.345 level=INFO msg=93.7%のライドは椅子がマッチされるまでの時間、15.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、38.8%のライドは椅子の実移動時間に不満がありました
+time=07:48:07.345 level=INFO msg=結果 pass=true スコア=572775 種別エラー数=map[24:1]
+time=07:48:07.345 level=INFO msg=負荷走行が終了しました
+
+SCORE: 572775
+BENCHMARK_PASS
+2026-10-10T22:48:07.735128406Z	BENCHMARK_END
+
+SCORE: 572775
+BENCHMARK_PASS

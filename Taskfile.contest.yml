@@ -10,18 +10,10 @@
 version: '3'
 
 tasks:
-  build-tls-router:
-    desc: 暗号化TCP接続の分散入口を実ホストのOS/Archへbuild
-    dir: tools/contest/tls-router
-    sources: ['*.go', go.mod]
-    generates: [tls-router]
-    cmds: ['{{.GO_BUILD_ENV}} go build -trimpath -ldflags "-s -w" -o tls-router .']
-
   check-tls-routing:
     desc: ローカルDockerでTLS分散・両HTTP終端・SSE・内部API制限・ログ集計を確認
     deps: [gen]
     cmds:
-      - cd tools/contest/tls-router && go test -race ./...
       - python3 tools/contest/check-tls-routing.py
 
   deploy-nginx-dry:
@@ -89,7 +81,6 @@ tasks:
 
   gen-contest-routing:
     desc: TaskfileのDB配置とTLS分散配置から配布資材を生成
-    deps: [build-tls-router]
     cmds:
       - mkdir -p tools/contest/generated
       - |
@@ -103,14 +94,21 @@ tasks:
         python3 tools/contest/gen-tls-routing.py
         --hosts {{range (splitList " " .NGINX_HOSTS)}}{{.}}={{index $.IP .}} {{end}}
         --matcher-hosts {{.MATCHER_HOSTS}} --entry {{.ENTRY_HOST}}
-        --router-hosts {{.TLS_ROUTER_HOSTS}}
+        --forward-hosts {{.TLS_FORWARD_HOSTS}}
         --entry-ip {{.ENTRY_IP}} --port {{.TLS_BACKEND_PORT}}
-        --nofile {{.TLS_ROUTER_NOFILE}}
-        --remote-home {{.REMOTE_HOME}} --user {{.ISUCON_USER}}
+        --interface {{.TLS_ENTRY_INTERFACE}} --remote-home {{.REMOTE_HOME}}
 
   check-contest-network:
     desc: TLS内部ポート・証明書・両終端と外部入口の内部API制限を読み取り確認
     cmds:
+      - >-
+        {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}}
+        'set -eu;
+        test "$(cat /proc/sys/net/ipv4/ip_forward)" = 1;
+        sudo nft list table ip isuride_tls >/dev/null;
+        systemctl is-enabled --quiet isuride-tls-forward;
+        systemctl is-active --quiet isuride-tls-forward;
+        ! systemctl is-active --quiet isuride-tls-router'
       - for: { var: NGINX_HOSTS }
         cmd: >-
           {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}}
