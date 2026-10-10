@@ -1,0 +1,105 @@
+
+# 190ms user time, 40ms system time, 47.06M rss, 466.15G vsz
+# Current date: Sun Oct 11 03:56:54 2026
+# Hostname: YusukenoMac-mini.local
+# Files: raw/mysql-slow-isucon-1.log
+# Overall: 610 total, 16 unique, 9.24 QPS, 4.57x concurrency _____________
+# Time range: 2026-10-10T18:55:42 to 2026-10-10T18:56:48
+# Attribute          total     min     max     avg     95%  stddev  median
+# ============     ======= ======= ======= ======= ======= ======= =======
+# Exec time           301s    50ms      4s   494ms      3s   967ms   122ms
+# Lock time          816us       0    27us     1us     1us     1us     1us
+# Rows sent            851       0     100    1.40    3.89    4.07    0.99
+# Rows examine       6.83M       0  22.69k  11.47k  21.38k   8.89k   4.27k
+# Query size         2.86M      26 1011.33k   4.81k  918.49  62.87k  107.34
+
+# Profile
+# Rank Query ID                            Response time  Calls R/Call V/M
+# ==== =================================== ============== ===== ====== ===
+#    1 0x25D034CF58223D3C0432925663366D80  247.3759 82.1%    84 2.9450  0.05 SELECT chairs chair_locations
+#    2 0xD6AD8A431BE7CA447BE67E7F25C2D64A   39.7366 13.2%   284 0.1399  0.00 SELECT chair_locations
+# MISC 0xMISC                               14.1881  4.7%   242 0.0586   0.0 <14 ITEMS>
+
+# Query 1: 1.33 QPS, 3.93x concurrency, ID 0x25D034CF58223D3C0432925663366D80 at byte 3071566
+# This item is included in the report because it matches --limit.
+# Scores: V/M = 0.05
+# Time range: 2026-10-10T18:55:45 to 2026-10-10T18:56:48
+# Attribute    pct   total     min     max     avg     95%  stddev  median
+# ============ === ======= ======= ======= ======= ======= ======= =======
+# Count         13      84
+# Exec time     82    247s   191ms      4s      3s      3s   397ms      3s
+# Lock time     18   149us     1us     3us     1us     1us       0     1us
+# Rows sent     50     432       4     100    5.14    3.89   10.14    3.89
+# Rows examine   0  43.06k     524     599  524.89  511.45    8.74  511.45
+# Query size     2  75.96k     926     926     926     926       0     926
+# String:
+# Databases    isuride
+# Hosts        localhost
+# Users        isucon
+# Query_time distribution
+#   1us
+#  10us
+# 100us
+#   1ms
+#  10ms
+# 100ms  #
+#    1s  ################################################################
+#  10s+
+# Tables
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chairs'\G
+#    SHOW CREATE TABLE `isuride`.`chairs`\G
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chair_locations'\G
+#    SHOW CREATE TABLE `isuride`.`chair_locations`\G
+# EXPLAIN /*!50100 PARTITIONS*/
+SELECT id,
+       owner_id,
+       name,
+       access_token,
+       model,
+       is_active,
+       created_at,
+       updated_at,
+       IFNULL(total_distance, 0) AS total_distance,
+       total_distance_updated_at
+FROM chairs
+       LEFT JOIN (SELECT chair_id,
+                          SUM(IFNULL(distance, 0)) AS total_distance,
+                          MAX(created_at)          AS total_distance_updated_at
+                   FROM (SELECT chair_id,
+                                created_at,
+                                ABS(latitude - LAG(latitude) OVER (PARTITION BY chair_id ORDER BY created_at)) +
+                                ABS(longitude - LAG(longitude) OVER (PARTITION BY chair_id ORDER BY created_at)) AS distance
+                         FROM chair_locations) tmp
+                   GROUP BY chair_id) distance_table ON distance_table.chair_id = chairs.id
+WHERE owner_id = '01M4KJQKEV499E0GZZCGES1BS1'\G
+
+# Query 2: 4.81 QPS, 0.67x concurrency, ID 0xD6AD8A431BE7CA447BE67E7F25C2D64A at byte 3120352
+# This item is included in the report because it matches --limit.
+# Scores: V/M = 0.00
+# Time range: 2026-10-10T18:55:46 to 2026-10-10T18:56:45
+# Attribute    pct   total     min     max     avg     95%  stddev  median
+# ============ === ======= ======= ======= ======= ======= ======= =======
+# Count         46     284
+# Exec time     13     40s    53ms   209ms   140ms   171ms    26ms   141ms
+# Lock time     39   325us       0    25us     1us     1us     1us     1us
+# Rows sent     33     284       1       1       1       1       0       1
+# Rows examine  85   5.83M  20.73k  22.69k  21.00k  22.45k  630.91  20.37k
+# Query size     1  29.95k     108     108     108     108       0     108
+# String:
+# Databases    isuride
+# Hosts        localhost
+# Users        isucon
+# Query_time distribution
+#   1us
+#  10us
+# 100us
+#   1ms
+#  10ms  ###
+# 100ms  ################################################################
+#    1s
+#  10s+
+# Tables
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chair_locations'\G
+#    SHOW CREATE TABLE `isuride`.`chair_locations`\G
+# EXPLAIN /*!50100 PARTITIONS*/
+SELECT * FROM chair_locations WHERE chair_id = '01M4KJQKTNG3TSRD8JSZHT0VWM' ORDER BY created_at DESC LIMIT 1\G
