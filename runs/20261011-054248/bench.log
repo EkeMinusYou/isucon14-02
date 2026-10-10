@@ -1,0 +1,274 @@
+2026-10-10T20:42:52.687567645Z	BENCHMARK_START
+time=05:42:53.061 level=INFO msg=負荷走行を開始します
+time=05:42:53.061 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.0.126:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=05:42:58.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=05:42:58.462 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6 score="[0 0 0 4 2]" criteria="[6 2 6 6]"
+time=05:43:00.237 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=05:43:00.238 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:43:00.238 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:00.241 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:00.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=05:43:00.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=22 score="[0 0 0 14 8]" criteria="[22 8 22 22]"
+time=05:43:02.038 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:02.040 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:02.040 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:02.040 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:43:02.040 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:02.062 level=INFO msg=これまでに地域内の評判によって8人、既存ユーザーの招待経由で40人が新規登録しました
+time=05:43:02.062 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、78.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=05:43:02.062 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=05:43:02.062 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=41 score="[0 0 0 32 9]" criteria="[41 9 41 41]"
+time=05:43:03.837 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:43:03.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:03.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=05:43:03.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:03.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:03.862 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=05:43:03.862 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=59 score="[0 0 1 43 15]" criteria="[59 15 59 58]"
+time=05:43:05.647 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:43:05.647 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:05.647 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:05.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:05.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:05.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=05:43:05.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=77 score="[0 0 1 54 22]" criteria="[77 22 77 76]"
+time=05:43:07.446 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:07.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=1
+time=05:43:07.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=05:43:07.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:07.448 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:07.461 level=INFO msg=これまでに地域内の評判によって20人、既存ユーザーの招待経由で88人が新規登録しました
+time=05:43:07.461 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、67.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.1%のライドは椅子の実移動時間に不満がありました
+time=05:43:07.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=05:43:07.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=93 score="[0 0 2 61 30]" criteria="[93 30 93 91]"
+time=05:43:09.242 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:09.243 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:09.244 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:09.244 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:09.262 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=05:43:09.262 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=112 score="[0 0 2 76 34]" criteria="[112 34 112 110]"
+time=05:43:11.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:11.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:11.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:11.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:11.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=05:43:11.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=05:43:11.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=137 score="[0 0 2 97 38]" criteria="[137 38 137 135]"
+time=05:43:12.861 level=INFO msg=これまでに地域内の評判によって32人、既存ユーザーの招待経由で153人が新規登録しました
+time=05:43:12.861 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、74.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.2%のライドは椅子の実移動時間に不満がありました
+time=05:43:12.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=05:43:12.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=167 score="[0 0 4 121 42]" criteria="[167 42 167 163]"
+time=05:43:12.862 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:12.862 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:12.863 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:12.863 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:12.863 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:14.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:14.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:14.649 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:14.649 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:14.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:43:14.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=05:43:14.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=195 score="[0 0 12 135 48]" criteria="[195 49 194 183]"
+time=05:43:16.451 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=05:43:16.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:16.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=05:43:16.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:16.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:16.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=05:43:16.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=233 score="[0 0 23 150 60]" criteria="[233 62 228 213]"
+time=05:43:18.248 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=4
+time=05:43:18.248 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:18.257 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:18.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:18.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:18.261 level=INFO msg=これまでに地域内の評判によって44人、既存ユーザーの招待経由で216人が新規登録しました
+time=05:43:18.261 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=05:43:18.261 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、71.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、8.5%のライドは椅子の実移動時間に不満がありました
+time=05:43:18.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=05:43:18.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=282 score="[0 3 36 169 74]" criteria="[282 80 270 246]"
+time=05:43:20.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:20.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=3
+time=05:43:20.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:20.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:20.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:20.062 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=05:43:20.062 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=318 score="[0 9 46 181 82]" criteria="[318 93 298 263]"
+time=05:43:21.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=05:43:21.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=357 score="[0 14 59 194 90]" criteria="[357 104 326 287]"
+time=05:43:21.877 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:21.879 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:21.879 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:21.879 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:21.879 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:23.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:23.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:23.651 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=3
+time=05:43:23.651 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:23.651 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:43:23.661 level=INFO msg=これまでに地域内の評判によって56人、既存ユーザーの招待経由で264人が新規登録しました
+time=05:43:23.661 level=INFO msg=これまでに低評価なライドによって13人が利用をやめました
+time=05:43:23.661 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、71.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、17.8%のライドは椅子の実移動時間に不満がありました
+time=05:43:23.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=05:43:23.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=401 score="[0 22 79 206 94]" criteria="[401 114 351 308]"
+time=05:43:25.456 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:25.456 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:25.462 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=05:43:25.462 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=450 score="[0 42 89 220 99]" criteria="[450 131 375 320]"
+time=05:43:25.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:25.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:25.522 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:27.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=05:43:27.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=494 score="[0 57 99 238 100]" criteria="[494 150 398 327]"
+time=05:43:27.272 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:27.272 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:43:27.284 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:27.284 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:27.285 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:29.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:29.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:29.055 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:29.061 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:29.062 level=INFO msg=これまでに地域内の評判によって68人、既存ユーザーの招待経由で328人が新規登録しました
+time=05:43:29.062 level=INFO msg=これまでに低評価なライドによって41人が利用をやめました
+time=05:43:29.062 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、68.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、30.2%のライドは椅子の実移動時間に不満がありました
+time=05:43:29.062 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=05:43:29.062 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=551 score="[0 80 105 259 107]" criteria="[551 175 429 340]"
+time=05:43:29.065 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:30.862 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=05:43:30.862 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=601 score="[0 109 111 273 108]" criteria="[601 192 444 345]"
+time=05:43:30.879 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:43:30.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:30.908 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=4
+time=05:43:30.909 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:30.911 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:32.647 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:32.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:32.653 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:32.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=05:43:32.664 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=650 score="[0 133 122 283 112]" criteria="[650 212 461 351]"
+time=05:43:32.672 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=05:43:32.673 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:34.461 level=INFO msg=これまでに地域内の評判によって80人、既存ユーザーの招待経由で372人が新規登録しました
+time=05:43:34.461 level=INFO msg=これまでに低評価なライドによって75人が利用をやめました
+time=05:43:34.461 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、66.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、40.7%のライドは椅子の実移動時間に不満がありました
+time=05:43:34.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=05:43:34.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=705 score="[0 159 134 297 115]" criteria="[705 237 478 358]"
+time=05:43:34.464 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:34.479 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:34.507 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:34.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:34.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:36.247 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:36.259 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:36.259 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:36.259 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:36.260 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:36.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=05:43:36.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=771 score="[0 197 145 312 117]" criteria="[771 261 494 365]"
+time=05:43:38.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=05:43:38.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=840 score="[0 226 157 335 122]" criteria="[840 296 523 374]"
+time=05:43:38.076 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:38.117 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:38.136 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:38.139 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:38.172 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=3
+time=05:43:39.861 level=INFO msg=これまでに地域内の評判によって92人、既存ユーザーの招待経由で424人が新規登録しました
+time=05:43:39.861 level=INFO msg=これまでに低評価なライドによって112人が利用をやめました
+time=05:43:39.861 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、65.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、49.3%のライドは椅子の実移動時間に不満がありました
+time=05:43:39.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=05:43:39.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=909 score="[0 271 165 346 127]" criteria="[909 317 540 381]"
+time=05:43:39.867 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:39.868 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:39.874 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:39.874 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:39.875 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:41.656 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:41.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=05:43:41.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=976 score="[2 309 180 355 130]" criteria="[969 341 556 388]"
+time=05:43:41.672 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:41.672 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:41.672 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:41.672 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:43.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=05:43:43.461 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1060 score="[9 344 205 370 132]" criteria="[1037 383 578 394]"
+time=05:43:43.464 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:43.475 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:43.475 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=05:43:43.475 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:43.475 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:45.253 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:45.254 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:45.254 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:45.254 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=3
+time=05:43:45.255 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:45.261 level=INFO msg=これまでに地域内の評判によって104人、既存ユーザーの招待経由で459人が新規登録しました
+time=05:43:45.261 level=INFO msg=これまでに低評価なライドによって162人が利用をやめました
+time=05:43:45.261 level=INFO msg=3.8%のライドは椅子がマッチされるまでの時間、63.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、55.8%のライドは椅子の実移動時間に不満がありました
+time=05:43:45.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=05:43:45.261 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1134 score="[15 377 225 382 135]" criteria="[1091 420 600 402]"
+time=05:43:47.058 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:47.058 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=1
+time=05:43:47.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=05:43:47.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1205 score="[21 402 245 402 135]" criteria="[1156 460 619 403]"
+time=05:43:47.089 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:47.089 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:47.089 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=05:43:48.856 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:48.856 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=05:43:48.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=05:43:48.861 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1290 score="[25 437 275 417 136]" criteria="[1236 505 634 407]"
+time=05:43:48.880 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:48.881 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:48.882 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:50.656 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:50.656 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:50.656 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=2
+time=05:43:50.658 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:50.658 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:50.661 level=INFO msg=これまでに地域内の評判によって116人、既存ユーザーの招待経由で494人が新規登録しました
+time=05:43:50.661 level=INFO msg=これまでに低評価なライドによって192人が利用をやめました
+time=05:43:50.662 level=INFO msg=4.3%のライドは椅子がマッチされるまでの時間、60.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、60.8%のライドは椅子の実移動時間に不満がありました
+time=05:43:50.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=05:43:50.661 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1339 score="[28 461 289 425 136]" criteria="[1282 526 642 408]"
+time=05:43:52.462 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=05:43:52.462 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1412 score="[28 480 322 445 137]" criteria="[1354 579 662 412]"
+time=05:43:52.464 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=05:43:52.464 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=2
+time=05:43:52.464 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=05:43:52.483 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:52.483 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=05:43:54.262 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=05:43:54.262 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1502 score="[30 520 361 454 137]" criteria="[1442 623 669 418]"
+time=05:43:54.277 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=4
+time=05:43:54.329 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=1
+time=05:43:54.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=05:43:54.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=3
+time=05:43:54.336 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:56.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=05:43:56.061 level=INFO msg=これまでに地域内の評判によって128人、既存ユーザーの招待経由で533人が新規登録しました
+time=05:43:56.061 level=INFO msg=これまでに低評価なライドによって213人が利用をやめました
+time=05:43:56.061 level=INFO msg=3.9%のライドは椅子がマッチされるまでの時間、58.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、64.9%のライドは椅子の実移動時間に不満がありました
+time=05:43:56.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=05:43:56.061 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1578 score="[32 555 384 469 138]" criteria="[1516 659 685 422]"
+time=05:43:56.070 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=05:43:56.074 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="LuxeLine Taxi" 増加数=4
+time=05:43:56.081 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=05:43:56.109 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Skyline Taxis" 増加数=4
+time=05:44:01.662 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=545 アクティブユーザー数=376
+time=05:44:01.662 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=148 アクティブユーザー数=101
+time=05:44:01.662 level=INFO msg=最終オーナー情報 名前=PulseRide 売上=2315600 椅子数=76
+time=05:44:01.662 level=INFO msg=最終オーナー情報 名前="LuxeLine Taxi" 売上=1965900 椅子数=69
+time=05:44:01.662 level=INFO msg=最終オーナー情報 名前=和やか交通 売上=1401100 椅子数=55
+time=05:44:01.662 level=INFO msg=最終オーナー情報 名前="Skyline Taxis" 売上=2900300 椅子数=92
+time=05:44:01.662 level=INFO msg=最終オーナー情報 名前=快旅タクシー 売上=1257200 椅子数=51
+time=05:44:01.662 level=INFO msg=3.8%のライドは椅子がマッチされるまでの時間、57.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、66.0%のライドは椅子の実移動時間に不満がありました
+time=05:44:01.662 level=INFO msg=結果 pass=true スコア=126305 種別エラー数=map[]
+time=05:44:01.662 level=INFO msg=負荷走行が終了しました
+
+SCORE: 126305
+BENCHMARK_PASS
+2026-10-10T20:44:01.855830855Z	BENCHMARK_END
+
+SCORE: 126305
+BENCHMARK_PASS
