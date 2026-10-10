@@ -53,9 +53,10 @@ func memoryTestState(t *testing.T) *rideState {
 		owners: map[string]Owner{}, users: map[string]User{}, userTokens: map[string]string{}, invitationUsers: map[string]string{},
 		chairs: map[string]Chair{}, modelSpeeds: map[string]int{}, chairTokens: map[string]string{}, distances: map[string]distanceTotal{}, stats: map[string]chairStatsTotal{},
 		rides: map[string]*memoryRide{}, statuses: map[string]RideStatus{}, userRides: map[string][]string{}, chairRides: map[string][]string{},
-		appEvents: map[string][]string{}, chairEvents: map[string][]string{},
+		appEvents: map[string]*notificationQueue{}, chairEvents: map[string]*notificationQueue{},
 		sales: map[string][]salesPoint{},
 	}
+	s.resetCurrentIndexes()
 	if err := writeWALRecord(f, stateRecord{Version: 1, Generation: s.generation}); err != nil {
 		t.Fatal(err)
 	}
