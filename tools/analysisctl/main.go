@@ -405,6 +405,11 @@ func (r runner) syncSelection(runGlob string, dirs, runIDs []string) error {
 		return err
 	}
 	defer os.RemoveAll(tempDir)
+	// Keep collected bytes intact when concurrent log output splits UTF-8.
+	runGlob, err = r.prepareBenchmarkLogs(tempDir, runGlob, dirs)
+	if err != nil {
+		return err
+	}
 
 	profileDir := filepath.Join(tempDir, "profiles")
 	if err := os.Mkdir(profileDir, 0o755); err != nil {

@@ -1,0 +1,18 @@
+# Configuration-only upload; activation is performed by the nginx deployment.
+deployments:
+  config-check:
+    uploads:
+      - label: host-specific nginx configuration
+        role: nginx
+        local: 'tools/contest/generated/nginx/{host}/'
+        remote: /etc/nginx/
+        excludes: [tls/]
+        delete: true
+        validate: sudo nginx -t
+      - label: MySQL configuration
+        role: mysql
+        local: mysql/
+        remote: /etc/mysql/
+        excludes: [debian.cnf]
+        delete: true
+        validate: sudo mysqld --validate-config

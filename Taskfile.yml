@@ -33,10 +33,10 @@ vars:
   SQL_SCHEMA_FILE: 1-schema.sql
   INITIALIZE_PATH: /api/initialize
   CONFIG_CHECK_COMMAND: task config-check
-  CONFIG_CHECK_CONFIG: tools/setup/config-check.yaml
+  CONFIG_CHECK_CONFIG: tools/contest/config-check.yaml
   SETUP_SECRET_ALLOWLIST: ''
   # Services whose metrics and journals measurectl collects on every host.
-  MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql,isuride-matcher,isuride-payment_mock'
+  MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql,isuride-matcher,isuride-payment_mock,isuride-tls-router'
   # <<< contest values <<<
 
   SSH_USER: ubuntu
@@ -61,12 +61,17 @@ vars:
       isucon-3: 172.31.5.116
   APP_HOSTS: isucon-1
   APP_TRAFFIC_HOSTS: isucon-1
-  NGINX_HOSTS: isucon-2
+  # The first nginx host owns the external entry; the matcher remains single.
+  NGINX_HOSTS: isucon-2 isucon-3
+  TLS_ROUTER_HOSTS: isucon-2
+  TLS_BACKEND_PORT: '8443'
+  # Budget both endpoint hosts' connections, two sockets and Linux splice pipes.
+  TLS_ROUTER_NOFILE: '262144'
   # MYSQL_HOST is the detailed measurement source and default DB connection.
   MYSQL_HOST: isucon-3
   # Deployment and service enable/disable targets.
   MYSQL_HOSTS: '{{.MYSQL_HOST}}'
-  MATCHER_HOSTS: '{{.NGINX_HOSTS}}'
+  MATCHER_HOSTS: isucon-2
   PAYMENT_MOCK_HOSTS: '{{.APP_HOSTS}}'
   CONF_SRC: isucon-1
   # Extra deployctl roles and vars for contest-specific deployments.
@@ -74,10 +79,12 @@ vars:
     -role sql_assets={{concat (splitList " " .APP_HOSTS) (splitList " " .MYSQL_HOSTS) | uniq | join ","}}
     -role matcher={{splitList " " .MATCHER_HOSTS | join ","}}
     -role payment_mock={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
+    -role tls_router={{splitList " " .TLS_ROUTER_HOSTS | join ","}}
     -var matcher_hosts={{splitList " " .MATCHER_HOSTS | join ","}}
     -var payment_mock_hosts={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
+    -var tls_router_hosts={{splitList " " .TLS_ROUTER_HOSTS | join ","}}
     -var app_ip={{index .IP (splitList " " .APP_HOSTS | first)}}
-    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock
+    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock,isuride-tls-router:tls_router
   # Arguments passed to the contest smoke binary on ENTRY_HOST.
   SMOKE_ARGS: '-base https://isuride.xiv.isucon.net'
   # <<< contest values <<<

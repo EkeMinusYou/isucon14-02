@@ -28,6 +28,9 @@ webapp/go/isuride
 /tools/dashboard/server/dashboardserver
 /tools/measurement/cmd/sql-pool-metrics/sql-pool-metrics
 /tools/contest/smoke/smoke
+/tools/contest/tls-router/tls-router
+/tools/contest/generated/nginx/
+/tools/contest/generated/isuride-tls-router.service
 
 # Node dependencies and browser state
 node_modules/

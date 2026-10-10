@@ -1,0 +1,18 @@
+# host=isucon-2 services=isuride-go,nginx,mysql,isuride-matcher,isuride-payment_mock,isuride-tls-router load_window=2026-10-10T22:08:16.794840756Z..2026-10-10T22:09:02.51625742Z
+# unit=isuride-go
+-- No entries --
+# unit=nginx
+-- No entries --
+# unit=mysql
+-- No entries --
+# unit=isuride-matcher
+-- No entries --
+# unit=isuride-payment_mock
+-- No entries --
+# unit=isuride-tls-router
+2026-10-10T22:08:56.971813+00:00 ip-172-31-7-50 tls-router[147421]: accept tcp 172.31.7.50:443: accept4: too many open files
+2026-10-10T22:08:57.080178+00:00 ip-172-31-7-50 systemd[1]: isuride-tls-router.service: Main process exited, code=exited, status=1/FAILURE
+2026-10-10T22:08:57.080534+00:00 ip-172-31-7-50 systemd[1]: isuride-tls-router.service: Failed with result 'exit-code'.
+2026-10-10T22:08:57.082034+00:00 ip-172-31-7-50 systemd[1]: isuride-tls-router.service: Consumed 16.144s CPU time, 1.2M memory peak, 0B memory swap peak.
+2026-10-10T22:08:58.204760+00:00 ip-172-31-7-50 systemd[1]: isuride-tls-router.service: Scheduled restart job, restart counter is at 1.
+2026-10-10T22:08:58.209125+00:00 ip-172-31-7-50 systemd[1]: Started isuride-tls-router.service - ISURIDE encrypted TCP entry router.

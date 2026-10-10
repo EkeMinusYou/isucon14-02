@@ -10,6 +10,26 @@
 version: '3'
 
 tasks:
+  build-tls-router:
+    desc: 暗号化TCP接続の分散入口を実ホストのOS/Archへbuild
+    dir: tools/contest/tls-router
+    sources: ['*.go', go.mod]
+    generates: [tls-router]
+    cmds: ['{{.GO_BUILD_ENV}} go build -trimpath -ldflags "-s -w" -o tls-router .']
+
+  check-tls-routing:
+    desc: ローカルDockerでTLS分散・両HTTP終端・SSE・内部API制限・ログ集計を確認
+    deps: [gen]
+    cmds:
+      - cd tools/contest/tls-router && go test -race ./...
+      - python3 tools/contest/check-tls-routing.py
+
+  deploy-nginx-dry:
+    desc: 両TLS終端と2号機TCP入口の配布・service操作を実行せず表示
+    deps: [gen, build-deployctl]
+    cmds:
+      - '{{.DEPLOYCTL_DIR}}/deployctl apply nginx -dry-run -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
+
   test-ride-metrics:
     desc: 配車・評価の計測と既存collectorからDuckDBまでをローカルfixtureで確認
     dir: '{{.APP_DIR}}'
@@ -68,7 +88,8 @@ tasks:
     desc: deployへ載せる前にDB資材を生成・検証する（deploy系のhook、既定は何もしない）
 
   gen-contest-routing:
-    desc: TaskfileのDB配置からGoと公式初期化で共用する環境設定を生成
+    desc: TaskfileのDB配置とTLS分散配置から配布資材を生成
+    deps: [build-tls-router]
     cmds:
       - mkdir -p tools/contest/generated
       - |
@@ -78,10 +99,25 @@ tasks:
         ISUCON_DB_PORT=3306
         ISUCON_DB_NAME={{.DB_NAME}}
         EOF
+      - >-
+        python3 tools/contest/gen-tls-routing.py
+        --hosts {{range (splitList " " .NGINX_HOSTS)}}{{.}}={{index $.IP .}} {{end}}
+        --matcher-hosts {{.MATCHER_HOSTS}} --entry {{.ENTRY_HOST}}
+        --router-hosts {{.TLS_ROUTER_HOSTS}}
+        --entry-ip {{.ENTRY_IP}} --port {{.TLS_BACKEND_PORT}}
+        --nofile {{.TLS_ROUTER_NOFILE}}
+        --remote-home {{.REMOTE_HOME}} --user {{.ISUCON_USER}}
 
   check-contest-network:
-    desc: matcherのloopback TLS・内部API制限・Goの決済mock接続を読み取り確認
+    desc: TLS内部ポート・証明書・両終端と外部入口の内部API制限を読み取り確認
     cmds:
+      - for: { var: NGINX_HOSTS }
+        cmd: >-
+          {{.SSH}} {{.SSH_USER}}@{{.ENTRY_HOST}}
+          'set -eu;
+          curl -fsS --connect-to isuride.xiv.isucon.net:443:{{index .IP .ITEM}}:{{.TLS_BACKEND_PORT}} -o /dev/null https://isuride.xiv.isucon.net/;
+          code=$(curl -sS --connect-to isuride.xiv.isucon.net:443:{{index .IP .ITEM}}:{{.TLS_BACKEND_PORT}} -o /dev/null -w "%{http_code}" https://isuride.xiv.isucon.net/api/internal/_network-check);
+          test "$code" = 403'
       - for: { var: MATCHER_HOSTS }
         cmd: >-
           {{.SSH}} {{.SSH_USER}}@{{.ITEM}}

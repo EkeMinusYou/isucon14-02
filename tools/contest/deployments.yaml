@@ -53,23 +53,45 @@ deployments:
         delete: true
       - label: nginx configuration preserving the installed TLS certificates
         role: nginx
-        local: nginx/
+        local: 'tools/contest/generated/nginx/{host}/'
         remote: /etc/nginx/
         excludes: [tls/]
         delete: true
         validate: sudo nginx -t
+      - label: encrypted TCP entry binary
+        role: tls_router
+        local: tools/contest/tls-router/tls-router
+        remote: '{var:remote_home}/tls-router'
+      - label: encrypted TCP entry unit
+        role: tls_router
+        local: tools/contest/generated/isuride-tls-router.service
+        remote: /etc/systemd/system/isuride-tls-router.service
     activations:
-      - label: reload the entry nginx
+      - label: restart TLS endpoints and the assigned TCP entry
         role: nginx
         script: |
           set -eu
           sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/webapp/public
-          if sudo systemctl is-active --quiet nginx; then
-            sudo systemctl reload nginx
-          else
-            sudo systemctl enable --now nginx
-          fi
+          # Restart releases the former wildcard :443 before splitting listeners.
+          sudo systemctl enable nginx
+          sudo systemctl restart nginx
           sudo systemctl is-active --quiet nginx
+          case ',{var:tls_router_hosts},' in
+            *',{host},'*)
+              sudo systemd-analyze verify /etc/systemd/system/isuride-tls-router.service
+              sudo systemctl daemon-reload
+              sudo systemctl enable isuride-tls-router
+              sudo systemctl restart isuride-tls-router
+              sudo systemctl is-active --quiet isuride-tls-router
+              ;;
+          esac
+          # Requires=nginx can stop the matcher during an nginx restart.
+          case ',{var:matcher_hosts},' in
+            *',{host},'*)
+              sudo systemctl start isuride-matcher
+              sudo systemctl is-active --quiet isuride-matcher
+              ;;
+          esac
 
   mysql:
     uploads:
@@ -197,6 +219,14 @@ deployments:
             *',{host},'*) ;;
             *) sudo systemctl disable --now isuride-payment_mock ;;
           esac
+          case ',{var:tls_router_hosts},' in
+            *',{host},'*) ;;
+            *)
+              if sudo systemctl cat isuride-tls-router >/dev/null 2>&1; then
+                sudo systemctl disable --now isuride-tls-router
+              fi
+              ;;
+          esac
 
   dependency-roles-on:
     activations:
@@ -212,6 +242,13 @@ deployments:
           set -eu
           sudo systemctl enable --now isuride-payment_mock
           sudo systemctl is-active --quiet isuride-payment_mock
+      - label: enable the encrypted TCP entry on its assigned host
+        role: tls_router
+        script: |
+          set -eu
+          sudo systemctl daemon-reload
+          sudo systemctl enable --now isuride-tls-router
+          sudo systemctl is-active --quiet isuride-tls-router
 
 plans:
   deploy-all:
