@@ -71,3 +71,34 @@ func TestISURIDESetupSmokeAPI(t *testing.T) {
 		})
 	}
 }
+
+// Query the same derived database as the dashboard without changing saved RUNs.
+func TestISURIDESavedRunScoresAPI(t *testing.T) {
+	root, err := filepath.Abs("../../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if os.Getenv("ISUCON_SETUP_SMOKE_DIR") == "" {
+		t.Skip("explicit measurement verification only")
+	}
+	a := &app{runsDir: filepath.Join(root, "runs"), analysisDB: filepath.Join(root, "runs/analysis.duckdb")}
+	w := httptest.NewRecorder()
+	a.handleScores(w, httptest.NewRequest("GET", "/api/scores", nil))
+	if w.Code != 200 {
+		t.Fatalf("status %d: %s", w.Code, w.Body.String())
+	}
+	var rows []scoreEntry
+	if err := json.Unmarshal(w.Body.Bytes(), &rows); err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range rows {
+		if row.RunID != "20261011-035537" {
+			continue
+		}
+		if row.Score == nil || *row.Score != 671 || row.Passed == nil || !*row.Passed {
+			t.Fatalf("result mismatch: %s", w.Body.String())
+		}
+		return
+	}
+	t.Fatal("saved RUN was not exposed")
+}

@@ -767,11 +767,19 @@ tasks:
 
   after-bench:
     desc: 進行中RUNのcollector・ログ・集計・manifestを回収
-    deps: [build-measurectl, build-nginx-backend-report, build-user-transition-metrics]
+    deps: [build-measurectl, build-nginx-backend-report, build-user-transition-metrics, build-bench-output]
     vars:
       FINISH_RUN_ID:
         sh: sh tools/bench/active-run-id.sh '{{.RUN_STATE_FILE}}'
     cmds:
+      - |
+        {{.OPERATION_LOCK}} bash <<'BASH'
+        set -eu
+        result_markers=$(tools/bench-output/bench-output -input '{{.RESULT_DIR}}/{{.FINISH_RUN_ID}}/bench.log')
+        if [ -n "$result_markers" ]; then
+          printf '\n%s\n' "$result_markers" >> '{{.RESULT_DIR}}/{{.FINISH_RUN_ID}}/bench.log'
+        fi
+        BASH
       - >-
         {{.OPERATION_LOCK}} {{.MEASURECTL_DIR}}/measurectl run finalize -auto-commit -results '{{.RESULT_DIR}}' -raw-dir '{{.RAW_DIR}}'
         -run-state-file '{{.RUN_STATE_FILE}}' -scores '{{.RESULT_DIR}}/scores.tsv' -score '{{.SCORE}}'

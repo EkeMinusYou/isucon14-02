@@ -1,6 +1,6 @@
 {
-  "_comment": "Portal benchmark: task bench-manual records confirmed score and verdict. Automatic benchmark invocation is intentionally unconfigured; adapt participant output after the first user RUN.",
-  "score": "^SCORE:\\s*(\\d+)\\s*$",
-  "pass": "^BENCHMARK_PASS$",
-  "fail": "^BENCHMARK_FAIL$"
+  "_comment": "Participant result format verified against RUN 20261011-035537. Explicit manual markers remain supported; automatic invocation is unconfigured.",
+  "score": "(?:^SCORE:\\s*|^time=\\S+ level=INFO (?:source=\\S+ )?msg=結果 pass=(?:true|false) スコア=)([0-9]+)(?:\\s|$)",
+  "pass": "^(?:BENCHMARK_PASS|time=\\S+ level=INFO (?:source=\\S+ )?msg=結果 pass=true スコア=[0-9]+(?: .*)?)$",
+  "fail": "^(?:BENCHMARK_FAIL(?:\\s+exit_status=[0-9]+)?|time=\\S+ level=INFO (?:source=\\S+ )?msg=結果 pass=false スコア=[0-9]+(?: .*)?)$"
 }

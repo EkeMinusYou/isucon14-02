@@ -10,7 +10,8 @@ semantic_schemas:
   # Views over the contest's own benchmark log live under ../contest/analysis-schema/
   # because they depend on that benchmarker's output format. Add score breakdowns
   # for the contest there as well; the view names stay the readers' contract.
-  - ../contest/analysis-schema/bench-errors-semantic.sql
+  - ../contest/analysis-schema/bench-errors-semantic.sql # contest: participant results
+  - ../contest/analysis-schema/bench-progress.sql # contest: participant progress
 
 reports:
   bottleneck_evidence: queries/bottleneck-evidence.sql

@@ -123,6 +123,7 @@ task bench-manual
 ポータルなどで完了を確認したらEnterを押し、結果原文の保存先（任意）、スコア、
 整合性チェックの結果を入力します。原文は同じRUNの`benchmark-result.txt`へ保存します。
 スコアが分からない場合は空欄にし、0点と区別します。
+原文に対応済みの結果行があれば、回収時にスコア・合否を読み取ります。原文にも結果がない場合は未判定のまま保存します。
 
 `Taskfile.yml`の`BENCH_HOST`・`BENCH_TARGET`・`BENCH_COMMAND`を当日の環境に合わせて設定すると、
 次のコマンドで`BENCH_HOST`へ接続し、`ISUCON_USER`の`REMOTE_HOME`でベンチを実行します。
@@ -133,7 +134,7 @@ task bench
 
 ベンチの結果ログはローカルのGoツール`tools/bench-output`を通し、元の出力と終了コードを保ちながら
 当日の出力を計測基盤共通の`SCORE:`・`BENCHMARK_PASS`／`BENCHMARK_FAIL`へ変換します。
-`task bench`が変換ツールを自動ビルドします。当日の出力形式は`tools/contest/bench-patterns.json`の
+`task bench`と`task after-bench`が変換ツールを自動ビルドします。手動実行でも回収前に保存ログを変換します。当日の出力形式は`tools/contest/bench-patterns.json`の
 正規表現で宣言し、該当行がない場合はスコアや成功を補いません。
 
 profile自動収集とuser-transitionは標準で有効です。[Go profile導入例](docs/measurement/go-profiling.md)に沿って

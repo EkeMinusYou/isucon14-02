@@ -50,6 +50,7 @@ webapp
 tools/analysisctl/isuride_setup_test.go
 tools/analysisctl/internal/pprofimport/isuride_setup_test.go
 tools/dashboard/server/isuride_setup_test.go
+tools/bench-output/isuride_test.go
 
 [exclude]
 tools/contest
