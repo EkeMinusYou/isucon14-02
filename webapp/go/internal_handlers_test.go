@@ -83,6 +83,7 @@ func TestMatching(t *testing.T) {
 		t.Helper()
 		notifications.reset()
 		pool.MustExec(string(schema))
+		pool.MustExec(`INSERT INTO chair_models (name, speed) VALUES ('model', 1), ('fast', 4)`)
 		pool.MustExec(`INSERT INTO users
 			(id, username, firstname, lastname, date_of_birth, access_token, invitation_code)
 			VALUES ('user', 'user', 'Test', 'User', '2000-01-01', 'token', 'invite')`)
@@ -90,6 +91,11 @@ func TestMatching(t *testing.T) {
 	chair := func(id string, active bool) {
 		pool.MustExec(`INSERT INTO chairs (id, owner_id, name, model, is_active, access_token)
 			VALUES (?, 'owner', ?, 'model', ?, ?)`, id, id, active, id)
+		pool.MustExec(`INSERT INTO chair_distance_totals (chair_id) VALUES (?)`, id)
+	}
+	location := func(id string, latitude, longitude int) {
+		pool.MustExec(`UPDATE chair_distance_totals SET last_latitude = ?, last_longitude = ? WHERE chair_id = ?`,
+			latitude, longitude, id)
 	}
 	ride := func(id string, chairID any, createdAt time.Time) {
 		pool.MustExec(`INSERT INTO rides (id, user_id, chair_id, pickup_latitude,
@@ -112,6 +118,65 @@ func TestMatching(t *testing.T) {
 			t.Fatalf("%s: got %d, want %d", query, got, want)
 		}
 	}
+
+	t.Run("PickupTimeUsesAllCandidatesAndPreservesOldestFirst", func(t *testing.T) {
+		reset(t)
+		chair("a-near", true)
+		location("a-near", 0, 3)
+		chair("z-fast", true)
+		location("z-fast", 4, 4)
+		pool.MustExec(`UPDATE chairs SET model = 'fast' WHERE id = 'z-fast'`)
+		chair("unknown-position", true)
+		chair("unknown-model", true)
+		location("unknown-model", 0, 0)
+		pool.MustExec(`UPDATE chairs SET model = 'missing' WHERE id = 'unknown-model'`)
+		ride("oldest", nil, time.Unix(1_700_000_000, 0))
+		ride("newer", nil, time.Unix(1_700_000_001, 0))
+		pool.MustExec(`UPDATE rides SET pickup_latitude = 4, pickup_longitude = 4 WHERE id = 'newer'`)
+		if status := request(); status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		// The older ride gets ETA 8/4 instead of 3/1 even though the newer
+		// ride is already at that chair's position. Each chair is used once.
+		assertCount(t, `SELECT COUNT(*) FROM rides WHERE id = 'oldest' AND chair_id = 'z-fast'`, 1)
+		assertCount(t, `SELECT COUNT(*) FROM rides WHERE id = 'newer' AND chair_id = 'a-near'`, 1)
+	})
+
+	t.Run("ManhattanDistanceAndFractionalPickupTime", func(t *testing.T) {
+		reset(t)
+		pool.MustExec(`UPDATE chair_models SET speed = 4 WHERE name = 'model'`)
+		chair("a-diagonal", true)
+		location("a-diagonal", -13, -23)
+		chair("z-nearest", true)
+		location("z-nearest", -10, -25)
+		ride("waiting", nil, time.Unix(1_700_000_000, 0))
+		pool.MustExec(`UPDATE rides SET pickup_latitude = -10, pickup_longitude = -20 WHERE id = 'waiting'`)
+		if status := request(); status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		// Manhattan ETA is 6/4 versus 5/4; Euclidean distance would favor
+		// the diagonal chair, and integer division would incorrectly tie them.
+		assertCount(t, `SELECT COUNT(*) FROM rides WHERE chair_id = 'z-nearest'`, 1)
+	})
+
+	t.Run("UnknownMetadataRemainsAvailableAsFallback", func(t *testing.T) {
+		reset(t)
+		chair("no-position", true)
+		chair("no-model", true)
+		location("no-model", 0, 0)
+		pool.MustExec(`UPDATE chairs SET model = 'missing' WHERE id = 'no-model'`)
+		chair("zero-speed", true)
+		location("zero-speed", 0, 0)
+		pool.MustExec(`INSERT INTO chair_models (name, speed) VALUES ('stopped', 0)`)
+		pool.MustExec(`UPDATE chairs SET model = 'stopped' WHERE id = 'zero-speed'`)
+		for i := 0; i < 3; i++ {
+			ride(fmt.Sprintf("waiting-%d", i), nil, time.Unix(1_700_000_000+int64(i), 0))
+		}
+		if status := request(); status != http.StatusNoContent {
+			t.Fatalf("matching status: %d", status)
+		}
+		assertCount(t, `SELECT COUNT(DISTINCT chair_id) FROM rides`, 3)
+	})
 
 	t.Run("OldestFirstBoundedBatchAndConcurrentRequests", func(t *testing.T) {
 		reset(t)

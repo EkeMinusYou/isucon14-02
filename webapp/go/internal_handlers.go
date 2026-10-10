@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"math/rand/v2"
+	"math"
 	"net/http"
 	"strings"
 	"sync"
@@ -16,11 +16,48 @@ const matchingBatchSize = 64
 
 var matchingMu sync.Mutex
 
+type matchingChair struct {
+	ID        string        `db:"id"`
+	Latitude  sql.NullInt64 `db:"last_latitude"`
+	Longitude sql.NullInt64 `db:"last_longitude"`
+	Speed     sql.NullInt64 `db:"speed"`
+}
+
+// Rides arrive oldest first. Reserve each chair once, minimizing estimated
+// pickup time over all remaining candidates without truncating integer ratios.
+func selectMatchingChairs(rides []Ride, chairs []matchingChair) []string {
+	chairIDs := make([]string, 0, min(len(rides), len(chairs)))
+	for _, ride := range rides {
+		if len(chairs) == 0 {
+			break
+		}
+		best, bestTime := 0, math.Inf(1)
+		for i, chair := range chairs {
+			pickupTime := math.Inf(1)
+			if chair.Latitude.Valid && chair.Longitude.Valid && chair.Speed.Valid && chair.Speed.Int64 > 0 {
+				distance := math.Abs(float64(ride.PickupLatitude)-float64(chair.Latitude.Int64)) +
+					math.Abs(float64(ride.PickupLongitude)-float64(chair.Longitude.Int64))
+				pickupTime = distance / float64(chair.Speed.Int64)
+			}
+			// Unknown positions or models are fallbacks, never zero-distance chairs.
+			if pickupTime < bestTime || (pickupTime == bestTime && chair.ID < chairs[best].ID) {
+				best, bestTime = i, pickupTime
+			}
+		}
+		chairIDs = append(chairIDs, chairs[best].ID)
+		chairs[best] = chairs[len(chairs)-1]
+		chairs = chairs[:len(chairs)-1]
+	}
+	return chairIDs
+}
+
 // A chair remains occupied until its previous ride has completed and every
 // chair notification has been consumed.
 const availableChairsQuery = `
-SELECT c.id
+SELECT c.id, d.last_latitude, d.last_longitude, m.speed
 FROM chairs c
+LEFT JOIN chair_distance_totals d ON d.chair_id = c.id
+LEFT JOIN chair_models m ON m.name = c.model
 LEFT JOIN rides previous ON previous.id = (
 	SELECT id FROM rides WHERE chair_id = c.id
 	ORDER BY updated_at DESC, id DESC LIMIT 1
@@ -61,7 +98,7 @@ func matchWaitingRides(ctx context.Context) error {
 
 	var rides []Ride
 	if err := tx.SelectContext(ctx, &rides, `
-		SELECT id, user_id FROM rides WHERE chair_id IS NULL
+		SELECT id, user_id, pickup_latitude, pickup_longitude FROM rides WHERE chair_id IS NULL
 		ORDER BY created_at, id LIMIT ? FOR UPDATE`, matchingBatchSize); err != nil {
 		return err
 	}
@@ -69,18 +106,15 @@ func matchWaitingRides(ctx context.Context) error {
 		return nil
 	}
 
-	var chairIDs []string
-	if err := tx.SelectContext(ctx, &chairIDs, availableChairsQuery); err != nil {
+	var chairs []matchingChair
+	if err := tx.SelectContext(ctx, &chairs, availableChairsQuery); err != nil {
 		return err
 	}
-	if len(chairIDs) == 0 {
+	if len(chairs) == 0 {
 		return nil
 	}
 
-	rand.Shuffle(len(chairIDs), func(i, j int) { chairIDs[i], chairIDs[j] = chairIDs[j], chairIDs[i] })
-	if len(chairIDs) > len(rides) {
-		chairIDs = chairIDs[:len(rides)]
-	}
+	chairIDs := selectMatchingChairs(rides, chairs)
 
 	// Lock only selected chairs, in a consistent order. Activity updates use
 	// the same rows, and another matcher must recheck occupancy after locking.
@@ -97,13 +131,13 @@ func matchWaitingRides(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	if err := tx.SelectContext(ctx, &chairIDs, checkQuery, checkArgs...); err != nil {
+	if err := tx.SelectContext(ctx, &chairs, checkQuery, checkArgs...); err != nil {
 		return err
 	}
+	chairIDs = selectMatchingChairs(rides, chairs)
 	if len(chairIDs) == 0 {
 		return nil
 	}
-	rand.Shuffle(len(chairIDs), func(i, j int) { chairIDs[i], chairIDs[j] = chairIDs[j], chairIDs[i] })
 
 	// One statement persists the batch without one SQL round trip per ride.
 	var query strings.Builder
