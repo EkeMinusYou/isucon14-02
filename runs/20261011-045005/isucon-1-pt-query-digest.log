@@ -1,0 +1,103 @@
+
+# 210ms user time, 60ms system time, 49.44M rss, 466.15G vsz
+# Current date: Sun Oct 11 04:51:23 2026
+# Hostname: YusukenoMac-mini.local
+# Files: raw/mysql-slow-isucon-1.log
+# Overall: 574 total, 10 unique, 9.11 QPS, 3.34x concurrency _____________
+# Time range: 2026-10-10T19:50:11 to 2026-10-10T19:51:14
+# Attribute          total     min     max     avg     95%  stddev  median
+# ============     ======= ======= ======= ======= ======= ======= =======
+# Exec time           210s    50ms      1s   366ms   992ms   310ms   253ms
+# Lock time          384ms       0   111ms   668us     2us     7ms     1us
+# Rows sent         25.00k       0      85   44.61   76.28   17.57   44.60
+# Rows examine      16.06M       0  79.53k  28.65k  72.41k  23.08k  23.58k
+# Query size         3.02M       6 1011.33k   5.39k  400.73  64.96k  284.79
+
+# Profile
+# Rank Query ID                            Response time  Calls R/Call V/M
+# ==== =================================== ============== ===== ====== ===
+#    1 0x545D8F09390D15906399936F27B1A685  196.8884 93.7%   423 0.4655  0.20 SELECT chairs chair_locations
+#    2 0x9C2327C31EA698A3552223890F86B5A9   11.3480  5.4%   137 0.0828  0.01 SELECT rides chairs ride_statuses
+# MISC 0xMISC                                1.9939  0.9%    14 0.1424   0.0 <8 ITEMS>
+
+# Query 1: 7.55 QPS, 3.52x concurrency, ID 0x545D8F09390D15906399936F27B1A685 at byte 3192825
+# This item is included in the report because it matches --limit.
+# Scores: V/M = 0.20
+# Time range: 2026-10-10T19:50:18 to 2026-10-10T19:51:14
+# Attribute    pct   total     min     max     avg     95%  stddev  median
+# ============ === ======= ======= ======= ======= ======= ======= =======
+# Count         73     423
+# Exec time     93    197s    52ms      1s   465ms      1s   307ms   412ms
+# Lock time      0   738us     1us    13us     1us     1us       0     1us
+# Rows sent     73  18.38k      20      85   44.51   76.28   18.78   38.53
+# Rows examine  96  15.44M   5.44k  79.53k  37.38k  72.41k  21.14k  31.59k
+# Query size     3 119.38k     289     289     289     289       0     289
+# String:
+# Databases    isuride
+# Hosts        localhost
+# Users        isucon
+# Query_time distribution
+#   1us
+#  10us
+# 100us
+#   1ms
+#  10ms  ######
+# 100ms  ################################################################
+#    1s  ######
+#  10s+
+# Tables
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chairs'\G
+#    SHOW CREATE TABLE `isuride`.`chairs`\G
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chair_locations'\G
+#    SHOW CREATE TABLE `isuride`.`chair_locations`\G
+# EXPLAIN /*!50100 PARTITIONS*/
+SELECT chairs.id, chairs.name, chairs.model, location.latitude, location.longitude
+		FROM chairs
+		JOIN chair_locations AS location ON location.id = (
+		    SELECT id FROM chair_locations
+		    WHERE chair_id = chairs.id ORDER BY created_at DESC LIMIT 1
+		)
+		WHERE chairs.is_active = TRUE\G
+
+# Query 2: 3.34 QPS, 0.28x concurrency, ID 0x9C2327C31EA698A3552223890F86B5A9 at byte 3242391
+# This item is included in the report because it matches --limit.
+# Scores: V/M = 0.01
+# Time range: 2026-10-10T19:50:32 to 2026-10-10T19:51:13
+# Attribute    pct   total     min     max     avg     95%  stddev  median
+# ============ === ======= ======= ======= ======= ======= ======= =======
+# Count         23     137
+# Exec time      5     11s    50ms   188ms    83ms   134ms    26ms    75ms
+# Lock time      0   315us     1us    12us     2us     2us       0     1us
+# Rows sent     26   6.54k      28      61   48.88   56.92    5.83   49.17
+# Rows examine   3 632.40k   2.05k   6.22k   4.62k   6.01k 1014.46   4.49k
+# Query size     1  55.52k     415     415     415     415       0     415
+# String:
+# Databases    isuride
+# Hosts        localhost
+# Users        isucon
+# Query_time distribution
+#   1us
+#  10us
+# 100us
+#   1ms
+#  10ms  ################################################################
+# 100ms  ###################
+#    1s
+#  10s+
+# Tables
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'rides'\G
+#    SHOW CREATE TABLE `isuride`.`rides`\G
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'chairs'\G
+#    SHOW CREATE TABLE `isuride`.`chairs`\G
+#    SHOW TABLE STATUS FROM `isuride` LIKE 'ride_statuses'\G
+#    SHOW CREATE TABLE `isuride`.`ride_statuses`\G
+# EXPLAIN /*!50100 PARTITIONS*/
+SELECT rides.chair_id, latest_status.status
+		 FROM rides
+		 JOIN chairs ON chairs.id = rides.chair_id AND chairs.is_active = TRUE
+		 LEFT JOIN ride_statuses AS latest_status ON latest_status.id = (
+		     SELECT id FROM ride_statuses
+		     WHERE ride_id = rides.id ORDER BY created_at DESC LIMIT 1
+		 )
+		 WHERE latest_status.status IS NULL OR latest_status.status <> 'COMPLETED'
+		 ORDER BY rides.created_at DESC\G

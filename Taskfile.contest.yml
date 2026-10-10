@@ -10,6 +10,33 @@
 version: '3'
 
 tasks:
+  test-nearby-chairs:
+    desc: 一時的なローカルMySQLで近隣椅子APIの条件とSQL回数を確認
+    preconditions:
+      - sh: docker image inspect mysql:8.0.46 >/dev/null
+        msg: local Docker and the mysql:8.0.46 image are required
+    cmds:
+      - |
+        bash -eu <<'SCRIPT'
+        set -eu
+        container_id=$(docker run --rm -d --pull never -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+          -e MYSQL_DATABASE=isuride_nearby_test --label isuride.check=nearby-chairs \
+          -p 127.0.0.1::3306 mysql:8.0.46)
+        trap 'docker rm -f "$container_id" >/dev/null' EXIT
+        mysql_addr=$(docker port "$container_id" 3306/tcp)
+        ready=false
+        for attempt in $(seq 1 60); do
+          if docker exec "$container_id" mysqladmin --host=127.0.0.1 -u root ping >/dev/null 2>&1; then
+            ready=true
+            break
+          fi
+          sleep 1
+        done
+        if [ "$ready" != true ]; then docker logs "$container_id"; exit 1; fi
+        cd '{{.APP_DIR}}'
+        ISURIDE_TEST_MYSQL_ADDR="$mysql_addr" go test -count=1 -v -run '^TestAppGetNearbyChairs$' .
+        SCRIPT
+
   test-matching:
     desc: 一時的なローカルMySQLコンテナで一括配車の正当性を確認（競技サーバーは使用しない）
     dir: '{{.APP_DIR}}'

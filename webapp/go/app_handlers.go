@@ -737,12 +737,57 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback()
 
-	chairs := []Chair{}
+	// Read only unfinished rides, using the existing index for each latest status.
+	unfinishedRides := []struct {
+		ChairID string         `db:"chair_id"`
+		Status  sql.NullString `db:"status"`
+	}{}
 	err = tx.SelectContext(
 		ctx,
-		&chairs,
-		`SELECT * FROM chairs`,
+		&unfinishedRides,
+		`SELECT rides.chair_id, latest_status.status
+		 FROM rides
+		 JOIN chairs ON chairs.id = rides.chair_id AND chairs.is_active = TRUE
+		 LEFT JOIN ride_statuses AS latest_status ON latest_status.id = (
+		     SELECT id FROM ride_statuses
+		     WHERE ride_id = rides.id ORDER BY created_at DESC LIMIT 1
+		 )
+		 WHERE latest_status.status IS NULL OR latest_status.status <> 'COMPLETED'
+		 ORDER BY rides.created_at DESC`,
 	)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	busyChairs := make(map[string]bool, len(unfinishedRides))
+	for _, ride := range unfinishedRides {
+		if busyChairs[ride.ChairID] {
+			continue
+		}
+		if !ride.Status.Valid {
+			writeError(w, http.StatusInternalServerError, sql.ErrNoRows)
+			return
+		}
+		busyChairs[ride.ChairID] = true
+	}
+
+	// Coordinate writes update these persisted totals in the same transaction as history.
+	chairs := []struct {
+		ID        string `db:"id"`
+		Name      string `db:"name"`
+		Model     string `db:"model"`
+		Latitude  int    `db:"latitude"`
+		Longitude int    `db:"longitude"`
+	}{}
+	err = tx.SelectContext(ctx, &chairs, `
+		SELECT chairs.id, chairs.name, chairs.model,
+		       location.last_latitude AS latitude, location.last_longitude AS longitude
+		FROM chairs
+		JOIN chair_distance_totals AS location ON location.chair_id = chairs.id
+		WHERE chairs.is_active = TRUE
+		  AND location.last_latitude IS NOT NULL
+		  AND location.last_longitude IS NOT NULL`)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -750,57 +795,17 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 
 	nearbyChairs := []appGetNearbyChairsResponseChair{}
 	for _, chair := range chairs {
-		if !chair.IsActive {
+		if busyChairs[chair.ID] {
 			continue
 		}
-
-		rides := []*Ride{}
-		if err := tx.SelectContext(ctx, &rides, `SELECT * FROM rides WHERE chair_id = ? ORDER BY created_at DESC`, chair.ID); err != nil {
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-
-		skip := false
-		for _, ride := range rides {
-			// 過去にライドが存在し、かつ、それが完了していない場合はスキップ
-			status, err := getLatestRideStatus(ctx, tx, ride.ID)
-			if err != nil {
-				writeError(w, http.StatusInternalServerError, err)
-				return
-			}
-			if status != "COMPLETED" {
-				skip = true
-				break
-			}
-		}
-		if skip {
-			continue
-		}
-
-		// 最新の位置情報を取得
-		chairLocation := &ChairLocation{}
-		err = tx.GetContext(
-			ctx,
-			chairLocation,
-			`SELECT * FROM chair_locations WHERE chair_id = ? ORDER BY created_at DESC LIMIT 1`,
-			chair.ID,
-		)
-		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				continue
-			}
-			writeError(w, http.StatusInternalServerError, err)
-			return
-		}
-
-		if calculateDistance(coordinate.Latitude, coordinate.Longitude, chairLocation.Latitude, chairLocation.Longitude) <= distance {
+		if calculateDistance(coordinate.Latitude, coordinate.Longitude, chair.Latitude, chair.Longitude) <= distance {
 			nearbyChairs = append(nearbyChairs, appGetNearbyChairsResponseChair{
 				ID:    chair.ID,
 				Name:  chair.Name,
 				Model: chair.Model,
 				CurrentCoordinate: Coordinate{
-					Latitude:  chairLocation.Latitude,
-					Longitude: chairLocation.Longitude,
+					Latitude:  chair.Latitude,
+					Longitude: chair.Longitude,
 				},
 			})
 		}
