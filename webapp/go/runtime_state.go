@@ -72,6 +72,7 @@ type rideState struct {
 	statuses        map[string]RideStatus
 	userRides       map[string][]string
 	chairRides      map[string][]string
+	sales           map[string][]salesPoint
 	appEvents       map[string][]string
 	chairEvents     map[string][]string
 	stop            chan struct{}
@@ -160,6 +161,8 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.distances, s.stats = map[string]distanceTotal{}, map[string]chairStatsTotal{}
 	s.rides, s.statuses = map[string]*memoryRide{}, map[string]RideStatus{}
 	s.userRides, s.chairRides = map[string][]string{}, map[string][]string{}
+	// Build sales once from the final SQL and WAL state, in timestamp order.
+	s.sales = nil
 	s.appEvents, s.chairEvents = map[string][]string{}, map[string][]string{}
 	s.generation, s.applied, s.sequence = marker.Generation, marker.Applied, 0
 	s.pending, s.failed = nil, nil
@@ -238,6 +241,10 @@ func (s *rideState) rebuildIndexes() {
 			s.chairEvents[ride.ChairID.String] = append(s.chairEvents[ride.ChairID.String], ride.Statuses...)
 		}
 	}
+	s.sales = map[string][]salesPoint{}
+	for _, ride := range rides {
+		s.updateRideSale(rideSale{}, ride)
+	}
 }
 
 func (s *rideState) addUser(u User) {
@@ -257,11 +264,13 @@ func (s *rideState) addRide(r Ride, fare int) {
 func (s *rideState) addStatus(status RideStatus) {
 	s.statuses[status.ID] = status
 	ride := s.rides[status.RideID]
+	before := s.saleForRide(ride)
 	ride.Statuses = append(ride.Statuses, status.ID)
 	s.appEvents[ride.UserID] = append(s.appEvents[ride.UserID], status.ID)
 	if ride.ChairID.Valid {
 		s.chairEvents[ride.ChairID.String] = append(s.chairEvents[ride.ChairID.String], status.ID)
 	}
+	s.updateRideSale(before, ride)
 }
 
 func (s *rideState) apply(record stateRecord) {
@@ -280,11 +289,13 @@ func (s *rideState) apply(record stateRecord) {
 	}
 	for _, row := range record.Rides {
 		ride := s.rides[row.ID]
+		before := s.saleForRide(ride)
 		if !ride.ChairID.Valid && row.ChairID.Valid {
 			s.chairRides[row.ChairID.String] = append(s.chairRides[row.ChairID.String], row.ID)
 			s.chairEvents[row.ChairID.String] = append(s.chairEvents[row.ChairID.String], ride.Statuses...)
 		}
 		ride.Ride = row
+		s.updateRideSale(before, ride)
 	}
 	for _, status := range record.Statuses {
 		if _, exists := s.statuses[status.ID]; !exists {
