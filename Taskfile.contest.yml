@@ -10,6 +10,15 @@
 version: '3'
 
 tasks:
+  deploy-sql:
+    desc: SQL初期化資材をAPP_HOSTSへ反映（DB再作成・サービス再起動なし）
+    preconditions:
+      - sh: test ! -f '{{.RUN_STATE_FILE}}'
+        msg: active benchmark exists; run task after-bench or task abort-run
+    deps: [build-deployctl]
+    cmds:
+      - '{{.OPERATION_LOCK}} {{.DEPLOYCTL_DIR}}/deployctl apply sql-assets -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
+
   prepare-db-assets:
     desc: deployへ載せる前にDB資材を生成・検証する（deploy系のhook、既定は何もしない）
 

@@ -74,11 +74,15 @@ task deploy-nginx    # 設定上書き・nginx -t成功後にreload
 task deploy-mysql    # MySQL設定配布 + restart
 task deploy-sysctl   # 全ホストへ配布 + sysctl -p
 task deploy-all      # DB・アプリ・nginxを依存順に反映。DB初期化はしない
+task deploy-sql
 task db-recreate     # アプリを止め、DBを破棄・再作成して初期化
 task apply-roles     # 役割変更後だけenable/disableを収束
 task check-roles
 task check-network
 ```
+
+ISURIDE用の`task deploy-sql`はSQL初期化資材をAPP_HOSTSへ配布します。
+schemaの変更は次の初期化時に適用されます。進行中RUNを検査し、全worktree共通の操作ロックを使います。
 
 サーバーを変更せず実際の転送先・role・activationを確認する場合は、Go Task自身の`--dry`ではなく
 deployctlのdry-runを呼ぶ次のTaskを使います。
