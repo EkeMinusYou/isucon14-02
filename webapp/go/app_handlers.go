@@ -627,7 +627,7 @@ func calculateDiscountedFare(ctx context.Context, tx *sqlx.Tx, userID string, ri
 		pickupLongitude = ride.PickupLongitude
 
 		// すでにクーポンが紐づいているならそれの割引額を参照
-		if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE used_by = ?", ride.ID); err != nil {
+		if err := tx.GetContext(ctx, &coupon, "SELECT * FROM coupons WHERE user_id = ? AND used_by = ?", userID, ride.ID); err != nil {
 			if !errors.Is(err, sql.ErrNoRows) {
 				return 0, err
 			}
