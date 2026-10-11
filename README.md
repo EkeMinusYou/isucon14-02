@@ -144,7 +144,7 @@ task bench
 profile自動収集とuser-transitionは標準で有効です。[Go profile導入例](docs/measurement/go-profiling.md)に沿って
 setupで全APP_HOSTSへendpointを導入します。[nginx access logの計測手順](docs/measurement/nginx-access-log.md)に沿って
 識別列・API分類を整えます。通常の`bench` / `bench-manual`で
-CPU・fgprof・heap・allocs・goroutineを自動収集します。CPU・fgprofの開始を確認してから負荷を開始し、
+CPU・heap・allocs・goroutineを自動収集します。fgprofは既定無効で、必要な場合は`task fgprof-collect`で収集します。CPUの開始を確認してから負荷を開始し、
 収集・回収完了後にRUNを確定します。追加のprofile操作は不要です。
 profile対象は`collectors.yaml`の`group: profiles`と`enabled_by_default`から選びます。
 `PROFILES_ENABLED=false`は計測負荷比較等での明示的な停止用です。setupでは分析・dashboardまで確認します。
@@ -212,7 +212,7 @@ lock collectorの負荷とcapture errorはRUNごとに確認し、過大な場�
 - `<host>-proc-metrics.tsv` / service / disk / task-state（task-stateは高頻度collector明示時）
 - `<host>-mysql-status.tsv` / `<host>-mysql-lock-waits.tsv`
 - `<host>-sql-pool-metrics.tsv` — アプリのSQL接続プール（adapter導入時）
-- `<host>-fgprof.pprof`（profile有効時）
+- `<host>-fgprof.pprof`（`task fgprof-collect`実行時）
 - `<host>-go-cpu.pprof` / heap / allocs / goroutine（profile有効時）
 - `raw/access-<host>.log.zst` — ホスト別nginxログ。空ログも圧縮して保存
 - `<host>-app-journal.log` / `<host>-nginx-error.log`
