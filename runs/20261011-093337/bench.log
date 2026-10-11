@@ -1,0 +1,266 @@
+2026-10-11T00:33:41.263990622Z	BENCHMARK_START
+time=09:33:41.602 level=INFO msg=負荷走行を開始します
+time=09:33:41.602 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=09:33:46.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=09:33:46.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=09:33:48.772 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=1
+time=09:33:48.772 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=09:33:48.772 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=1
+time=09:33:48.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=09:33:48.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=20 score="[0 0 0 12 8]" criteria="[20 8 20 20]"
+time=09:33:50.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=2
+time=09:33:50.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=1
+time=09:33:50.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=2
+time=09:33:50.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:33:50.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=09:33:50.599 level=INFO msg=これまでに地域内の評判によって6人、既存ユーザーの招待経由で38人が新規登録しました
+time=09:33:50.599 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、61.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.3%のライドは椅子の実移動時間に不満がありました
+time=09:33:50.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=09:33:50.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=39 score="[0 0 1 23 15]" criteria="[39 15 39 38]"
+time=09:33:52.372 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=1
+time=09:33:52.372 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=1
+time=09:33:52.372 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=1
+time=09:33:52.373 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=09:33:52.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=09:33:52.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=59 score="[0 0 1 39 19]" criteria="[59 19 59 58]"
+time=09:33:54.171 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=2
+time=09:33:54.172 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:33:54.172 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=2
+time=09:33:54.172 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=3
+time=09:33:54.173 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=09:33:54.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=09:33:54.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=85 score="[0 0 1 57 27]" criteria="[85 27 85 84]"
+time=09:33:55.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=2
+time=09:33:55.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=3
+time=09:33:55.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:33:55.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=09:33:55.972 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=2
+time=09:33:55.999 level=INFO msg=これまでに地域内の評判によって18人、既存ユーザーの招待経由で108人が新規登録しました
+time=09:33:55.999 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、62.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.8%のライドは椅子の実移動時間に不満がありました
+time=09:33:55.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=09:33:55.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=119 score="[0 0 2 72 45]" criteria="[119 45 119 117]"
+time=09:33:57.771 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=3
+time=09:33:57.772 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=3
+time=09:33:57.772 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=3
+time=09:33:57.772 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:33:57.774 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=4
+time=09:33:57.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=09:33:57.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=168 score="[0 0 2 96 70]" criteria="[168 70 168 166]"
+time=09:33:59.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=4
+time=09:33:59.573 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=3
+time=09:33:59.573 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=2
+time=09:33:59.573 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=4
+time=09:33:59.575 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=4
+time=09:33:59.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=09:33:59.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=229 score="[0 0 2 129 98]" criteria="[229 98 229 227]"
+time=09:34:01.372 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=4
+time=09:34:01.373 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=5
+time=09:34:01.375 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=4
+time=09:34:01.376 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=3
+time=09:34:01.376 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=6
+time=09:34:01.399 level=INFO msg=これまでに地域内の評判によって30人、既存ユーザーの招待経由で276人が新規登録しました
+time=09:34:01.399 level=INFO msg=2.3%のライドは椅子がマッチされるまでの時間、53.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=09:34:01.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=09:34:01.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=307 score="[0 0 5 164 138]" criteria="[300 142 307 305]"
+time=09:34:03.172 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=7
+time=09:34:03.173 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=4
+time=09:34:03.173 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=4
+time=09:34:03.173 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=6
+time=09:34:03.174 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=6
+time=09:34:03.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=09:34:03.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=412 score="[0 0 17 212 183]" criteria="[382 201 412 407]"
+time=09:34:04.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=6
+time=09:34:04.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=6
+time=09:34:04.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=8
+time=09:34:04.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=6
+time=09:34:04.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=7
+time=09:34:04.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=09:34:04.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=552 score="[0 0 44 293 215]" criteria="[443 286 552 546]"
+time=09:34:06.775 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=6
+time=09:34:06.775 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=7
+time=09:34:06.775 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=6
+time=09:34:06.775 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=8
+time=09:34:06.776 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=6
+time=09:34:06.799 level=INFO msg=これまでに地域内の評判によって42人、既存ユーザーの招待経由で571人が新規登録しました
+time=09:34:06.799 level=INFO msg=26.3%のライドは椅子がマッチされるまでの時間、44.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=09:34:06.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=09:34:06.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=719 score="[0 2 75 364 278]" criteria="[530 396 719 711]"
+time=09:34:08.578 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=5
+time=09:34:08.579 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=7
+time=09:34:08.579 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=6
+time=09:34:08.580 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=6
+time=09:34:08.580 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=7
+time=09:34:08.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=09:34:08.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=902 score="[0 2 117 459 324]" criteria="[597 518 902 892]"
+time=09:34:10.374 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=7
+time=09:34:10.378 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=7
+time=09:34:10.380 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=8
+time=09:34:10.380 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=7
+time=09:34:10.381 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=9
+time=09:34:10.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=09:34:10.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1140 score="[0 3 174 635 328]" criteria="[623 676 1139 1130]"
+time=09:34:12.174 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=9
+time=09:34:12.177 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=9
+time=09:34:12.177 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=9
+time=09:34:12.178 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=8
+time=09:34:12.178 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=10
+time=09:34:12.199 level=INFO msg=これまでに地域内の評判によって54人、既存ユーザーの招待経由で1040人が新規登録しました
+time=09:34:12.199 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=09:34:12.199 level=INFO msg=56.1%のライドは椅子がマッチされるまでの時間、37.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=09:34:12.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=09:34:12.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1436 score="[0 4 239 865 328]" criteria="[631 901 1434 1423]"
+time=09:34:13.995 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=11
+time=09:34:13.996 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=10
+time=09:34:13.996 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=9
+time=09:34:13.997 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=9
+time=09:34:13.998 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=9
+time=09:34:13.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=09:34:13.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1752 score="[0 5 291 1128 328]" criteria="[631 1165 1750 1737]"
+time=09:34:15.777 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=15
+time=09:34:15.777 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=11
+time=09:34:15.778 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=13
+time=09:34:15.779 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=12
+time=09:34:15.780 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=9
+time=09:34:15.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=09:34:15.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2142 score="[0 6 371 1437 328]" criteria="[631 1485 2140 2115]"
+time=09:34:17.581 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=14
+time=09:34:17.582 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=13
+time=09:34:17.583 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=11
+time=09:34:17.584 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=15
+time=09:34:17.585 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=10
+time=09:34:17.599 level=INFO msg=これまでに地域内の評判によって66人、既存ユーザーの招待経由で1788人が新規登録しました
+time=09:34:17.599 level=INFO msg=これまでに低評価なライドによって2人が利用をやめました
+time=09:34:17.599 level=INFO msg=75.2%のライドは椅子がマッチされるまでの時間、28.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.7%のライドは椅子の実移動時間に不満がありました
+time=09:34:17.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=09:34:17.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2547 score="[0 8 427 1784 328]" criteria="[631 1835 2545 2515]"
+time=09:34:19.386 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=13
+time=09:34:19.387 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=12
+time=09:34:19.387 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=14
+time=09:34:19.392 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=12
+time=09:34:19.397 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=9
+time=09:34:19.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=09:34:19.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2986 score="[0 14 504 2140 328]" criteria="[631 2212 2984 2927]"
+time=09:34:19.905 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:20.191 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:21.181 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=11
+time=09:34:21.187 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=14
+time=09:34:21.187 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=13
+time=09:34:21.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=12
+time=09:34:21.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=16
+time=09:34:21.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=09:34:21.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3441 score="[5 35 653 2420 328]" criteria="[631 2587 3425 3270]"
+time=09:34:22.470 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:22.938 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:22.985 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=18
+time=09:34:22.986 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=16
+time=09:34:22.987 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=15
+time=09:34:22.987 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=17
+time=09:34:22.988 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=14
+time=09:34:22.999 level=INFO msg=これまでに地域内の評判によって78人、既存ユーザーの招待経由で2563人が新規登録しました
+time=09:34:22.999 level=INFO msg=これまでに低評価なライドによって37人が利用をやめました
+time=09:34:22.999 level=INFO msg=84.0%のライドは椅子がマッチされるまでの時間、23.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、5.4%のライドは椅子の実移動時間に不満がありました
+time=09:34:22.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=09:34:22.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3948 score="[22 61 872 2665 328]" criteria="[631 3014 3900 3567]"
+time=09:34:23.172 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:24.785 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=17
+time=09:34:24.786 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=18
+time=09:34:24.786 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=16
+time=09:34:24.788 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=11
+time=09:34:24.789 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=14
+time=09:34:24.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=09:34:24.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4455 score="[43 78 1110 2896 328]" criteria="[631 3474 4373 3820]"
+time=09:34:24.947 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:25.302 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:26.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=09:34:26.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5019 score="[64 96 1489 3042 328]" criteria="[631 3989 4910 3982]"
+time=09:34:26.615 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=23
+time=09:34:26.618 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=14
+time=09:34:26.618 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=16
+time=09:34:26.625 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=18
+time=09:34:26.625 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=16
+time=09:34:26.631 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:27.342 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:34:28.384 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=20
+time=09:34:28.385 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=19
+time=09:34:28.385 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=18
+time=09:34:28.397 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=13
+time=09:34:28.397 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=14
+time=09:34:28.399 level=INFO msg=これまでに地域内の評判によって90人、既存ユーザーの招待経由で3137人が新規登録しました
+time=09:34:28.399 level=INFO msg=これまでに低評価なライドによって88人が利用をやめました
+time=09:34:28.399 level=INFO msg=88.7%のライドは椅子がマッチされるまでの時間、19.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、13.0%のライドは椅子の実移動時間に不満がありました
+time=09:34:28.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=09:34:28.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5593 score="[83 118 1741 3323 328]" criteria="[631 4515 5449 4286]"
+time=09:34:30.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=09:34:30.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6180 score="[94 121 2195 3442 328]" criteria="[631 5090 6023 4405]"
+time=09:34:30.217 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=17
+time=09:34:30.246 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=17
+time=09:34:30.248 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=22
+time=09:34:30.257 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=11
+time=09:34:30.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=15
+time=09:34:31.982 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=14
+time=09:34:31.984 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=20
+time=09:34:31.986 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=20
+time=09:34:31.986 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=16
+time=09:34:31.990 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=18
+time=09:34:31.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=09:34:31.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6735 score="[96 125 2663 3523 328]" criteria="[631 5643 6571 4487]"
+time=09:34:33.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=22
+time=09:34:33.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=18
+time=09:34:33.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=17
+time=09:34:33.792 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=16
+time=09:34:33.793 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=18
+time=09:34:33.799 level=INFO msg=これまでに地域内の評判によって104人、既存ユーザーの招待経由で3351人が新規登録しました
+time=09:34:33.799 level=INFO msg=これまでに低評価なライドによって102人が利用をやめました
+time=09:34:33.799 level=INFO msg=91.4%のライドは椅子がマッチされるまでの時間、14.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、20.3%のライドは椅子の実移動時間に不満がありました
+time=09:34:33.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=09:34:33.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7323 score="[97 144 3180 3574 328]" criteria="[631 6230 7123 4554]"
+time=09:34:35.596 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=17
+time=09:34:35.596 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=15
+time=09:34:35.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=09:34:35.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8041 score="[104 257 3716 3636 328]" criteria="[631 6937 7707 4634]"
+time=09:34:35.648 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=21
+time=09:34:37.381 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M639CTXNTP950RF330RW2Q, got: 71100)"
+time=09:34:37.384 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M63W4Q6NSM3PVHCNMGA545, got: 20500)"
+time=09:34:37.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=09:34:37.399 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8572 score="[107 351 4134 3652 328]" criteria="[631 7462 8129 4665]"
+time=09:34:37.445 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=13
+time=09:34:37.453 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=11
+time=09:34:39.185 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=68
+time=09:34:39.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=20
+time=09:34:39.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=瞬道タクシー 増加数=61
+time=09:34:39.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=39
+time=09:34:39.190 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=19
+time=09:34:39.199 level=INFO msg=これまでに地域内の評判によって122人、既存ユーザーの招待経由で3458人が新規登録しました
+time=09:34:39.199 level=INFO msg=これまでに低評価なライドによって211人が利用をやめました
+time=09:34:39.199 level=INFO msg=93.2%のライドは椅子がマッチされるまでの時間、12.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、27.8%のライドは椅子の実移動時間に不満がありました
+time=09:34:39.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=09:34:39.199 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9265 score="[113 492 4637 3695 328]" criteria="[631 8148 8668 4716]"
+time=09:34:40.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=09:34:40.999 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9896 score="[124 561 5152 3731 328]" criteria="[631 8768 9215 4756]"
+time=09:34:42.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=09:34:42.799 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10390 score="[135 644 5544 3739 328]" criteria="[631 9251 9611 4768]"
+time=09:34:42.828 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=31
+time=09:34:42.828 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=風座プロダクツ 増加数=30
+time=09:34:44.599 level=INFO msg=これまでに地域内の評判によって140人、既存ユーザーの招待経由で3502人が新規登録しました
+time=09:34:44.599 level=INFO msg=これまでに低評価なライドによって264人が利用をやめました
+time=09:34:44.599 level=INFO msg=94.4%のライドは椅子がマッチされるまでの時間、10.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、33.3%のライドは椅子の実移動時間に不満がありました
+time=09:34:44.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=09:34:44.599 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=11187 score="[157 881 6072 3749 328]" criteria="[631 10026 10144 4783]"
+time=09:34:44.674 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=EcoChairs 増加数=60
+time=09:34:50.199 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=2273 アクティブユーザー数=2136
+time=09:34:50.199 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1387 アクティブユーザー数=1259
+time=09:34:50.199 level=INFO msg=最終オーナー情報 名前=椅子工藝舎 売上=11468900 椅子数=277
+time=09:34:50.199 level=INFO msg=最終オーナー情報 名前=EcoChairs 売上=14083700 椅子数=361
+time=09:34:50.199 level=INFO msg=最終オーナー情報 名前="Timeless Seats" 売上=16420000 椅子数=354
+time=09:34:50.199 level=INFO msg=最終オーナー情報 名前=風座プロダクツ 売上=12633500 椅子数=304
+time=09:34:50.199 level=INFO msg=最終オーナー情報 名前=瞬道タクシー 売上=14423300 椅子数=314
+time=09:34:50.199 level=INFO msg=94.6%のライドは椅子がマッチされるまでの時間、10.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、34.9%のライドは椅子の実移動時間に不満がありました
+time=09:34:50.200 level=INFO msg=結果 pass=true スコア=750295 種別エラー数="map[17:9 24:2]"
+time=09:34:50.200 level=INFO msg=負荷走行が終了しました
+
+SCORE: 750295
+BENCHMARK_PASS
+2026-10-11T00:34:50.692488925Z	BENCHMARK_END
+
+SCORE: 750295
+BENCHMARK_PASS
