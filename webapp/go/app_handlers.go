@@ -328,6 +328,8 @@ type appGetNearbyChairsResponseChair struct {
 	CurrentCoordinate Coordinate `json:"current_coordinate"`
 }
 
+const nearbyEmptyRetryDelay = 150 * time.Millisecond
+
 func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 	latStr := r.URL.Query().Get("latitude")
 	lonStr := r.URL.Query().Get("longitude")
@@ -359,21 +361,48 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s := runtimeState
+	if r.Context().Err() != nil {
+		return
+	}
+	result, err := s.searchNearbyChairs(lat, lon, distance)
+	if err == nil && len(result.Chairs) == 0 {
+		// The middleware keeps this generation alive, but control writers must
+		// remain free to update availability while the request waits.
+		timer := time.NewTimer(nearbyEmptyRetryDelay)
+		defer timer.Stop()
+		select {
+		case <-r.Context().Done():
+			return
+		case <-timer.C:
+		}
+		if r.Context().Err() != nil {
+			return
+		}
+		result, err = s.searchNearbyChairs(lat, lon, distance)
+	}
+	if r.Context().Err() != nil {
+		return
+	}
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, result)
+}
+
+func (s *rideState) searchNearbyChairs(lat, lon, distance int) (*appGetNearbyChairsResponse, error) {
 	s.mu.RLock()
+	defer s.mu.RUnlock()
 	snapshotAt := time.Now()
 	nearbyChairs := []appGetNearbyChairsResponseChair{}
 	if len(s.nearbyMissingStatus) != 0 {
-		s.mu.RUnlock()
-		writeError(w, http.StatusInternalServerError, sql.ErrNoRows)
-		return
+		return nil, sql.ErrNoRows
 	}
 	for id, cell := range s.nearbyChairs {
 		chair := s.chairs[id]
 		available, err := s.nearbyAvailable(id, snapshotAt)
 		if err != nil {
-			s.mu.RUnlock()
-			writeError(w, http.StatusInternalServerError, err)
-			return
+			return nil, err
 		}
 		if !available {
 			continue
@@ -394,8 +423,7 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	retrievedAt := snapshotAt.UnixMilli()
-	s.mu.RUnlock()
-	writeJSON(w, http.StatusOK, &appGetNearbyChairsResponse{Chairs: nearbyChairs, RetrievedAt: retrievedAt})
+	return &appGetNearbyChairsResponse{Chairs: nearbyChairs, RetrievedAt: retrievedAt}, nil
 }
 
 func calculateFare(pickupLatitude, pickupLongitude, destLatitude, destLongitude int) int {

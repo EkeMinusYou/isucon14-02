@@ -1,0 +1,208 @@
+2026-10-11T02:41:17.830048406Z	BENCHMARK_START
+time=11:41:18.184 level=INFO msg=負荷走行を開始します
+time=11:41:18.184 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=11:41:23.618 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=11:41:23.619 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=11:41:25.391 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=11:41:25.391 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=11:41:25.391 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=1
+time=11:41:25.391 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=1
+time=11:41:25.418 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=11:41:25.418 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=20 score="[0 0 0 12 8]" criteria="[20 8 20 20]"
+time=11:41:27.191 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=1
+time=11:41:27.191 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=2
+time=11:41:27.192 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=1
+time=11:41:27.192 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=1
+time=11:41:27.218 level=INFO msg=これまでに地域内の評判によって8人、既存ユーザーの招待経由で38人が新規登録しました
+time=11:41:27.218 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、65.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=11:41:27.218 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=11:41:27.218 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=38 score="[0 0 0 25 13]" criteria="[38 13 38 38]"
+time=11:41:28.990 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=3
+time=11:41:28.990 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=2
+time=11:41:28.991 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=4
+time=11:41:28.991 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=2
+time=11:41:28.996 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=11:41:29.018 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=11:41:29.018 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=66 score="[0 0 1 35 30]" criteria="[66 30 66 65]"
+time=11:41:30.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=11:41:30.793 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=11:41:30.793 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=4
+time=11:41:30.793 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=3
+time=11:41:30.793 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=2
+time=11:41:30.818 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=11:41:30.818 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=106 score="[0 0 1 51 54]" criteria="[106 55 106 104]"
+time=11:41:32.590 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=3
+time=11:41:32.591 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=5
+time=11:41:32.591 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=3
+time=11:41:32.593 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=3
+time=11:41:32.593 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=11:41:32.618 level=INFO msg=これまでに地域内の評判によって20人、既存ユーザーの招待経由で146人が新規登録しました
+time=11:41:32.618 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、43.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=11:41:32.618 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=11:41:32.618 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=158 score="[0 0 1 69 88]" criteria="[158 89 158 156]"
+time=11:41:34.391 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=4
+time=11:41:34.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=5
+time=11:41:34.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=4
+time=11:41:34.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=3
+time=11:41:34.394 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=5
+time=11:41:34.418 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=11:41:34.418 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=228 score="[0 0 5 91 132]" criteria="[222 136 228 225]"
+time=11:41:36.192 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=6
+time=11:41:36.194 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=7
+time=11:41:36.194 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=7
+time=11:41:36.194 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=5
+time=11:41:36.195 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=5
+time=11:41:36.218 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=11:41:36.218 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=343 score="[0 0 29 134 180]" criteria="[290 208 343 339]"
+time=11:41:37.992 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=8
+time=11:41:37.995 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=11:41:37.995 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=8
+time=11:41:37.996 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=8
+time=11:41:37.996 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=8
+time=11:41:38.018 level=INFO msg=これまでに地域内の評判によって32人、既存ユーザーの招待経由で404人が新規登録しました
+time=11:41:38.018 level=INFO msg=21.8%のライドは椅子がマッチされるまでの時間、33.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.9%のライドは椅子の実移動時間に不満がありました
+time=11:41:38.018 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=11:41:38.018 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=509 score="[0 1 48 190 270]" criteria="[398 340 508 501]"
+time=11:41:39.164 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:41:39.791 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=9
+time=11:41:39.796 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=7
+time=11:41:39.796 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=7
+time=11:41:39.797 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=9
+time=11:41:39.797 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=8
+time=11:41:39.818 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=11:41:39.818 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=706 score="[0 1 64 258 383]" criteria="[541 491 705 698]"
+time=11:41:41.599 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=9
+time=11:41:41.613 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=10
+time=11:41:41.613 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=11:41:41.614 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=8
+time=11:41:41.614 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=9
+time=11:41:41.618 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=11:41:41.618 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=979 score="[0 1 89 347 542]" criteria="[728 714 978 968]"
+time=11:41:43.401 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=10
+time=11:41:43.401 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=11
+time=11:41:43.402 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=12
+time=11:41:43.404 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=11:41:43.404 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=9
+time=11:41:43.418 level=INFO msg=これまでに地域内の評判によって44人、既存ユーザーの招待経由で1044人が新規登録しました
+time=11:41:43.418 level=INFO msg=27.7%のライドは椅子がマッチされるまでの時間、23.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=11:41:43.418 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=11:41:43.418 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1320 score="[0 1 116 459 744]" criteria="[954 1009 1319 1304]"
+time=11:41:45.200 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=15
+time=11:41:45.200 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=14
+time=11:41:45.201 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=14
+time=11:41:45.206 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=10
+time=11:41:45.206 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=12
+time=11:41:45.218 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=11:41:45.218 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1737 score="[0 1 153 617 966]" criteria="[1208 1364 1736 1714]"
+time=11:41:47.041 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=17
+time=11:41:47.045 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=16
+time=11:41:47.046 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=14
+time=11:41:47.048 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=11:41:47.048 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2212 score="[0 1 183 817 1211]" criteria="[1481 1787 2211 2183]"
+time=11:41:47.049 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=12
+time=11:41:47.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=14
+time=11:41:48.881 level=INFO msg=これまでに地域内の評判によって56人、既存ユーザーの招待経由で2108人が新規登録しました
+time=11:41:48.881 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=11:41:48.881 level=INFO msg=36.1%のライドは椅子がマッチされるまでの時間、17.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.2%のライドは椅子の実移動時間に不満がありました
+time=11:41:48.881 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=11:41:48.881 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2706 score="[0 2 213 1077 1414]" criteria="[1728 2239 2705 2643]"
+time=11:41:49.266 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:41:50.662 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=37
+time=11:41:50.663 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=34
+time=11:41:50.665 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=32
+time=11:41:50.665 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=26
+time=11:41:50.666 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=29
+time=11:41:50.678 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=11:41:50.678 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3252 score="[0 5 279 1338 1630]" criteria="[2000 2739 3247 3111]"
+time=11:41:52.473 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=13
+time=11:41:52.474 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=14
+time=11:41:52.476 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=16
+time=11:41:52.478 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=11:41:52.478 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3779 score="[2 17 385 1596 1779]" criteria="[2210 3222 3767 3492]"
+time=11:41:54.308 level=INFO msg=これまでに地域内の評判によって67人、既存ユーザーの招待経由で3087人が新規登録しました
+time=11:41:54.308 level=INFO msg=これまでに低評価なライドによって17人が利用をやめました
+time=11:41:54.308 level=INFO msg=44.2%のライドは椅子がマッチされるまでの時間、13.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、6.9%のライドは椅子の実移動時間に不満がありました
+time=11:41:54.308 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=11:41:54.308 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4319 score="[3 34 568 1847 1867]" criteria="[2409 3730 4302 3738]"
+time=11:41:54.355 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=15
+time=11:41:54.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=14
+time=11:41:54.356 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=36
+time=11:41:54.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=20
+time=11:41:54.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=34
+time=11:41:56.378 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=24
+time=11:41:56.378 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=21
+time=11:41:56.378 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=11:41:56.378 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5012 score="[12 56 861 2142 1941]" criteria="[2609 4385 4962 4012]"
+time=11:41:56.449 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=21
+time=11:41:56.450 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=16
+time=11:41:58.195 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=44
+time=11:41:58.178 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=11:41:58.178 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5620 score="[19 69 1113 2396 2023]" criteria="[2781 4963 5556 4275]"
+time=11:41:58.252 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=15
+time=11:42:00.385 level=INFO msg=これまでに地域内の評判によって80人、既存ユーザーの招待経由で3977人が新規登録しました
+time=11:42:00.385 level=INFO msg=これまでに低評価なライドによって62人が利用をやめました
+time=11:42:00.385 level=INFO msg=53.6%のライドは椅子がマッチされるまでの時間、10.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、15.0%のライドは椅子の実移動時間に不満がありました
+time=11:42:00.385 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=11:42:00.385 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6468 score="[32 108 1437 2780 2111]" criteria="[3002 5765 6347 4652]"
+time=11:42:02.334 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4MDCGDWJAFX92S6HPS4PSZE, got: 77100)"
+time=11:42:02.340 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=66
+time=11:42:02.348 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=11:42:02.348 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7131 score="[46 125 1752 3046 2162]" criteria="[3202 6395 6976 4842]"
+time=11:42:02.451 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=54
+time=11:42:02.455 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=36
+time=11:42:04.136 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=88
+time=11:42:04.137 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=70
+time=11:42:04.148 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=11:42:04.148 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7687 score="[68 180 2022 3231 2186]" criteria="[3297 6911 7446 5007]"
+time=11:42:05.978 level=INFO msg=これまでに地域内の評判によって98人、既存ユーザーの招待経由で4747人が新規登録しました
+time=11:42:05.978 level=INFO msg=これまでに低評価なライドによって123人が利用をやめました
+time=11:42:05.978 level=INFO msg=58.7%のライドは椅子がマッチされるまでの時間、9.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、20.3%のライドは椅子の実移動時間に不満がありました
+time=11:42:05.978 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=11:42:05.978 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8187 score="[80 205 2301 3397 2204]" criteria="[3380 7390 7906 5138]"
+time=11:42:06.156 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:42:07.778 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=11:42:07.778 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8896 score="[91 267 2759 3566 2213]" criteria="[3476 8045 8524 5290]"
+time=11:42:07.807 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=51
+time=11:42:09.615 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=11:42:09.615 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9701 score="[112 324 3332 3706 2227]" criteria="[3552 8810 9250 5402]"
+time=11:42:10.699 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:42:11.408 level=INFO msg=これまでに地域内の評判によって115人、既存ユーザーの招待経由で5115人が新規登録しました
+time=11:42:11.408 level=INFO msg=これまでに低評価なライドによって192人が利用をやめました
+time=11:42:11.408 level=INFO msg=65.3%のライドは椅子がマッチされるまでの時間、8.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、25.8%のライドは椅子の実移動時間に不満がありました
+time=11:42:11.408 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=11:42:11.408 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10334 score="[125 354 3813 3809 2233]" criteria="[3588 9415 9842 5494]"
+time=11:42:11.438 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="SitWell Designs" 増加数=91
+time=11:42:13.208 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=11:42:13.208 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10918 score="[146 427 4240 3870 2235]" criteria="[3627 9964 10250 5616]"
+time=11:42:13.235 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=晴れ道タクシー 増加数=110
+time=11:42:15.012 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=11:42:15.012 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=11768 score="[173 593 4770 3992 2240]" criteria="[3682 10780 10885 5722]"
+time=11:42:15.213 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Vintage Vibe Seats" 増加数=142
+time=11:42:16.808 level=INFO msg=これまでに地域内の評判によって133人、既存ユーザーの招待経由で5339人が新規登録しました
+time=11:42:16.808 level=INFO msg=これまでに低評価なライドによって291人が利用をやめました
+time=11:42:16.808 level=INFO msg=69.9%のライドは椅子がマッチされるまでの時間、8.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、30.1%のライドは椅子の実移動時間に不満がありました
+time=11:42:16.808 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=11:42:16.808 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=12239 score="[189 626 5109 4072 2243]" criteria="[3685 11226 11312 5809]"
+time=11:42:16.825 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=84
+time=11:42:18.848 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=11:42:18.848 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=12930 score="[208 780 5559 4138 2245]" criteria="[3720 11887 11811 5874]"
+time=11:42:18.937 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Artisan Seats" 増加数=165
+time=11:42:21.008 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=11:42:21.008 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=13735 score="[221 851 5962 4456 2245]" criteria="[3726 12677 12519 6201]"
+time=11:42:26.818 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=4091 アクティブユーザー数=3870
+time=11:42:26.818 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1790 アクティブユーザー数=1644
+time=11:42:26.818 level=INFO msg=最終オーナー情報 名前="Vintage Vibe Seats" 売上=19679500 椅子数=428
+time=11:42:26.818 level=INFO msg=最終オーナー情報 名前=晴れ道タクシー 売上=17417500 椅子数=352
+time=11:42:26.818 level=INFO msg=最終オーナー情報 名前="SitWell Designs" 売上=15296000 椅子数=307
+time=11:42:26.818 level=INFO msg=最終オーナー情報 名前="Artisan Seats" 売上=18275100 椅子数=438
+time=11:42:26.819 level=INFO msg=最終オーナー情報 名前=座和インダストリー 売上=14390700 椅子数=329
+time=11:42:26.819 level=INFO msg=74.0%のライドは椅子がマッチされるまでの時間、7.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、32.9%のライドは椅子の実移動時間に不満がありました
+time=11:42:26.820 level=INFO msg=結果 pass=true スコア=912984 種別エラー数="map[17:4 24:1]"
+time=11:42:26.820 level=INFO msg=負荷走行が終了しました
+
+SCORE: 912984
+BENCHMARK_PASS
+2026-10-11T02:42:27.536125945Z	BENCHMARK_END
+
+SCORE: 912984
+BENCHMARK_PASS

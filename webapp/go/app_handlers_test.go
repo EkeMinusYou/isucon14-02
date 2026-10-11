@@ -181,6 +181,171 @@ func TestAppGetNearbyChairs(t *testing.T) {
 	}
 }
 
+// Observe entry into the cancellable wait without adding hooks to the handler.
+type nearbyWaitContext struct {
+	context.Context
+	waiting chan struct{}
+	once    sync.Once
+}
+
+func (c *nearbyWaitContext) Done() <-chan struct{} {
+	c.once.Do(func() { close(c.waiting) })
+	return c.Context.Done()
+}
+
+func TestAppGetNearbyChairsEmptyRetry(t *testing.T) {
+	setup := func(t *testing.T) (*rideState, http.Handler, *http.Request, *nearbyWaitContext, context.CancelFunc) {
+		t.Helper()
+		s := memoryTestState(t)
+		previous := runtimeState
+		runtimeState = s
+		t.Cleanup(func() { runtimeState = previous })
+		s.addUser(User{ID: "u", AccessToken: "app-token"})
+		s.addChair(Chair{ID: "c", Name: "chair", Model: "model"})
+		ctx, cancel := context.WithCancel(context.Background())
+		t.Cleanup(cancel)
+		observed := &nearbyWaitContext{Context: ctx, waiting: make(chan struct{})}
+		req := httptest.NewRequest(http.MethodGet, "/api/app/nearby-chairs?latitude=10&longitude=20&distance=0", nil).WithContext(observed)
+		req.AddCookie(&http.Cookie{Name: "app_session", Value: "app-token"})
+		return s, runtimeStateMiddleware(appAuthMiddleware(http.HandlerFunc(appGetNearbyChairs))), req, observed, cancel
+	}
+	start := func(t *testing.T, handler http.Handler, req *http.Request, ctx *nearbyWaitContext, res *httptest.ResponseRecorder) <-chan struct{} {
+		t.Helper()
+		done := make(chan struct{})
+		go func() {
+			defer close(done)
+			handler.ServeHTTP(res, req)
+		}()
+		t.Cleanup(func() { <-done })
+		select {
+		case <-ctx.waiting:
+		case <-done:
+			t.Fatalf("request did not wait: %d %s", res.Code, res.Body.String())
+		case <-time.After(time.Second):
+			t.Fatal("request did not enter wait")
+		}
+		return done
+	}
+	await := func(t *testing.T, done <-chan struct{}) {
+		t.Helper()
+		select {
+		case <-done:
+		case <-time.After(time.Second):
+			t.Fatal("request did not finish after one retry")
+		}
+	}
+	t.Run("latest coordinates and availability after unlocked wait", func(t *testing.T) {
+		s, handler, req, ctx, _ := setup(t)
+		res := httptest.NewRecorder()
+		startedAt := time.Now()
+		done := start(t, handler, req, ctx, res)
+		if !s.mu.TryLock() {
+			t.Fatal("wait retained control state lock")
+		}
+		s.mu.Unlock()
+		if stateLifecycle.TryLock() {
+			stateLifecycle.Unlock()
+			t.Fatal("wait lost initialization generation protection")
+		}
+		if _, err := s.coordinate("c", Coordinate{10, 20}); err != nil {
+			t.Fatal(err)
+		}
+		if err := s.activity("c", true); err != nil {
+			t.Fatal(err)
+		}
+		updatedAt := time.Now()
+		await(t, done)
+		var result appGetNearbyChairsResponse
+		if res.Code != http.StatusOK || json.Unmarshal(res.Body.Bytes(), &result) != nil || len(result.Chairs) != 1 || result.Chairs[0].CurrentCoordinate != (Coordinate{10, 20}) {
+			t.Fatalf("retry lost new chair: %d %s", res.Code, res.Body.String())
+		}
+		if result.RetrievedAt < updatedAt.UnixMilli() || result.RetrievedAt < startedAt.Add(nearbyEmptyRetryDelay).UnixMilli() {
+			t.Fatalf("retry returned old retrieved_at: %d", result.RetrievedAt)
+		}
+	})
+	t.Run("second empty result finishes with fresh timestamp", func(t *testing.T) {
+		_, handler, req, _, _ := setup(t)
+		res := httptest.NewRecorder()
+		startedAt := time.Now()
+		handler.ServeHTTP(res, req)
+		var result appGetNearbyChairsResponse
+		if res.Code != http.StatusOK || json.Unmarshal(res.Body.Bytes(), &result) != nil || result.Chairs == nil || len(result.Chairs) != 0 || result.RetrievedAt < startedAt.Add(nearbyEmptyRetryDelay).UnixMilli() {
+			t.Fatalf("empty retry response: %d %s", res.Code, res.Body.String())
+		}
+	})
+	for _, when := range []string{"before search", "during wait"} {
+		t.Run("cancel "+when, func(t *testing.T) {
+			s, handler, req, ctx, cancel := setup(t)
+			res := httptest.NewRecorder()
+			res.Code = 0
+			var done <-chan struct{}
+			if when == "during wait" {
+				done = start(t, handler, req, ctx, res)
+			}
+			// Holding the state lock makes any extra search after cancellation
+			// block, while the cancelled request must return without writing.
+			s.mu.Lock()
+			cancel()
+			if done == nil {
+				completed := make(chan struct{})
+				done = completed
+				go func() {
+					defer close(completed)
+					appGetNearbyChairs(res, req)
+				}()
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+				s.mu.Unlock()
+				await(t, done)
+				t.Fatal("cancelled request attempted another state read")
+			}
+			s.mu.Unlock()
+			if res.Code != 0 || res.Body.Len() != 0 {
+				t.Fatalf("cancelled request wrote response: %d %s", res.Code, res.Body.String())
+			}
+		})
+	}
+	for _, kind := range []string{"nonempty", "invalid", "unauthorized", "missing status", "not ready"} {
+		t.Run(kind+" returns immediately", func(t *testing.T) {
+			s, handler, req, ctx, _ := setup(t)
+			status := http.StatusOK
+			switch kind {
+			case "nonempty":
+				if _, err := s.coordinate("c", Coordinate{10, 20}); err != nil {
+					t.Fatal(err)
+				}
+				if err := s.activity("c", true); err != nil {
+					t.Fatal(err)
+				}
+			case "invalid":
+				req.URL.RawQuery = "latitude=x&longitude=20"
+				status = http.StatusBadRequest
+			case "unauthorized":
+				req.Header.Del("Cookie")
+				status = http.StatusUnauthorized
+			case "missing status":
+				s.nearbyMissingStatus["c"] = struct{}{}
+				status = http.StatusInternalServerError
+			case "not ready":
+				s.ready = false
+				status = http.StatusServiceUnavailable
+			}
+			res := httptest.NewRecorder()
+			handler.ServeHTTP(res, req)
+			if res.Code != status {
+				t.Fatalf("status = %d, want %d: %s", res.Code, status, res.Body.String())
+			}
+			select {
+			case <-ctx.waiting:
+				t.Fatal("request entered empty retry wait")
+			default:
+			}
+		})
+	}
+}
+
 func TestNearbyCompletionPublication(t *testing.T) {
 	s := memoryTestState(t)
 	s.addChair(Chair{ID: "c", IsActive: true})
