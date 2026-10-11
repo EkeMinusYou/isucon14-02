@@ -123,27 +123,65 @@ func (node *waitingPickupNode) lowerDistance(chair matchingChair) int64 {
 		min(max(chair.Longitude, node.minLon), node.maxLon))
 }
 
-func nearestWaitingPickup(root *waitingPickupNode, chair matchingChair, selected map[string]bool) *memoryRide {
-	var best *memoryRide
-	var distance int64
+const (
+	matchingPickupCandidateLimit = 8
+	matchingPickupExtraTime      = 2
+	matchingRideFixedTime        = 5
+)
+
+type nearbyWaitingRide struct {
+	ride     *memoryRide
+	distance int64
+}
+
+// Keep the eight nearest unselected rides, including rides sharing a pickup.
+// The radius shrinks as a closer pickup is found; extra travel is measured in
+// the same distance/model-speed units as the solver, not wall-clock seconds.
+func nearbyWaitingPickups(root *waitingPickupNode, chair matchingChair, selected map[string]bool) []nearbyWaitingRide {
+	if chair.Speed <= 0 {
+		return nil
+	}
+	best := make([]nearbyWaitingRide, 0, matchingPickupCandidateLimit)
+	before := func(a, b nearbyWaitingRide) bool {
+		return a.distance < b.distance || (a.distance == b.distance && ridePrecedes(a.ride, b.ride))
+	}
+	bound := func() int64 {
+		limit := best[0].distance + int64(chair.Speed)*matchingPickupExtraTime
+		if len(best) == matchingPickupCandidateLimit {
+			limit = min(limit, best[len(best)-1].distance)
+		}
+		return limit
+	}
 	var visit func(*waitingPickupNode)
 	visit = func(node *waitingPickupNode) {
 		if node == nil {
 			return
 		}
-		bound := node.lowerDistance(chair)
-		if best != nil && (bound > distance || (bound == distance && !ridePrecedes(node.oldest, best))) {
-			return
+		if len(best) > 0 {
+			d := node.lowerDistance(chair)
+			if d > bound() || (len(best) == matchingPickupCandidateLimit && d == best[len(best)-1].distance &&
+				!ridePrecedes(node.oldest, best[len(best)-1].ride)) {
+				return
+			}
 		}
+		d := matchingDistance(chair.Latitude, chair.Longitude, node.point.latitude, node.point.longitude)
 		for _, ride := range node.rides {
+			if len(best) > 0 && d > bound() {
+				break
+			}
 			if selected[ride.ID] {
 				continue
 			}
-			d := matchingDistance(chair.Latitude, chair.Longitude, node.point.latitude, node.point.longitude)
-			if best == nil || d < distance || (d == distance && ridePrecedes(ride, best)) {
-				best, distance = ride, d
+			c := nearbyWaitingRide{ride: ride, distance: d}
+			if len(best) == matchingPickupCandidateLimit && !before(c, best[len(best)-1]) {
+				break // Later rides at this point cannot enter the nearest set.
 			}
-			break // Equal pickup positions use FIFO, independently of trip length.
+			index := sort.Search(len(best), func(i int) bool { return before(c, best[i]) })
+			if len(best) < matchingPickupCandidateLimit {
+				best = append(best, c)
+			}
+			copy(best[index+1:], best[index:len(best)-1])
+			best[index] = c
 		}
 		first, second := node.left, node.right
 		if first == nil || (second != nil && second.lowerDistance(chair) < first.lowerDistance(chair)) {
@@ -153,20 +191,32 @@ func nearestWaitingPickup(root *waitingPickupNode, chair matchingChair, selected
 		visit(second)
 	}
 	visit(root)
+	if len(best) > 0 {
+		// Candidates collected before finding the nearest point may be outside
+		// the final radius. Never let their trip length override that radius.
+		limit := best[0].distance + int64(chair.Speed)*matchingPickupExtraTime
+		for len(best) > 0 && best[len(best)-1].distance > limit {
+			best = best[:len(best)-1]
+		}
+	}
 	return best
 }
 
 type waitingPickupCandidate struct {
-	ride  *memoryRide
-	chair matchingChair
-	cost  float64
+	ride       *memoryRide
+	chair      matchingChair
+	efficiency float64
+	pickupTime float64
 }
 
 type waitingPickupCandidates []waitingPickupCandidate
 
 func (h waitingPickupCandidates) Less(i, j int) bool {
-	if h[i].cost != h[j].cost {
-		return h[i].cost < h[j].cost
+	if h[i].efficiency != h[j].efficiency {
+		return h[i].efficiency > h[j].efficiency
+	}
+	if h[i].pickupTime != h[j].pickupTime {
+		return h[i].pickupTime < h[j].pickupTime
 	}
 	if h[i].ride.ID != h[j].ride.ID {
 		return ridePrecedes(h[i].ride, h[j].ride)
@@ -175,6 +225,24 @@ func (h waitingPickupCandidates) Less(i, j int) bool {
 }
 
 const matchingRideRescueAge = 10 * time.Second
+
+func efficientWaitingPickup(root *waitingPickupNode, chair matchingChair, selected map[string]bool) (waitingPickupCandidate, bool) {
+	var best waitingPickupCandidate
+	for _, nearby := range nearbyWaitingPickups(root, chair, selected) {
+		ride := nearby.ride
+		trip := float64(matchingDistance(ride.PickupLatitude, ride.PickupLongitude, ride.DestinationLatitude, ride.DestinationLongitude))
+		pickupTime := float64(nearby.distance) / float64(chair.Speed)
+		// Fixed overhead represents notifications, boarding, evaluation and
+		// payment in model-time units. Five is a tuning prior, not a measured
+		// wall-clock cycle; payment milliseconds must not be added here.
+		c := waitingPickupCandidate{ride: ride, chair: chair, pickupTime: pickupTime,
+			efficiency: trip / (pickupTime + trip/float64(chair.Speed) + matchingRideFixedTime)}
+		if best.ride == nil || (waitingPickupCandidates{c, best}).Less(0, 1) {
+			best = c
+		}
+	}
+	return best, best.ride != nil
+}
 
 // Reserve at least a quarter of every plan for FIFO progress. Requests waiting
 // ten seconds take further FIFO slots, up to the entire plan. This is a rescue
@@ -196,14 +264,7 @@ func (s *rideState) selectWaitingRides(n int, chairs []matchingChair, now time.T
 	if len(rides) < n && n < len(s.waitingRides) {
 		candidates := make(waitingPickupCandidates, 0, len(chairs))
 		candidate := func(chair matchingChair) (waitingPickupCandidate, bool) {
-			ride := nearestWaitingPickup(s.waitingPickups, chair, selected)
-			if ride == nil {
-				return waitingPickupCandidate{}, false
-			}
-			// Only pickup travel enters selection. Including the destination here
-			// would bias demand toward short, lower-scoring passenger trips.
-			cost := float64(matchingDistance(chair.Latitude, chair.Longitude, ride.PickupLatitude, ride.PickupLongitude)) / float64(chair.Speed)
-			return waitingPickupCandidate{ride: ride, chair: chair, cost: cost}, true
+			return efficientWaitingPickup(s.waitingPickups, chair, selected)
 		}
 		for _, chair := range chairs {
 			if chair.Speed > 0 {
@@ -226,8 +287,8 @@ func (s *rideState) selectWaitingRides(n int, chairs []matchingChair, now time.T
 			}
 			add(c.ride)
 			// One candidate per chair avoids filling a plan from one local cluster.
-			// Rank chairs by their initial nearest pickup, refreshing collisions
-			// once. The extraction makes at most C+n nearest queries, not n*C.
+			// Rank chairs by initial efficiency, refreshing collisions once.
+			// Extraction makes at most C+n bounded nearby queries, not n*C.
 		}
 	}
 	// Missing coordinates/speeds are still usable through the existing solver.

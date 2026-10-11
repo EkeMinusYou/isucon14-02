@@ -6,6 +6,7 @@ import (
 	"math/rand/v2"
 	"os"
 	"reflect"
+	"sort"
 	"testing"
 	"time"
 )
@@ -22,24 +23,38 @@ func TestMatchingPickupIndexAgainstFullScan(t *testing.T) {
 	}
 	for phase := 0; phase < 3; phase++ {
 		for q := 0; q < 100; q++ {
-			chair := matchingChair{Latitude: rng.IntN(400000) - 200000, Longitude: rng.IntN(40) - 20}
+			chair := matchingChair{Latitude: rng.IntN(400000) - 200000, Longitude: rng.IntN(40) - 20, Speed: 1 + rng.IntN(50000)}
 			selected := map[string]bool{}
 			for _, ride := range s.waitingRides {
 				selected[ride.ID] = rng.IntN(3) == 0
 			}
-			var want *memoryRide
-			var best int64
+			var want []nearbyWaitingRide
 			for _, ride := range s.waitingRides {
 				if selected[ride.ID] {
 					continue
 				}
 				d := matchingDistance(chair.Latitude, chair.Longitude, ride.PickupLatitude, ride.PickupLongitude)
-				if want == nil || d < best || (d == best && ridePrecedes(ride, want)) {
-					want, best = ride, d
-				}
+				want = append(want, nearbyWaitingRide{ride: ride, distance: d})
 			}
-			if got := nearestWaitingPickup(s.waitingPickups, chair, selected); got != want {
-				t.Fatalf("phase=%d query=%d nearest=%v want=%v", phase, q, got, want)
+			sort.Slice(want, func(i, j int) bool {
+				return want[i].distance < want[j].distance || (want[i].distance == want[j].distance && ridePrecedes(want[i].ride, want[j].ride))
+			})
+			if len(want) > 0 {
+				limit := want[0].distance + int64(chair.Speed)*matchingPickupExtraTime
+				end := 0
+				for end < len(want) && end < matchingPickupCandidateLimit && want[end].distance <= limit {
+					end++
+				}
+				want = want[:end]
+			}
+			got := nearbyWaitingPickups(s.waitingPickups, chair, selected)
+			if len(got) != len(want) {
+				t.Fatalf("phase=%d query=%d candidates=%d want=%d", phase, q, len(got), len(want))
+			}
+			for i := range want {
+				if got[i] != want[i] {
+					t.Fatalf("phase=%d query=%d candidate=%d got=%v want=%v", phase, q, i, got[i], want[i])
+				}
 			}
 		}
 		// Remove through the publication path, exercising bucket and node removal.
@@ -69,6 +84,83 @@ func createGeographicTestRide(t *testing.T, s *rideState, id string, at time.Tim
 	if err := s.commit(stateRecord{CreatedRide: &createdRide{Ride: row, Fare: calculateSale(row)},
 		Statuses: []RideStatus{{ID: id + "-matching", RideID: id, Status: "MATCHING", CreatedAt: at}}}); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestMatchingRideEfficiencySelection(t *testing.T) {
+	for _, test := range []struct {
+		name           string
+		speed          int
+		pickups, trips []int
+		want           int
+	}{
+		{"NearbyEfficiency", 2, []int{0, 4}, []int{20, 100}, 1},
+		{"PickupCanOutweighLength", 2, []int{0, 4}, []int{20, 25}, 0},
+		{"ModelSpeedChangesOverhead", 7, []int{0, 4}, []int{20, 25}, 1},
+		{"FarLongTripExcluded", 2, []int{0, 5}, []int{20, 1000000}, 0},
+		{"RadiusBoundaryIncluded", 2, []int{0, 4}, []int{20, 1000000}, 1},
+		{"SparseAreaStaysUsable", 2, []int{100, 104, 105}, []int{20, 100, 1000000}, 1},
+		{"SharedPickup", 2, []int{0, 0}, []int{20, 100}, 1},
+		{"ZeroDistanceAndFIFOTie", 2, []int{0, 0}, []int{0, 0}, 0},
+		{"NearestEightOnly", 2, []int{0, 0, 0, 0, 0, 0, 0, 0, 0}, []int{20, 20, 20, 20, 20, 20, 20, 20, 1000000}, 0},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			now := time.Now().UTC()
+			s := memoryTestState(t)
+			createGeographicTestRide(t, s, "fifo", now.Add(-time.Second), 10000, 1)
+			for i, pickup := range test.pickups {
+				createGeographicTestRide(t, s, fmt.Sprintf("candidate-%d", i), now.Add(time.Duration(i)*time.Microsecond), pickup, test.trips[i])
+			}
+			chairs := []matchingChair{{ID: "a", Speed: test.speed}, {ID: "b", Speed: test.speed}}
+			rows := s.selectWaitingRides(2, chairs, now)
+			if len(rows) != 2 || rows[0].ID != "fifo" || rows[1].ID != fmt.Sprintf("candidate-%d", test.want) {
+				t.Fatalf("efficiency selection = %+v, want FIFO and candidate-%d", rows, test.want)
+			}
+		})
+	}
+}
+
+func TestMatchingRideEfficiencyCollisionsAndFallback(t *testing.T) {
+	now := time.Now().UTC()
+	s := memoryTestState(t)
+	for i := 0; i < 16; i++ {
+		createGeographicTestRide(t, s, fmt.Sprintf("r-%02d", i), now, 0, i)
+	}
+	for _, speeds := range [][]int{{2, 2, 2, 2, 2, 2, 2, 2}, {2, 0, -1, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0}} {
+		chairs := make([]matchingChair, len(speeds))
+		for i, speed := range speeds {
+			chairs[i] = matchingChair{ID: fmt.Sprint(i), Speed: speed}
+		}
+		rows := s.selectWaitingRides(8, chairs, now)
+		if len(rows) != 8 || rows[0].ID != "r-00" || rows[1].ID != "r-01" {
+			t.Fatalf("capacity or FIFO quota lost with speeds %v: %+v", speeds, rows)
+		}
+		seen := map[string]bool{}
+		for i, row := range rows {
+			if seen[row.ID] {
+				t.Fatalf("collision selected %s twice", row.ID)
+			}
+			seen[row.ID] = true
+			if speeds[0] == 0 && row.ID != fmt.Sprintf("r-%02d", i) {
+				t.Fatal("unknown speed or position must fall back to FIFO")
+			}
+		}
+	}
+	selected := map[string]bool{}
+	for _, row := range s.waitingRides {
+		selected[row.ID] = true
+	}
+	if got := nearbyWaitingPickups(s.waitingPickups, matchingChair{Speed: 2}, selected); len(got) != 0 {
+		t.Fatal("exhausted candidate set included a selected ride")
+	}
+	if _, ok := efficientWaitingPickup(s.waitingPickups, matchingChair{}, nil); ok {
+		t.Fatal("unknown chair metadata treated as a nearby origin")
+	}
+	if got := s.selectWaitingRides(0, nil, now); len(got) != 0 {
+		t.Fatal("empty plan selected rides")
+	}
+	if got := s.selectWaitingRides(16, []matchingChair{{ID: "a", Speed: 2}}, now); len(got) != 16 {
+		t.Fatal("available demand below the plan limit lost rides")
 	}
 }
 
@@ -154,7 +246,7 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 		t.Fatal("initialize rebuild retained old waiting positions")
 	}
 	createGeographicTestRide(t, restored, "initialized-ride", time.Now().UTC(), -100, 100)
-	if nearestWaitingPickup(restored.waitingPickups, matchingChair{}, nil).ID != "initialized-ride" {
+	if got := nearbyWaitingPickups(restored.waitingPickups, matchingChair{Speed: 2}, nil); len(got) != 1 || got[0].ride.ID != "initialized-ride" {
 		t.Fatal("new generation pickup index did not accept a request")
 	}
 }
@@ -167,10 +259,20 @@ func TestMatchingGeographicRescue(t *testing.T) {
 		chairs[i] = matchingChair{ID: fmt.Sprint(i), Speed: 1}
 	}
 	for i := 0; i < 6; i++ {
-		createGeographicTestRide(t, s, fmt.Sprintf("old-%d", i), now.Add(-matchingRideRescueAge), 10000+i, 1000)
+		createGeographicTestRide(t, s, fmt.Sprintf("old-%d", i), now.Add(-matchingRideRescueAge), 10000+i, 1)
 	}
 	for i := 0; i < 10; i++ {
-		createGeographicTestRide(t, s, fmt.Sprintf("new-%02d", i), now.Add(-time.Second), i, 10)
+		createGeographicTestRide(t, s, fmt.Sprintf("new-%02d", i), now.Add(-time.Second), i, 1000)
+	}
+	beforeRescue := s.selectWaitingRides(8, chairs, now.Add(-time.Nanosecond))
+	oldCount := 0
+	for _, row := range beforeRescue {
+		if now.Sub(row.CreatedAt) >= matchingRideRescueAge {
+			oldCount++
+		}
+	}
+	if oldCount != 2 {
+		t.Fatalf("before rescue threshold selected %d FIFO rides, want quarter quota", oldCount)
 	}
 	rows := s.selectWaitingRides(8, chairs, now)
 	for i := 0; i < 6; i++ {
@@ -185,12 +287,12 @@ func TestMatchingGeographicRescue(t *testing.T) {
 	// threshold: each four-chair plan still commits at least one oldest request.
 	s = memoryTestState(t)
 	for i := 0; i < 6; i++ {
-		createGeographicTestRide(t, s, fmt.Sprintf("far-%d", i), now.Add(-time.Second), 10000+i, 100)
+		createGeographicTestRide(t, s, fmt.Sprintf("far-%d", i), now.Add(-time.Second), 10000+i, 1)
 	}
 	for batch := 0; batch < 6; batch++ {
 		for i := 0; i < 4; i++ {
 			addGeographicTestChair(s, fmt.Sprintf("c-%d-%d", batch, i), i)
-			createGeographicTestRide(t, s, fmt.Sprintf("near-%d-%d", batch, i), now, i, 1)
+			createGeographicTestRide(t, s, fmt.Sprintf("near-%d-%d", batch, i), now, i, 1000)
 		}
 		if err := s.match(); err != nil {
 			t.Fatal(err)
@@ -211,7 +313,7 @@ func TestMatchingGeographicLimitAndFallback(t *testing.T) {
 		if i >= matchingPlanLimit {
 			pickup, trip = 0, 100000
 		}
-		// Tied pickup positions and ages retain request order, not trip length.
+		// Equal efficiency at tied pickup positions retains request order.
 		row := Ride{ID: fmt.Sprintf("r-%03d", i), UserID: "u", CreatedAt: now,
 			PickupLatitude: pickup, DestinationLatitude: pickup + trip}
 		s.addRide(row, calculateSale(row))
