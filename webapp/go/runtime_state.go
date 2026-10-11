@@ -50,7 +50,7 @@ type memoryRide struct {
 // Nearby responses can overtake the evaluation response and completion SSE
 // on separate client connections. Keep the observed completion boundary out
 // of nearby listings; coordinate writes and matching do not wait here.
-const nearbyCompletionGrace = 100 * time.Millisecond
+const nearbyCompletionGrace = 50 * time.Millisecond
 
 // Business state uses user -> ride -> chair locks. Index and metric locks cover
 // only derived publication; WAL append is the sole shared write ordering point.
