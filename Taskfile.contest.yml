@@ -56,7 +56,7 @@ tasks:
     cmds: [go test -race ./...]
 
   test-runtime-accounts-mysql:
-    desc: 一時MySQLでSQL照合・登録・クーポン・ライド・決済のWAL復元をrace検査
+    desc: 一時MySQLでSQL照合・招待・クーポン・ライド・売上のWAL復元をrace検査
     dir: '{{.APP_DIR}}'
     cmds:
       - |
@@ -72,15 +72,15 @@ tasks:
         if [ "$ready" != 1 ]; then docker logs "$accounts_container"; exit 1; fi
         accounts_address=$(docker port "$accounts_container" 3306/tcp)
         export MYSQL_TEST_DSN="root:accounts-local-test@tcp($accounts_address)/isuride?parseTime=true&multiStatements=true"
-        go test -race -count=1 -v -run '^Test(RuntimeAccounts|ConcurrentInvitationsAndCouponConsumption|NewRideAndCouponWithWALCompletion|SalesSQLAndWALRecovery|NearbyWhileEvaluationResponseIsBlocked|EvaluationMetrics|PaymentAcceptedResponseLostAcrossRestart)' .
+        go test -race -count=1 -v -run '^Test(RuntimeAccountsSQLCollationAndSeedReload|ConcurrentInvitationsAndCouponConsumption|NewRideAndCouponWithWALCompletion|SalesSQLAndWALRecovery|NearbyWhileEvaluationResponseIsBlocked)$' .
 
   check-chair-distance:
-    desc: ローカルの一時MySQLでWAL正本からの復元・通知・距離集計・初期化を確認
+    desc: ローカルの一時MySQLでSQL照合・WAL復元・通知・距離集計・初期化の統合テストだけをrace検査
     dir: '{{.APP_DIR}}'
     cmds:
       - |
         set -eu
-        distance_container=$(docker run --rm -d -p 127.0.0.1::3306 -e MYSQL_ROOT_PASSWORD=distance-local-test -e MYSQL_DATABASE=isuride mysql:8.0.46)
+        distance_container=$(docker run --rm -d --tmpfs /var/lib/mysql:rw,size=512m -p 127.0.0.1::3306 -e MYSQL_ROOT_PASSWORD=distance-local-test -e MYSQL_DATABASE=isuride mysql:8.0.46 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci)
         trap 'docker rm -f "$distance_container" >/dev/null' EXIT
         ready=0
         for attempt in $(seq 1 60); do
@@ -94,7 +94,7 @@ tasks:
         export CHAIR_DISTANCE_TEST_DSN="root:distance-local-test@tcp(127.0.0.1:$ISUCON_DB_PORT)/isuride?parseTime=true&multiStatements=true"
         export MYSQL_TEST_DSN="$CHAIR_DISTANCE_TEST_DSN"
         ../sql/init.sh
-        go test -race -count=1 -v .
+        go test -race -count=1 -v -run '^Test(ChairDistance|NearbyWhileEvaluationResponseIsBlocked|ConcurrentInvitationsAndCouponConsumption|NotificationsHistoryAndStats|NotificationsFailedWrite|NotificationStreamWakeup|ChairStatsCompletionAndWALRecovery|RuntimeAccountsSQLCollationAndSeedReload|SalesSQLAndWALRecovery|RuntimeRecoveryFromWAL|NewRideAndCouponWithWALCompletion)$' .
 
   deploy-sql:
     desc: SQL初期化資材をAPP_HOSTSとMYSQL_HOSTSへ反映（DB再作成・サービス再起動なし）

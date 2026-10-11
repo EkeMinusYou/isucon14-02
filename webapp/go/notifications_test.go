@@ -292,7 +292,9 @@ func TestChairStatsCompletionAndWALRecovery(t *testing.T) {
 	if err := db.Get(&statsRows, `SELECT COUNT(*) FROM chair_stats`); err != nil || statsRows != 0 || len(appSub.wake) != 0 || len(chairSub.wake) != 0 {
 		t.Fatalf("aborted completion changed statistics or woke subscribers: %d, %v", statsRows, err)
 	}
-	db.MustExec(`INSERT INTO payment_tokens (user_id, token) VALUES ('u', 'payment')`)
+	if err := runtimeState.registerPaymentToken("u", "payment"); err != nil {
+		t.Fatal(err)
+	}
 	results := make(chan int, 2)
 	go func() { results <- evaluate() }()
 	go func() { results <- evaluate() }()

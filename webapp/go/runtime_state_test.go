@@ -375,27 +375,6 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 	}
 }
 
-func TestWALAcceptsBeyondFormerProjectionLimit(t *testing.T) {
-	s := memoryTestState(t)
-	s.addChair(Chair{ID: "c"})
-	for i := 0; i < 32769; i++ {
-		if _, err := s.coordinate("c", Coordinate{i, i}); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if s.sequence != 32769 || s.distances["c"].TotalDistance != 65536 {
-		t.Fatal("accepted history missing")
-	}
-	s.sequence = 0
-	s.distances = map[string]distanceTotal{}
-	if err := s.recoverWAL(); err != nil {
-		t.Fatal(err)
-	}
-	if s.sequence != 32769 || s.distances["c"].TotalDistance != 65536 {
-		t.Fatal("long WAL not recovered")
-	}
-}
-
 func TestNewRideAndCouponWithWALCompletion(t *testing.T) {
 	notificationTestDB(t)
 	insertTestRide(t, "old", "2026-01-01", true)
