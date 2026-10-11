@@ -59,7 +59,7 @@ func TestDiscoverRunsOnlyFinalized(t *testing.T) {
 func TestLoadConfigRejectsUnknownFields(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "sources.yaml")
-	data := []byte("version: 1\nbase_schema: base.sql\nreports:\n  bottleneck_evidence: evidence.sql\n  bottleneck_profile: profile.sql\nsources:\n  - table: t\n    schema: t.sql\n    match: t.tsv\n    view: t_raw\n")
+	data := []byte("version: 1\nbase_schema: base.sql\nreports:\n  bottleneck_profile: profile.sql\nsources:\n  - table: t\n    schema: t.sql\n    match: t.tsv\n    view: t_raw\n")
 	if err := os.WriteFile(path, data, 0o600); err != nil {
 		t.Fatal(err)
 	}

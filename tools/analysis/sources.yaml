@@ -16,7 +16,6 @@ semantic_schemas:
   - ../contest/analysis-schema/ride-metrics.sql # contest: dispatch and evaluation measurements
 
 reports:
-  bottleneck_evidence: queries/bottleneck-evidence.sql
   bottleneck_profile: queries/bottleneck-profile.sql
 
 profiles:
