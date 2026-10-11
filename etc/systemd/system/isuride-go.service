@@ -6,6 +6,8 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory=/home/isucon/webapp/go
+Environment=GOGC=300
+Environment=GOMEMLIMIT=2GiB
 EnvironmentFile=/home/isucon/env.sh
 EnvironmentFile=/home/isucon/database.env
 
