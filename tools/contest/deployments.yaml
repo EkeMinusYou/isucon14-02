@@ -231,7 +231,8 @@ deployments:
         role: all
         script: |
           set -eu
-          sudo systemctl stop isuride-matcher
+          # Hosts outside the matcher role have no unit; systemctl exits 5 there.
+          sudo systemctl stop isuride-matcher || test $? = 5
           test "$(sudo systemctl show isuride-matcher -p MainPID --value)" = 0
 
   app-initialize:
