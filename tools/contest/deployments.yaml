@@ -15,6 +15,11 @@ deployments:
         role: app
         local: tools/contest/generated/database.env
         remote: '{var:remote_home}/database.env'
+      - &matching-env
+        label: private matching solver endpoint
+        role: app
+        local: tools/contest/generated/matching.env
+        remote: '{var:remote_home}/matching.env'
     activations:
       - label: reload unit and start stopped application
         role: app
@@ -31,9 +36,10 @@ deployments:
         local: '{var:app_dir}/'
         remote: '{var:remote_home}/{var:app_dir}/'
         delete: true
-        excludes: ['node_modules', '*.pprof', 'default.pgo']
+        excludes: ['node_modules', '*.pprof', 'default.pgo', 'matching-worker']
       - *go-unit
       - *database-env
+      - *matching-env
     activations:
       - label: restart Go with the remote primary and existing local WAL
         role: app
@@ -160,6 +166,33 @@ deployments:
           set -eu
           sudo chown -R {var:isucon_user}:{var:isucon_user} {var:remote_home}/{var:sql_dir}
 
+  matching-worker:
+    uploads:
+      - label: stateless matching solver binary
+        role: solver
+        local: '{var:app_dir}/matching-worker'
+        remote: '{var:remote_home}/matching-worker'
+      - label: private solver listen and application peer
+        role: solver
+        local: tools/contest/generated/matching-worker.env
+        remote: '{var:remote_home}/matching-worker.env'
+      - label: matching solver unit
+        role: solver
+        local: etc/systemd/system/isuride-matching-worker.service
+        remote: /etc/systemd/system/isuride-matching-worker.service
+    activations:
+      - label: restart the stateless solver on its private listener
+        role: solver
+        script: |
+          set -eu
+          sudo chown {var:isucon_user}:{var:isucon_user} {var:remote_home}/matching-worker
+          sudo chmod 755 {var:remote_home}/matching-worker
+          # Validate after all uploads, including the first executable, finish.
+          sudo systemd-analyze verify /etc/systemd/system/isuride-matching-worker.service
+          sudo systemctl daemon-reload
+          sudo systemctl restart isuride-matching-worker
+          sudo systemctl is-active --quiet isuride-matching-worker
+
   matcher:
     uploads:
       - label: matcher unit
@@ -220,6 +253,14 @@ deployments:
         role: all
         script: |
           set -eu
+          case ',{var:solver_hosts},' in
+            *',{host},'*) ;;
+            *)
+              if sudo systemctl cat isuride-matching-worker >/dev/null 2>&1; then
+                sudo systemctl disable --now isuride-matching-worker
+              fi
+              ;;
+          esac
           case ',{var:matcher_hosts},' in
             *',{host},'*) ;;
             *)
@@ -247,6 +288,13 @@ deployments:
 
   dependency-roles-on:
     activations:
+      - label: enable the stateless matching solver
+        role: solver
+        script: |
+          set -eu
+          sudo systemctl daemon-reload
+          sudo systemctl enable --now isuride-matching-worker
+          sudo systemctl is-active --quiet isuride-matching-worker
       - label: enable the matcher on the entry host
         role: matcher
         script: |
@@ -276,7 +324,8 @@ plans:
       mysql: {needs: [app-stop]}
       sql-assets: {needs: [app-stop]}
       payment-mock: {needs: [app-stop]}
-      app: {needs: [mysql, sql-assets, payment-mock]}
+      matching-worker: {needs: [app-stop]}
+      app: {needs: [mysql, sql-assets, payment-mock, matching-worker]}
       nginx: {needs: [app]}
       matcher: {needs: [nginx]}
       dependency-roles-off: {needs: [matcher]}
@@ -290,9 +339,10 @@ plans:
       mysql: {needs: [app-stop]}
       sql-assets: {needs: [app-stop]}
       payment-mock: {needs: [app-stop]}
+      matching-worker: {needs: [app-stop]}
       db-schema: {needs: [mysql]}
       app-unit: {needs: [db-schema, sql-assets]}
-      app-initialize: {needs: [app-unit, payment-mock]}
+      app-initialize: {needs: [app-unit, payment-mock, matching-worker]}
       nginx: {needs: [app-initialize]}
       matcher: {needs: [nginx]}
       dependency-roles-off: {needs: [matcher]}

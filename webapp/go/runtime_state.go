@@ -64,6 +64,7 @@ type rideState struct {
 	dispatch         *dispatchMetrics
 	mu               sync.RWMutex
 	matchingMu       sync.Mutex
+	matchingSolver   *matchingRPCClient
 	userLocks        sync.Map
 	database         *sqlx.DB
 	wal              *os.File

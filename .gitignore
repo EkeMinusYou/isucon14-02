@@ -12,6 +12,9 @@ raw/
 # Contest application build artifacts (default.pgo is a tracked build input)
 # contest: executable rebuilt locally for the confirmed target architecture.
 webapp/go/isuride
+webapp/go/matching-worker
+tools/contest/generated/matching.env
+tools/contest/generated/matching-worker.env
 
 # Tool build artifacts
 /tools/bench-output/bench-output

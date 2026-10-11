@@ -25,6 +25,7 @@ func startTestRuntime(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
+	s.matchingSolver = testMatchingRPCClient(t, nil)
 	t.Cleanup(func() { s.close(); runtimeState = previous })
 }
 
@@ -94,6 +95,7 @@ func memoryTestStateIn(t *testing.T, directory, generation string, seed func(*ri
 		rides: map[string]*memoryRide{}, statuses: map[string]RideStatus{}, userRides: map[string][]string{}, chairRides: map[string][]string{},
 		appEvents: map[string]*notificationQueue{}, chairEvents: map[string]*notificationQueue{}, sales: map[string][]salesPoint{},
 	}
+	s.matchingSolver = testMatchingRPCClient(t, nil)
 	t.Cleanup(func() { s.close() })
 	s.collationWeights = testAccountWeights
 	s.resetAccounts()

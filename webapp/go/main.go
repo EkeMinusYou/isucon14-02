@@ -53,6 +53,10 @@ func main() {
 }
 
 func setup() http.Handler {
+	solver, err := newMatchingRPCClient(os.Getenv("ISURIDE_SOLVER_URL"))
+	if err != nil {
+		panic(err)
+	}
 	host := os.Getenv("ISUCON_DB_HOST")
 	if host == "" {
 		host = "127.0.0.1"
@@ -61,7 +65,7 @@ func setup() http.Handler {
 	if port == "" {
 		port = "3306"
 	}
-	_, err := strconv.Atoi(port)
+	_, err = strconv.Atoi(port)
 	if err != nil {
 		panic(fmt.Sprintf("failed to convert DB port number from ISUCON_DB_PORT environment variable into int: %v", err))
 	}
@@ -101,6 +105,7 @@ func setup() http.Handler {
 	if err != nil {
 		panic(err)
 	}
+	runtimeState.matchingSolver = solver
 	runtimeState.start()
 
 	measurementServer, err := measurement.Start(measurement.Options{

@@ -71,19 +71,23 @@ vars:
   # Deployment and service enable/disable targets.
   MYSQL_HOSTS: '{{.MYSQL_HOST}}'
   MATCHER_HOSTS: isucon-2
+  SOLVER_HOSTS: isucon-3
+  SOLVER_PORT: '9090'
   PAYMENT_MOCK_HOSTS: '{{.APP_HOSTS}}'
   CONF_SRC: isucon-1
   # Extra deployctl roles and vars for contest-specific deployments.
   DEPLOYCTL_FLAGS: >-
     -role sql_assets={{concat (splitList " " .APP_HOSTS) (splitList " " .MYSQL_HOSTS) | uniq | join ","}}
     -role matcher={{splitList " " .MATCHER_HOSTS | join ","}}
+    -role solver={{splitList " " .SOLVER_HOSTS | join ","}}
     -role payment_mock={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
     -role tls_forward={{splitList " " .TLS_FORWARD_HOSTS | join ","}}
     -var matcher_hosts={{splitList " " .MATCHER_HOSTS | join ","}}
+    -var solver_hosts={{splitList " " .SOLVER_HOSTS | join ","}}
     -var payment_mock_hosts={{splitList " " .PAYMENT_MOCK_HOSTS | join ","}}
     -var tls_forward_hosts={{splitList " " .TLS_FORWARD_HOSTS | join ","}}
     -var app_ip={{index .IP (splitList " " .APP_HOSTS | first)}}
-    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock,isuride-tls-forward:tls_forward
+    -var extra_service_roles=isuride-matcher:matcher,isuride-payment_mock:payment_mock,isuride-tls-forward:tls_forward,isuride-matching-worker:solver
   # Arguments passed to the contest smoke binary on ENTRY_HOST.
   SMOKE_ARGS: '-base https://isuride.xiv.isucon.net'
   # <<< contest values <<<
@@ -338,12 +342,14 @@ tasks:
     dir: '{{.APP_DIR}}'
     cmds:
       - '{{.GO_BUILD_ENV}} go build -trimpath -ldflags "-s -w" -o {{.APP_NAME}} .'
+      - task: build-contest-assets
 
   build-pgo:
     desc: default.pgoを使ってGoアプリをビルド
     dir: '{{.APP_DIR}}'
     cmds:
       - '{{.GO_BUILD_ENV}} go build -pgo=auto -trimpath -ldflags "-s -w" -o {{.APP_NAME}} .'
+      - task: build-contest-assets
 
   build-proc-metrics:
     internal: true

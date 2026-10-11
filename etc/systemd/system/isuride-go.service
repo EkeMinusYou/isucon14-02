@@ -10,6 +10,7 @@ Environment=GOGC=300
 Environment=GOMEMLIMIT=2GiB
 EnvironmentFile=/home/isucon/env.sh
 EnvironmentFile=/home/isucon/database.env
+EnvironmentFile=/home/isucon/matching.env
 
 User=isucon
 Group=isucon

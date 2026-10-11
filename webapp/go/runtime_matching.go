@@ -194,8 +194,12 @@ func (s *rideState) matchBatch(generation string, minimum int) (string, error) {
 		}
 		solving := time.Now()
 		sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
-		assignments := assignMatchingChairs(plan.rides, plan.chairs)
+		assignments, err := s.matchingSolver.solve(plan.rides, plan.chairs)
 		timing.solver = time.Since(solving)
+		if err != nil {
+			s.finishEmptyPlan(timing, "unavailable")
+			return "", err
+		}
 		retry, err := s.commitMatching(plan, assignments)
 		if err != nil || !retry {
 			return plan.generation, err
