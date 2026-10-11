@@ -53,9 +53,13 @@ run_id	score	app	nginx	mysql	app_traffic
 20261011-101032	828395	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
 20261011-101704	815372	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
 20261011-102546	841773	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
+20261011-103519	358164	isucon-3,isucon-1	isucon-2,isucon-3	isucon-3	isucon-3
 20261011-104132	853027	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
+20261011-105204	360145	isucon-3,isucon-1	isucon-2,isucon-3	isucon-3	isucon-3
 20261011-104809	805139	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
 20261011-105810	865108	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
 20261011-110516	866157	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
 20261011-111322	896545	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
+20261011-112312	574348	isucon-3,isucon-1	isucon-2,isucon-3	isucon-3	isucon-3
 20261011-112959	900399	isucon-1	isucon-2,isucon-3	isucon-3	isucon-1
+20261011-113725	785325	isucon-3,isucon-1	isucon-2,isucon-1	isucon-3	isucon-3

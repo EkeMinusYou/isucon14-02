@@ -1,0 +1,253 @@
+2026-10-11T02:23:16.169377202Z	BENCHMARK_START
+time=11:23:16.294 level=INFO msg=負荷走行を開始します
+time=11:23:16.294 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=11:23:21.784 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=11:23:21.784 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5 score="[0 0 0 3 2]" criteria="[5 2 5 5]"
+time=11:23:23.556 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=1
+time=11:23:23.557 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=11:23:23.557 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=11:23:23.560 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=11:23:23.584 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=11:23:23.584 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=23 score="[0 0 0 15 8]" criteria="[23 8 23 23]"
+time=11:23:25.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=11:23:25.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=11:23:25.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=1
+time=11:23:25.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=11:23:25.359 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=11:23:25.384 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で45人が新規登録しました
+time=11:23:25.384 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、67.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=11:23:25.384 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=11:23:25.384 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=46 score="[0 0 0 31 15]" criteria="[46 15 46 46]"
+time=11:23:27.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=11:23:27.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=11:23:27.158 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=3
+time=11:23:27.158 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=3
+time=11:23:27.158 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=11:23:27.184 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=11:23:27.184 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=71 score="[0 0 0 41 30]" criteria="[71 30 71 71]"
+time=11:23:28.957 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=11:23:28.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=11:23:28.962 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=2
+time=11:23:28.962 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=3
+time=11:23:28.962 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=11:23:28.984 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=11:23:28.984 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=107 score="[0 0 0 55 52]" criteria="[107 53 107 106]"
+time=11:23:30.758 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=11:23:30.762 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=3
+time=11:23:30.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=3
+time=11:23:30.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=5
+time=11:23:30.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=6
+time=11:23:30.784 level=INFO msg=これまでに地域内の評判によって19人、既存ユーザーの招待経由で151人が新規登録しました
+time=11:23:30.784 level=INFO msg=6.7%のライドは椅子がマッチされるまでの時間、46.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=11:23:30.784 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=11:23:30.784 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=163 score="[0 0 5 78 80]" criteria="[152 87 163 162]"
+time=11:23:32.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=11:23:32.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=4
+time=11:23:32.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=5
+time=11:23:32.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=4
+time=11:23:32.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=6
+time=11:23:32.584 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=11:23:32.584 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=250 score="[0 0 17 103 130]" criteria="[218 146 250 249]"
+time=11:23:34.357 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=5
+time=11:23:34.364 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=11:23:34.365 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=7
+time=11:23:34.369 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=8
+time=11:23:34.370 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=11:23:34.384 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=11:23:34.384 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=363 score="[0 0 32 143 188]" criteria="[295 226 363 361]"
+time=11:23:36.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=11:23:36.163 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=7
+time=11:23:36.163 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=7
+time=11:23:36.166 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=7
+time=11:23:36.166 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=7
+time=11:23:36.184 level=INFO msg=これまでに地域内の評判によって31人、既存ユーザーの招待経由で409人が新規登録しました
+time=11:23:36.184 level=INFO msg=22.4%のライドは椅子がマッチされるまでの時間、34.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=11:23:36.184 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=11:23:36.184 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=509 score="[0 0 54 183 272]" criteria="[395 336 509 505]"
+time=11:23:37.966 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=11:23:37.973 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=5
+time=11:23:37.973 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=11
+time=11:23:37.973 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=7
+time=11:23:37.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=9
+time=11:23:37.984 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=11:23:37.984 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=719 score="[0 0 74 251 394]" criteria="[539 507 719 712]"
+time=11:23:39.758 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=10
+time=11:23:39.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=9
+time=11:23:39.766 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=11:23:39.770 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=10
+time=11:23:39.771 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=10
+time=11:23:39.784 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=11:23:39.784 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=988 score="[0 0 108 339 541]" criteria="[722 708 988 979]"
+time=11:23:41.559 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=10
+time=11:23:41.569 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=12
+time=11:23:41.569 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=11
+time=11:23:41.578 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=9
+time=11:23:41.580 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=8
+time=11:23:41.584 level=INFO msg=これまでに地域内の評判によって43人、既存ユーザーの招待経由で1011人が新規登録しました
+time=11:23:41.584 level=INFO msg=28.2%のライドは椅子がマッチされるまでの時間、24.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=11:23:41.583 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=11:23:41.584 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1323 score="[0 0 132 451 740]" criteria="[950 993 1323 1311]"
+time=11:23:43.377 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=9
+time=11:23:43.378 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=11
+time=11:23:43.379 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=12
+time=11:23:43.382 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=13
+time=11:23:43.382 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=11:23:43.384 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=11:23:43.384 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1692 score="[0 2 168 587 935]" criteria="[1170 1303 1691 1675]"
+time=11:23:45.212 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=10
+time=11:23:45.213 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=15
+time=11:23:45.214 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=11:23:45.214 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2083 score="[0 2 194 773 1114]" criteria="[1371 1659 2082 2053]"
+time=11:23:45.216 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=10
+time=11:23:45.218 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=11:23:45.223 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=13
+time=11:23:47.014 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=11:23:47.014 level=INFO msg=これまでに地域内の評判によって55人、既存ユーザーの招待経由で1834人が新規登録しました
+time=11:23:47.014 level=INFO msg=これまでに低評価なライドによって2人が利用をやめました
+time=11:23:47.014 level=INFO msg=37.7%のライドは椅子がマッチされるまでの時間、18.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.7%のライドは椅子の実移動時間に不満がありました
+time=11:23:47.014 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2459 score="[0 3 222 972 1262]" criteria="[1532 1997 2457 2425]"
+time=11:23:47.053 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=8
+time=11:23:47.064 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=9
+time=11:23:47.084 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=11:23:47.085 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=12
+time=11:23:47.096 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=11:23:48.840 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=10
+time=11:23:48.841 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=11:23:48.844 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=14
+time=11:23:48.856 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=13
+time=11:23:48.856 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=11:23:48.814 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=11:23:48.814 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2825 score="[0 12 287 1150 1376]" criteria="[1692 2320 2812 2716]"
+time=11:23:50.595 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=9
+time=11:23:50.601 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=10
+time=11:23:50.606 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=11:23:50.611 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=12
+time=11:23:50.614 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=11:23:50.614 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=11:23:50.614 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3192 score="[0 25 306 1384 1477]" criteria="[1802 2659 3161 3075]"
+time=11:23:51.530 level=WARN msg="取得したオーナーの椅子一覧の情報が想定しているものと異なります (CODE=26): total_distanceの反映が遅いデータがあります (id: 01M4MCB4J6KB63PVKTVBWBEQZG)"
+time=11:23:51.539 level=WARN msg="取得したオーナーの椅子一覧の情報が想定しているものと異なります (CODE=26): total_distanceの反映が遅いデータがあります (id: 01M4MCB4M9NVXD43X21FW6W9AY)"
+time=11:23:51.540 level=WARN msg="取得したオーナーの椅子一覧の情報が想定しているものと異なります (CODE=26): total_distanceの反映が遅いデータがあります (id: 01M4MCBRT28GNPS7Z6050FXX17)"
+time=11:23:51.540 level=WARN msg="取得したオーナーの椅子一覧の情報が想定しているものと異なります (CODE=26): total_distanceの反映が遅いデータがあります (id: 01M4MCBWCYQ7R82ZTH2P2WPTB5)"
+time=11:23:52.607 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=11:23:52.608 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=11:23:52.609 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=12
+time=11:23:52.611 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=11:23:52.611 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=11
+time=11:23:52.624 level=INFO msg=これまでに地域内の評判によって67人、既存ユーザーの招待経由で2704人が新規登録しました
+time=11:23:52.624 level=INFO msg=これまでに低評価なライドによって11人が利用をやめました
+time=11:23:52.624 level=INFO msg=46.2%のライドは椅子がマッチされるまでの時間、15.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、2.2%のライドは椅子の実移動時間に不満がありました
+time=11:23:52.624 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=11:23:52.624 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3516 score="[0 26 311 1614 1565]" criteria="[1893 2979 3484 3394]"
+time=11:23:53.559 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:23:54.418 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=11:23:54.419 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=13
+time=11:23:54.419 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=11:23:54.420 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=11:23:54.424 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=11
+time=11:23:54.424 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=11:23:54.424 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3914 score="[0 29 430 1843 1612]" criteria="[1979 3370 3732 3785]"
+time=11:23:56.219 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=10
+time=11:23:56.221 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=9
+time=11:23:56.223 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=11:23:56.224 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4316 score="[0 37 538 2073 1668]" criteria="[2053 3770 4041 4140]"
+time=11:23:56.236 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=11:23:56.238 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=13
+time=11:23:56.240 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=15
+time=11:23:58.019 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=11:23:58.019 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=13
+time=11:23:58.021 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=15
+time=11:23:58.022 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=13
+time=11:23:58.023 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=17
+time=11:23:58.024 level=INFO msg=これまでに地域内の評判によって79人、既存ユーザーの招待経由で3293人が新規登録しました
+time=11:23:58.024 level=INFO msg=これまでに低評価なライドによって18人が利用をやめました
+time=11:23:58.024 level=INFO msg=55.9%のライドは椅子がマッチされるまでの時間、11.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、8.6%のライドは椅子の実移動時間に不満がありました
+time=11:23:58.024 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=11:23:58.024 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4767 score="[1 45 859 2184 1678]" criteria="[2104 4209 4264 4450]"
+time=11:23:59.825 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=11:23:59.825 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5086 score="[4 47 904 2435 1696]" criteria="[2124 4521 4574 4725]"
+time=11:23:59.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=12
+time=11:23:59.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=9
+time=11:23:59.866 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=7
+time=11:23:59.872 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=10
+time=11:23:59.874 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=8
+time=11:24:01.623 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=11:24:01.624 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5549 score="[4 49 1132 2657 1707]" criteria="[2155 4984 4924 5049]"
+time=11:24:01.633 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=14
+time=11:24:01.643 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=11:24:01.647 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=12
+time=11:24:01.652 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=14
+time=11:24:01.652 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=19
+time=11:24:03.424 level=INFO msg=これまでに地域内の評判によって91人、既存ユーザーの招待経由で3833人が新規登録しました
+time=11:24:03.424 level=INFO msg=これまでに低評価なライドによって25人が利用をやめました
+time=11:24:03.424 level=INFO msg=62.8%のライドは椅子がマッチされるまでの時間、9.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、10.8%のライドは椅子の実移動時間に不満がありました
+time=11:24:03.423 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=11:24:03.424 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5810 score="[4 55 1242 2801 1708]" criteria="[2161 5245 5164 5204]"
+time=11:24:05.208 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=26
+time=11:24:05.219 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=25
+time=11:24:05.220 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=22
+time=11:24:05.220 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=23
+time=11:24:05.220 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=24
+time=11:24:05.224 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=11:24:05.224 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6312 score="[4 57 1451 3075 1725]" criteria="[2180 5747 5461 5696]"
+time=11:24:07.024 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=11:24:07.024 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6716 score="[4 57 1551 3379 1725]" criteria="[2180 6151 5865 6000]"
+time=11:24:08.824 level=INFO msg=これまでに地域内の評判によって103人、既存ユーザーの招待経由で4412人が新規登録しました
+time=11:24:08.824 level=INFO msg=これまでに低評価なライドによって25人が利用をやめました
+time=11:24:08.824 level=INFO msg=69.3%のライドは椅子がマッチされるまでの時間、8.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、11.8%のライドは椅子の実移動時間に不満がありました
+time=11:24:08.830 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=19
+time=11:24:08.848 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=26
+time=11:24:08.851 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=20
+time=11:24:08.851 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=23
+time=11:24:08.861 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=22
+time=11:24:08.823 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=11:24:08.824 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7104 score="[4 57 1665 3653 1725]" criteria="[2180 6539 6253 6274]"
+time=11:24:10.624 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=11:24:10.624 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7342 score="[4 57 1817 3739 1725]" criteria="[2180 6777 6491 6360]"
+time=11:24:12.478 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=20
+time=11:24:12.480 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=23
+time=11:24:12.481 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=22
+time=11:24:12.508 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=11:24:12.508 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7839 score="[4 57 1960 4093 1725]" criteria="[2180 7274 6988 6714]"
+time=11:24:14.344 level=INFO msg=これまでに地域内の評判によって115人、既存ユーザーの招待経由で5111人が新規登録しました
+time=11:24:14.344 level=INFO msg=これまでに低評価なライドによって25人が利用をやめました
+time=11:24:14.344 level=INFO msg=73.5%のライドは椅子がマッチされるまでの時間、6.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、12.3%のライドは椅子の実移動時間に不満がありました
+time=11:24:14.351 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4MCC7MYDCDYDGV0G0T7X32X, got: 44900)"
+time=11:24:14.369 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=36
+time=11:24:14.343 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=11:24:14.344 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8211 score="[4 57 2005 4420 1725]" criteria="[2180 7646 7360 7041]"
+time=11:24:16.154 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=16
+time=11:24:16.157 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=18
+time=11:24:16.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Sit Second Life" 増加数=44
+time=11:24:16.167 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=16
+time=11:24:16.143 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=11:24:16.144 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8460 score="[4 57 2135 4539 1725]" criteria="[2180 7895 7609 7160]"
+time=11:24:18.004 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=11:24:18.004 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8874 score="[4 70 2186 4889 1725]" criteria="[2180 8309 7980 7540]"
+time=11:24:19.793 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=19
+time=11:24:19.794 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=20
+time=11:24:19.804 level=INFO msg=これまでに地域内の評判によって127人、既存ユーザーの招待経由で5749人が新規登録しました
+time=11:24:19.804 level=INFO msg=これまでに低評価なライドによって33人が利用をやめました
+time=11:24:19.804 level=INFO msg=76.3%のライドは椅子がマッチされるまでの時間、6.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、12.2%のライドは椅子の実移動時間に不満がありました
+time=11:24:19.803 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1980
+time=11:24:19.804 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9212 score="[4 71 2196 5216 1725]" criteria="[2180 8647 8317 7867]"
+time=11:24:19.828 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=33
+time=11:24:19.862 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=22
+time=11:24:19.934 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:24:24.984 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=4313 アクティブユーザー数=4291
+time=11:24:24.984 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1775 アクティブユーザー数=1764
+time=11:24:24.984 level=INFO msg=最終オーナー情報 名前=つばさ交通 売上=9861500 椅子数=264
+time=11:24:24.984 level=INFO msg=最終オーナー情報 名前="Sit Second Life" 売上=12029500 椅子数=297
+time=11:24:24.984 level=INFO msg=最終オーナー情報 名前=快旅タクシー 売上=9944700 椅子数=267
+time=11:24:24.984 level=INFO msg=最終オーナー情報 名前=椅子のふるさと 売上=11037300 椅子数=295
+time=11:24:24.984 level=INFO msg=最終オーナー情報 名前=街のりタクシー 売上=12937100 椅子数=339
+time=11:24:24.984 level=INFO msg=76.8%のライドは椅子がマッチされるまでの時間、6.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、12.5%のライドは椅子の実移動時間に不満がありました
+time=11:24:24.985 level=INFO msg=結果 pass=true スコア=574348 種別エラー数="map[17:2 24:1 26:4]"
+time=11:24:24.985 level=INFO msg=負荷走行が終了しました
+
+SCORE: 574348
+BENCHMARK_PASS
+2026-10-11T02:24:25.615199841Z	BENCHMARK_END
+
+SCORE: 574348
+BENCHMARK_PASS

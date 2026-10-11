@@ -1,0 +1,804 @@
+2026-10-11T01:52:08.472503136Z	BENCHMARK_START
+time=10:52:08.591 level=INFO msg=負荷走行を開始します
+time=10:52:08.591 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=10:52:14.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=10:52:14.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8 score="[0 0 0 3 5]" criteria="[8 5 8 8]"
+time=10:52:15.837 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=1
+time=10:52:15.838 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=1
+time=10:52:15.838 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=10:52:15.838 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=1
+time=10:52:15.842 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=10:52:15.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=10:52:15.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=25 score="[0 0 0 14 11]" criteria="[25 11 25 25]"
+time=10:52:17.636 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=10:52:17.636 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=2
+time=10:52:17.636 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=10:52:17.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=1
+time=10:52:17.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=2
+time=10:52:17.663 level=INFO msg=これまでに地域内の評判によって8人、既存ユーザーの招待経由で41人が新規登録しました
+time=10:52:17.663 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、61.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=10:52:17.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=10:52:17.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=42 score="[0 0 0 26 16]" criteria="[42 16 42 42]"
+time=10:52:19.436 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=1
+time=10:52:19.436 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=10:52:19.436 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=4
+time=10:52:19.437 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=1
+time=10:52:19.437 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=2
+time=10:52:19.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=10:52:19.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=68 score="[0 0 1 44 23]" criteria="[68 23 68 67]"
+time=10:52:21.236 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=1
+time=10:52:21.236 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=10:52:21.236 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=2
+time=10:52:21.236 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=2
+time=10:52:21.237 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=4
+time=10:52:21.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=10:52:21.264 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=98 score="[0 0 2 52 44]" criteria="[98 45 98 95]"
+time=10:52:23.036 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=4
+time=10:52:23.042 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=10:52:23.042 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=3
+time=10:52:23.043 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=3
+time=10:52:23.043 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=2
+time=10:52:23.064 level=INFO msg=これまでに地域内の評判によって20人、既存ユーザーの招待経由で121人が新規登録しました
+time=10:52:23.064 level=INFO msg=2.9%のライドは椅子がマッチされるまでの時間、46.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.8%のライドは椅子の実移動時間に不満がありました
+time=10:52:23.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=10:52:23.064 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=136 score="[0 0 3 66 67]" criteria="[132 73 136 131]"
+time=10:52:24.836 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=4
+time=10:52:24.839 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=2
+time=10:52:24.839 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=2
+time=10:52:24.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=3
+time=10:52:24.843 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=4
+time=10:52:24.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=10:52:24.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=194 score="[0 0 16 87 91]" criteria="[170 105 194 188]"
+time=10:52:26.635 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=2
+time=10:52:26.636 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=8
+time=10:52:26.636 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=4
+time=10:52:26.637 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=4
+time=10:52:26.639 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=4
+time=10:52:26.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=10:52:26.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=281 score="[0 0 35 109 137]" criteria="[225 165 281 274]"
+time=10:52:28.437 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=5
+time=10:52:28.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=7
+time=10:52:28.439 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=5
+time=10:52:28.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=4
+time=10:52:28.440 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=2
+time=10:52:28.463 level=INFO msg=これまでに地域内の評判によって32人、既存ユーザーの招待経由で290人が新規登録しました
+time=10:52:28.463 level=INFO msg=24.0%のライドは椅子がマッチされるまでの時間、38.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.9%のライドは椅子の実移動時間に不満がありました
+time=10:52:28.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=10:52:28.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=375 score="[0 0 51 140 184]" criteria="[285 230 375 368]"
+time=10:52:30.239 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=6
+time=10:52:30.245 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=7
+time=10:52:30.245 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=7
+time=10:52:30.245 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=5
+time=10:52:30.245 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=5
+time=10:52:30.263 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=10:52:30.263 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=510 score="[0 0 75 189 246]" criteria="[371 317 510 503]"
+time=10:52:32.039 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=6
+time=10:52:32.040 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=4
+time=10:52:32.045 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=8
+time=10:52:32.049 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=8
+time=10:52:32.049 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=9
+time=10:52:32.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=10:52:32.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=675 score="[0 2 106 236 331]" criteria="[472 437 675 662]"
+time=10:52:33.248 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=10:52:33.838 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=9
+time=10:52:33.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:33.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=7
+time=10:52:33.847 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=8
+time=10:52:33.847 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=9
+time=10:52:33.863 level=INFO msg=これまでに地域内の評判によって44人、既存ユーザーの招待経由で669人が新規登録しました
+time=10:52:33.863 level=INFO msg=32.5%のライドは椅子がマッチされるまでの時間、32.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.9%のライドは椅子の実移動時間に不満がありました
+time=10:52:33.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=10:52:33.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=914 score="[0 3 139 320 452]" criteria="[617 621 914 897]"
+time=10:52:35.649 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=11
+time=10:52:35.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=8
+time=10:52:35.650 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=6
+time=10:52:35.654 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=11
+time=10:52:35.654 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=9
+time=10:52:35.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=10:52:35.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1187 score="[0 3 174 412 598]" criteria="[783 841 1187 1168]"
+time=10:52:37.450 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=12
+time=10:52:37.455 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=6
+time=10:52:37.457 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=11
+time=10:52:37.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=10:52:37.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1501 score="[0 3 204 521 773]" criteria="[984 1103 1501 1478]"
+time=10:52:37.492 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=9
+time=10:52:37.504 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=11
+time=10:52:39.263 level=INFO msg=これまでに地域内の評判によって56人、既存ユーザーの招待経由で1361人が新規登録しました
+time=10:52:39.263 level=INFO msg=35.9%のライドは椅子がマッチされるまでの時間、24.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.7%のライドは椅子の実移動時間に不満がありました
+time=10:52:39.263 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=10:52:39.263 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1826 score="[0 4 238 647 937]" criteria="[1171 1371 1826 1801]"
+time=10:52:39.270 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=10:52:39.273 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=10
+time=10:52:39.276 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=10
+time=10:52:39.276 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=7
+time=10:52:39.281 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=6
+time=10:52:41.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=10:52:41.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2174 score="[0 4 276 811 1083]" criteria="[1340 1662 2174 2145]"
+time=10:52:41.083 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=14
+time=10:52:41.106 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=8
+time=10:52:41.106 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:41.107 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=13
+time=10:52:41.108 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=13
+time=10:52:42.841 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=9
+time=10:52:42.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:42.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=10:52:42.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2503 score="[0 12 301 981 1209]" criteria="[1479 1956 2497 2461]"
+time=10:52:42.889 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=11
+time=10:52:42.889 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=10:52:42.890 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=11
+time=10:52:44.663 level=INFO msg=これまでに地域内の評判によって68人、既存ユーザーの招待経由で2157人が新規登録しました
+time=10:52:44.663 level=INFO msg=これまでに低評価なライドによって5人が利用をやめました
+time=10:52:44.663 level=INFO msg=44.3%のライドは椅子がマッチされるまでの時間、19.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、2.3%のライドは椅子の実移動時間に不満がありました
+time=10:52:44.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=10:52:44.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2901 score="[2 13 371 1203 1312]" criteria="[1616 2328 2891 2777]"
+time=10:52:44.670 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=11
+time=10:52:44.675 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=15
+time=10:52:44.676 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=13
+time=10:52:44.685 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=15
+time=10:52:44.686 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:46.450 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:46.450 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=8
+time=10:52:46.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=10:52:46.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3219 score="[2 20 448 1381 1368]" criteria="[1717 2622 3133 3059]"
+time=10:52:46.479 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=10
+time=10:52:46.480 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=10:52:46.482 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=9
+time=10:52:46.941 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:46.955 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:46.991 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:46.991 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:46.991 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:46.994 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:46.998 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:47.059 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:47.077 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:48.258 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=10
+time=10:52:48.263 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=10:52:48.263 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3477 score="[3 24 457 1547 1446]" criteria="[1797 2867 3386 3313]"
+time=10:52:48.270 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=10
+time=10:52:48.270 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=11
+time=10:52:48.277 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=5
+time=10:52:48.279 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=5
+time=10:52:49.931 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=9
+time=10:52:50.050 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=10
+time=10:52:50.051 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=6
+time=10:52:50.052 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=12
+time=10:52:50.054 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=10:52:50.063 level=INFO msg=これまでに地域内の評判によって80人、既存ユーザーの招待経由で2791人が新規登録しました
+time=10:52:50.063 level=INFO msg=これまでに低評価なライドによって12人が利用をやめました
+time=10:52:50.063 level=INFO msg=51.5%のライドは椅子がマッチされるまでの時間、16.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、3.4%のライドは椅子の実移動時間に不満がありました
+time=10:52:50.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=10:52:50.063 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3805 score="[3 27 465 1817 1493]" criteria="[1846 3184 3711 3639]"
+time=10:52:50.104 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.116 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.276 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.284 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.297 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.298 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.326 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.327 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.331 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.332 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=10:52:50.340 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.349 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.356 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.364 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.382 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.387 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.391 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.407 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.408 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.479 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.480 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.480 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:50.480 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:51.562 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:51.588 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:51.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=10:52:51.863 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4165 score="[3 36 476 2112 1538]" criteria="[1897 3529 4060 3990]"
+time=10:52:51.880 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=8
+time=10:52:51.890 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=17
+time=10:52:51.891 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=15
+time=10:52:51.912 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=13
+time=10:52:51.913 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=5
+time=10:52:51.982 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.086 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.111 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.114 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.119 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:52.126 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.131 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.131 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.131 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.131 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.131 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.131 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.133 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:52.134 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.139 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:52.153 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:52.153 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:52.153 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:52.153 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.155 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.159 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.160 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:52.163 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.182 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.193 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:52.217 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.297 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.300 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.316 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.346 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.563 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.569 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.593 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.654 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.656 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:53.659 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.661 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=10:52:53.663 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4514 score="[3 43 556 2363 1549]" criteria="[1914 3877 4369 4280]"
+time=10:52:53.676 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=9
+time=10:52:53.686 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=12
+time=10:52:53.692 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=11
+time=10:52:53.692 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=10:52:53.858 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.860 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.867 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:53.867 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:54.263 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:54.265 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:54.337 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:54.375 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.128 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.128 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.129 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.130 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:55.133 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:55.143 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:55.143 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.463 level=INFO msg=これまでに地域内の評判によって92人、既存ユーザーの招待経由で3412人が新規登録しました
+time=10:52:55.463 level=INFO msg=これまでに低評価なライドによって47人が利用をやめました
+time=10:52:55.463 level=INFO msg=59.9%のライドは椅子がマッチされるまでの時間、13.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、6.6%のライドは椅子の実移動時間に不満がありました
+time=10:52:55.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=10:52:55.463 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4832 score="[3 94 692 2489 1554]" criteria="[1938 4193 4582 4448]"
+time=10:52:55.479 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=10
+time=10:52:55.481 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=9
+time=10:52:55.481 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=13
+time=10:52:55.483 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=9
+time=10:52:55.484 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=10:52:55.828 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.952 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.955 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:55.955 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.047 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.047 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.050 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.051 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.441 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.455 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.455 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:56.465 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.036 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.037 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.043 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.086 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.098 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.099 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.105 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.105 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.119 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:57.276 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=11
+time=10:52:57.277 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=6
+time=10:52:57.278 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=16
+time=10:52:57.293 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=10:52:57.293 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5198 score="[3 101 828 2704 1562]" criteria="[1952 4558 4921 4686]"
+time=10:52:58.951 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:58.959 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:58.961 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:58.994 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.093 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=10:52:59.093 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5670 score="[5 112 1067 2924 1562]" criteria="[1952 5023 5194 5097]"
+time=10:52:59.106 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=8
+time=10:52:59.108 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=迅行タクシー 増加数=11
+time=10:52:59.109 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のふるさと 増加数=35
+time=10:52:59.110 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="CraftChair Co., Ltd." 増加数=29
+time=10:52:59.111 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=16
+time=10:52:59.205 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.211 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.218 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.232 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.233 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.235 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.235 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.236 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.243 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.243 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.243 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.246 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.249 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.287 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.364 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.373 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.381 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.386 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.393 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.393 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.394 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.396 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.402 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.405 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.406 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.410 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.411 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.411 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.413 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.414 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.414 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.416 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.416 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.418 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.420 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.423 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.424 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.424 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.426 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.426 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.426 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.428 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.428 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.429 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.429 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.430 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.442 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.451 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.451 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.451 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.453 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.457 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.458 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.458 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.459 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.467 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.474 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.483 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.519 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.521 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.521 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.521 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.521 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.534 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.534 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.534 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.534 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.534 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.535 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.539 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.543 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.552 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.552 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.553 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.553 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.553 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.553 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.553 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.553 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.554 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.554 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.554 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.554 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.554 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.554 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.555 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.561 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.561 level=ERROR msg=クリティカルエラーが発生しました error=発生しているエラーが多すぎます
+time=10:52:59.562 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.562 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.563 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.567 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.567 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.569 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.569 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.570 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.570 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.570 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.571 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.572 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.572 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.573 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.581 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.582 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.582 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.582 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.582 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.582 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.583 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.584 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.584 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.584 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.584 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.584 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.584 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.585 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.586 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.586 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.586 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.587 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.587 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.590 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.590 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.591 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.591 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.591 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.591 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.592 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.594 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.594 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.595 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.595 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数6台"
+time=10:52:59.598 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.599 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.599 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.599 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.600 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.601 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.601 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.602 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.603 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.604 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.605 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.605 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.606 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.607 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.609 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.609 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.610 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.610 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.610 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.610 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.614 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.615 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.616 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.616 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.616 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.618 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.618 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.620 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.621 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.622 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.622 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.623 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.624 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.624 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.626 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.626 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.627 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.628 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.629 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.631 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.631 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.632 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.633 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.633 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:52:59.639 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.640 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.641 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.641 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.642 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.649 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.662 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.681 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.701 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.706 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.709 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.711 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.711 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.712 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.747 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.747 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.749 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.766 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.766 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.767 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.767 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.768 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.768 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.770 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.770 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.771 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.773 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.773 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.774 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.775 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.779 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.779 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.781 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.781 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.784 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.794 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.836 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.847 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.847 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.860 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.861 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:52:59.862 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.865 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.866 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.866 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.867 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.868 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.875 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.875 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.881 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.885 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.886 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.892 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.893 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.894 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.894 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.895 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.923 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.923 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.925 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.965 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.968 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.968 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.977 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.977 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.980 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.984 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.984 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.985 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.986 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.986 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.986 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.987 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.989 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.989 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.993 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.994 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.994 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.994 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.995 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.995 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.996 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:52:59.997 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:52:59.998 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.998 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:52:59.998 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.001 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.001 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.004 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.004 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.007 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.013 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.013 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.018 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.018 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.021 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.022 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.022 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.022 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.039 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.040 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.040 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.041 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.041 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.041 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.042 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.044 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.045 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.046 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.055 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.057 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.061 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.061 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.062 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.062 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.072 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.074 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.076 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.076 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.077 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.077 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.077 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.077 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.078 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.078 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.078 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.078 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.078 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.079 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.079 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.083 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.099 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.100 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.100 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.100 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.101 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.102 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.102 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.102 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.103 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.103 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.103 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.103 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.104 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.104 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.104 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.104 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.105 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.105 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.106 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.108 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.108 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.109 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.127 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.142 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.151 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.153 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.163 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.168 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.181 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.181 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.213 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.216 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.217 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.217 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.217 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:53:00.224 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.225 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.225 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:53:00.226 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.226 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.226 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.228 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.229 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.229 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.229 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.230 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.230 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.230 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.230 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.231 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.232 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.232 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.232 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.234 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.234 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.241 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.241 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.241 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数4台"
+time=10:53:00.241 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.241 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.242 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.242 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.242 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.242 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.248 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.248 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.255 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.255 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.257 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.258 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数5台"
+time=10:53:00.258 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.258 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.259 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数3台"
+time=10:53:00.259 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.284 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.291 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.302 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.369 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.383 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.408 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.443 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.542 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:00.563 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.590 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.591 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.662 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.676 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.907 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.928 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.930 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:00.970 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.030 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.053 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.069 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.072 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:01.082 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.151 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.151 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.151 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.152 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.153 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.163 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.165 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.169 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.179 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.179 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.180 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.180 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.183 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.186 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.188 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.189 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.208 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.209 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.211 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.301 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.313 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.342 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.378 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.397 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.457 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.659 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.663 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.664 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.667 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.669 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.861 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:01.881 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.881 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:01.881 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.882 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.884 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:01.885 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.468 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.470 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.470 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.472 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.473 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.474 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:02.480 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.490 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.499 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:02.509 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.513 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数1台"
+time=10:53:02.607 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数18台"
+time=10:53:02.608 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数22台"
+time=10:53:02.609 level=WARN msg="付近の椅子情報が想定よりも足りていません (CODE=31): 不足数2台"
+time=10:53:04.561 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=3198 アクティブユーザー数=3164
+time=10:53:04.561 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=781 アクティブユーザー数=760
+time=10:53:04.561 level=INFO msg=最終オーナー情報 名前=椅子のふるさと 売上=9126800 椅子数=251
+time=10:53:04.561 level=INFO msg=最終オーナー情報 名前="CraftChair Co., Ltd." 売上=7366600 椅子数=207
+time=10:53:04.561 level=INFO msg=最終オーナー情報 名前=迅行タクシー 売上=5648600 椅子数=162
+time=10:53:04.561 level=INFO msg=最終オーナー情報 名前=ひまわり交通 売上=8088600 椅子数=224
+time=10:53:04.561 level=INFO msg=最終オーナー情報 名前=ReSit 売上=3998400 椅子数=121
+time=10:53:04.561 level=INFO msg=65.8%のライドは椅子がマッチされるまでの時間、11.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、9.5%のライドは椅子の実移動時間に不満がありました
+time=10:53:04.561 level=INFO msg=結果 pass=false スコア=360145 種別エラー数="map[17:2 31:586]"
+time=10:53:04.561 level=INFO msg=負荷走行が終了しました
+time=10:53:04.561 level=ERROR source=/tmp/isucon14/bench/cmd/run.go:138 msg=発生したエラー errors="[load:\n    github.com/isucon/isucandar.(*BenchmarkStep).AddError\n        /home/ubuntu/go/pkg/mod/github.com/isucon/isucandar@v0.0.0-20220322062028-6dd56dc57d72/benchmark_step.go:30\n    github.com/isucon/isucandar.(*Benchmark).Start.func3.func1\n        /home/ubuntu/go/pkg/mod/github.com/isucon/isucandar@v0.0.0-20220322062028-6dd56dc57d72/benchmark.go:132\n    github.com/isucon/isucandar/parallel.(*Parallel).Do.func1\n        /home/ubuntu/go/pkg/mod/github.com/isucon/isucandar@v0.0.0-20220322062028-6dd56dc57d72/parallel/parallel.go:68\n  - 発生しているエラーが多すぎます]"
+
+SCORE: 360145
+BENCHMARK_FAIL
+2026-10-11T01:53:05.123483862Z	BENCHMARK_END
+
+SCORE: 360145
+BENCHMARK_FAIL

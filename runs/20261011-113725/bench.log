@@ -1,0 +1,253 @@
+2026-10-11T02:37:29.080332609Z	BENCHMARK_START
+time=11:37:29.205 level=INFO msg=負荷走行を開始します
+time=11:37:29.205 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=11:37:34.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=11:37:34.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5 score="[0 0 0 3 2]" criteria="[5 2 5 5]"
+time=11:37:36.560 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=11:37:36.565 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=1
+time=11:37:36.565 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=1
+time=11:37:36.565 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=11:37:36.565 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=11:37:36.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=11:37:36.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=26 score="[0 0 1 16 9]" criteria="[26 9 26 25]"
+time=11:37:38.360 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=11:37:38.361 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=11:37:38.361 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=2
+time=11:37:38.361 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=11:37:38.361 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=11:37:38.387 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で49人が新規登録しました
+time=11:37:38.387 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、56.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.0%のライドは椅子の実移動時間に不満がありました
+time=11:37:38.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=11:37:38.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=51 score="[0 0 1 28 22]" criteria="[51 22 51 50]"
+time=11:37:40.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=11:37:40.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=11:37:40.161 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=2
+time=11:37:40.161 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=11:37:40.164 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=2
+time=11:37:40.187 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=11:37:40.187 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=82 score="[0 0 1 39 42]" criteria="[82 42 82 81]"
+time=11:37:41.960 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=2
+time=11:37:41.960 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=3
+time=11:37:41.960 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=3
+time=11:37:41.960 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=1
+time=11:37:41.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=2
+time=11:37:41.988 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=11:37:41.988 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=122 score="[0 0 1 55 66]" criteria="[122 66 122 121]"
+time=11:37:43.760 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=3
+time=11:37:43.761 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=4
+time=11:37:43.761 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=5
+time=11:37:43.761 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=3
+time=11:37:43.761 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=3
+time=11:37:43.788 level=INFO msg=これまでに地域内の評判によって19人、既存ユーザーの招待経由で157人が新規登録しました
+time=11:37:43.788 level=INFO msg=5.8%のライドは椅子がマッチされるまでの時間、42.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=11:37:43.788 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=11:37:43.788 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=171 score="[0 0 5 75 91]" criteria="[161 98 171 169]"
+time=11:37:45.561 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=5
+time=11:37:45.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=4
+time=11:37:45.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=5
+time=11:37:45.567 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=5
+time=11:37:45.567 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=5
+time=11:37:45.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=11:37:45.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=249 score="[0 0 14 100 135]" criteria="[223 150 249 246]"
+time=11:37:47.361 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=6
+time=11:37:47.363 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=5
+time=11:37:47.363 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=6
+time=11:37:47.364 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=5
+time=11:37:47.364 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=6
+time=11:37:47.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=11:37:47.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=361 score="[0 0 31 143 187]" criteria="[295 226 361 357]"
+time=11:37:49.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=5
+time=11:37:49.168 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=5
+time=11:37:49.169 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=8
+time=11:37:49.169 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=7
+time=11:37:49.169 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=7
+time=11:37:49.188 level=INFO msg=これまでに地域内の評判によって31人、既存ユーザーの招待経由で407人が新規登録しました
+time=11:37:49.188 level=INFO msg=22.0%のライドは椅子がマッチされるまでの時間、36.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.7%のライドは椅子の実移動時間に不満がありました
+time=11:37:49.188 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=11:37:49.188 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=509 score="[0 1 57 188 263]" criteria="[397 323 509 502]"
+time=11:37:50.967 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=8
+time=11:37:50.971 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=8
+time=11:37:50.973 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=8
+time=11:37:50.973 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=8
+time=11:37:50.974 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=9
+time=11:37:50.987 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=11:37:50.987 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=695 score="[0 1 79 257 358]" criteria="[518 462 695 687]"
+time=11:37:52.773 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=8
+time=11:37:52.773 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=9
+time=11:37:52.773 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=10
+time=11:37:52.778 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=8
+time=11:37:52.781 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=9
+time=11:37:52.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=11:37:52.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=950 score="[0 2 104 348 496]" criteria="[692 658 950 938]"
+time=11:37:54.572 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=11
+time=11:37:54.578 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=11
+time=11:37:54.579 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=9
+time=11:37:54.579 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=10
+time=11:37:54.580 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=11
+time=11:37:54.587 level=INFO msg=これまでに地域内の評判によって43人、既存ユーザーの招待経由で998人が新規登録しました
+time=11:37:54.587 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=11:37:54.587 level=INFO msg=29.6%のライドは椅子がマッチされるまでの時間、26.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.6%のライドは椅子の実移動時間に不満がありました
+time=11:37:54.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=11:37:54.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1299 score="[0 3 133 472 691]" criteria="[915 951 1299 1284]"
+time=11:37:56.375 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=12
+time=11:37:56.381 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=13
+time=11:37:56.384 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=12
+time=11:37:56.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=11:37:56.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1688 score="[0 3 162 601 922]" criteria="[1166 1296 1688 1668]"
+time=11:37:56.424 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=11
+time=11:37:56.425 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=13
+time=11:37:58.225 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=12
+time=11:37:58.226 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=9
+time=11:37:58.226 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=14
+time=11:37:58.227 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=12
+time=11:37:58.227 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=14
+time=11:37:58.247 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=11:37:58.247 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2122 score="[0 3 198 784 1137]" criteria="[1406 1678 2122 2093]"
+time=11:38:00.057 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=10
+time=11:38:00.058 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=14
+time=11:38:00.063 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=16
+time=11:38:00.068 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=15
+time=11:38:00.069 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=14
+time=11:38:00.077 level=INFO msg=これまでに地域内の評判によって55人、既存ユーザーの招待経由で1950人が新規登録しました
+time=11:38:00.077 level=INFO msg=これまでに低評価なライドによって2人が利用をやめました
+time=11:38:00.077 level=INFO msg=36.6%のライドは椅子がマッチされるまでの時間、19.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.6%のライドは椅子の実移動時間に不満がありました
+time=11:38:00.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=11:38:00.077 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2587 score="[0 5 256 1010 1316]" criteria="[1640 2081 2583 2507]"
+time=11:38:01.869 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=14
+time=11:38:01.870 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=14
+time=11:38:01.875 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=14
+time=11:38:01.875 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=16
+time=11:38:01.875 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=16
+time=11:38:01.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=11:38:01.877 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3070 score="[2 17 370 1244 1437]" criteria="[1858 2512 3055 2812]"
+time=11:38:03.658 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=11
+time=11:38:03.659 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=14
+time=11:38:03.668 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=13
+time=11:38:03.668 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=14
+time=11:38:03.668 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=15
+time=11:38:03.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=11:38:03.677 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3504 score="[5 30 487 1467 1515]" criteria="[2040 2908 3478 3039]"
+time=11:38:05.699 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=13
+time=11:38:05.699 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=15
+time=11:38:05.717 level=INFO msg=これまでに地域内の評判によって67人、既存ユーザーの招待経由で2799人が新規登録しました
+time=11:38:05.717 level=INFO msg=これまでに低評価なライドによって24人が利用をやめました
+time=11:38:05.717 level=INFO msg=44.8%のライドは椅子がマッチされるまでの時間、15.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、10.1%のライドは椅子の実移動時間に不満がありました
+time=11:38:05.717 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=11:38:05.717 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4041 score="[11 50 680 1712 1588]" criteria="[2231 3401 3991 3275]"
+time=11:38:05.732 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=15
+time=11:38:05.733 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=16
+time=11:38:05.734 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=18
+time=11:38:07.506 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=16
+time=11:38:07.506 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=13
+time=11:38:07.514 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=15
+time=11:38:07.516 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=18
+time=11:38:07.518 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=14
+time=11:38:07.517 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=11:38:07.517 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4530 score="[24 63 853 1945 1645]" criteria="[2373 3854 4455 3502]"
+time=11:38:08.915 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:09.298 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=18
+time=11:38:09.298 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=14
+time=11:38:09.310 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=20
+time=11:38:09.310 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=18
+time=11:38:09.311 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=20
+time=11:38:09.317 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=11:38:09.317 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5123 score="[35 69 1092 2230 1697]" criteria="[2498 4426 5029 3778]"
+time=11:38:10.773 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:11.371 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=15
+time=11:38:11.372 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=15
+time=11:38:11.387 level=INFO msg=これまでに地域内の評判によって79人、既存ユーザーの招待経由で3600人が新規登録しました
+time=11:38:11.387 level=INFO msg=これまでに低評価なライドによって35人が利用をやめました
+time=11:38:11.387 level=INFO msg=53.7%のライドは椅子がマッチされるまでの時間、12.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、14.7%のライドは椅子の実移動時間に不満がありました
+time=11:38:11.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=11:38:11.387 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5662 score="[36 69 1267 2524 1766]" criteria="[2619 4963 5566 4091]"
+time=11:38:11.404 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=15
+time=11:38:11.416 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=19
+time=11:38:11.416 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=19
+time=11:38:13.168 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4MD5JQBCJXEG7RDSEP18NE3, got: 100300)"
+time=11:38:13.169 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=17
+time=11:38:13.187 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=16
+time=11:38:13.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=17
+time=11:38:13.188 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=18
+time=11:38:13.187 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=11:38:13.187 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6207 score="[38 146 1563 2679 1781]" criteria="[2730 5493 6008 4202]"
+time=11:38:14.970 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=28
+time=11:38:14.970 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=16
+time=11:38:14.984 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=18
+time=11:38:14.984 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=16
+time=11:38:14.984 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=14
+time=11:38:14.987 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=11:38:14.987 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6749 score="[41 175 1796 2912 1825]" criteria="[2813 6030 6513 4447]"
+time=11:38:16.775 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=20
+time=11:38:16.787 level=INFO msg=これまでに地域内の評判によって91人、既存ユーザーの招待経由で4127人が新規登録しました
+time=11:38:16.787 level=INFO msg=これまでに低評価なライドによって95人が利用をやめました
+time=11:38:16.787 level=INFO msg=60.7%のライドは椅子がマッチされるまでの時間、9.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、21.4%のライドは椅子の実移動時間に不満がありました
+time=11:38:16.800 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=24
+time=11:38:16.800 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=22
+time=11:38:16.800 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=20
+time=11:38:16.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=11:38:16.787 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7379 score="[45 237 2217 3042 1838]" criteria="[2899 6650 7036 4564]"
+time=11:38:18.545 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:18.587 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=17
+time=11:38:18.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=11:38:18.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7987 score="[51 307 2517 3245 1867]" criteria="[2967 7251 7548 4778]"
+time=11:38:18.590 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=22
+time=11:38:18.600 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=22
+time=11:38:18.602 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=17
+time=11:38:18.605 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=29
+time=11:38:20.385 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=15
+time=11:38:20.388 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=11:38:20.388 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8524 score="[56 315 2864 3418 1871]" criteria="[3004 7783 8071 4923]"
+time=11:38:20.428 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=14
+time=11:38:21.527 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:22.179 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4MD68HYC1H3P4C87QFNX6NX, got: 53300)"
+time=11:38:22.180 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=16
+time=11:38:22.188 level=INFO msg=これまでに地域内の評判によって109人、既存ユーザーの招待経由で4574人が新規登録しました
+time=11:38:22.188 level=INFO msg=これまでに低評価なライドによって176人が利用をやめました
+time=11:38:22.188 level=INFO msg=66.4%のライドは椅子がマッチされるまでの時間、8.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、25.8%のライドは椅子の実移動時間に不満がありました
+time=11:38:22.188 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=11:38:22.188 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9115 score="[59 481 3122 3580 1873]" criteria="[3060 8371 8456 5070]"
+time=11:38:22.213 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=36
+time=11:38:22.213 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=37
+time=11:38:22.213 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=20
+time=11:38:22.777 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:23.985 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=17
+time=11:38:23.985 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=37
+time=11:38:23.987 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=11:38:23.987 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9596 score="[59 489 3340 3835 1873]" criteria="[3061 8852 8928 5325]"
+time=11:38:25.809 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=11:38:25.809 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10308 score="[59 546 3774 4041 1888]" criteria="[3081 9564 9564 5560]"
+time=11:38:27.587 level=INFO msg=これまでに地域内の評判によって126人、既存ユーザーの招待経由で5102人が新規登録しました
+time=11:38:27.587 level=INFO msg=これまでに低評価なライドによって238人が利用をやめました
+time=11:38:27.587 level=INFO msg=71.6%のライドは椅子がマッチされるまでの時間、6.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、27.4%のライドは椅子の実移動時間に不満がありました
+time=11:38:27.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=11:38:27.587 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10919 score="[59 689 3955 4324 1892]" criteria="[3103 10175 9979 5882]"
+time=11:38:27.604 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座和インダストリー 増加数=41
+time=11:38:27.615 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:27.617 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="ReSit & Renew" 増加数=57
+time=11:38:27.641 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ReSit 増加数=51
+time=11:38:27.647 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Timeless Seats" 増加数=63
+time=11:38:29.524 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=40
+time=11:38:29.537 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=11:38:29.537 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=11329 score="[59 882 4138 4358 1892]" criteria="[3103 10585 10187 5925]"
+time=11:38:29.647 level=WARN msg="取得した付近の椅子情報に不備があります (CODE=30): ID:01M4MD61FV86S5YVFPE16KD7GKの椅子は既にライド中です"
+time=11:38:31.337 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=11:38:31.337 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=12198 score="[59 1168 4682 4397 1892]" criteria="[3125 11454 10755 5957]"
+time=11:38:33.244 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:33.497 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=11:38:37.988 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=3898 アクティブユーザー数=3636
+time=11:38:37.988 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1678 アクティブユーザー数=1535
+time=11:38:37.988 level=INFO msg=最終オーナー情報 名前="Orbit Taxi" 売上=12293500 椅子数=299
+time=11:38:37.988 level=INFO msg=最終オーナー情報 名前="ReSit & Renew" 売上=16526900 椅子数=379
+time=11:38:37.988 level=INFO msg=最終オーナー情報 名前=ReSit 売上=14481300 椅子数=333
+time=11:38:37.988 level=INFO msg=最終オーナー情報 名前=座和インダストリー 売上=15245000 椅子数=353
+time=11:38:37.988 level=INFO msg=最終オーナー情報 名前="Timeless Seats" 売上=16851400 椅子数=386
+time=11:38:37.988 level=INFO msg=75.1%のライドは椅子がマッチされるまでの時間、5.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、32.9%のライドは椅子の実移動時間に不満がありました
+time=11:38:37.989 level=INFO msg=結果 pass=true スコア=785325 種別エラー数="map[17:8 24:2 30:1]"
+time=11:38:37.989 level=INFO msg=負荷走行が終了しました
+
+SCORE: 785325
+BENCHMARK_PASS
+2026-10-11T02:38:38.702142673Z	BENCHMARK_END
+
+SCORE: 785325
+BENCHMARK_PASS
