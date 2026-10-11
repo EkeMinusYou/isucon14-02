@@ -1,0 +1,32 @@
+{
+  "valid": true,
+  "started_at": "2026-10-11T13:04:16.337292989Z",
+  "ended_at": "2026-10-11T13:05:27.454600086Z",
+  "elapsed_seconds": 71.117307097,
+  "delay": "10s",
+  "duration": "1m0s",
+  "frequency_hz": 49,
+  "max_workers": 8,
+  "max_samples": 23520,
+  "max_output_bytes": 67108864,
+  "call_graph": "dwarf,8192",
+  "workers": [
+    {
+      "pid": 4184,
+      "start_time": "32441",
+      "exe": "/usr/sbin/nginx",
+      "build_id": "471ba972dc003b72ccb17e4f4805e2140552c0d5"
+    },
+    {
+      "pid": 4185,
+      "start_time": "32441",
+      "exe": "/usr/sbin/nginx",
+      "build_id": "471ba972dc003b72ccb17e4f4805e2140552c0d5"
+    }
+  ],
+  "sample_count": 2776,
+  "unknown_sample_count": 2776,
+  "lost_samples": 0,
+  "raw_bytes": 23583048,
+  "folded_bytes": 924283
+}
