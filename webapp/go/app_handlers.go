@@ -105,23 +105,24 @@ func appGetRides(w http.ResponseWriter, r *http.Request) {
 	user := ctx.Value("user").(*User)
 
 	s := runtimeState
-	s.mu.RLock()
+	lock := s.userStateMutex(user.ID)
+	lock.RLock()
 	items := []getAppRidesResponseItem{}
-	ids := s.userRides[user.ID]
+	ids := s.userRides.get(user.ID)
 	for i := len(ids) - 1; i >= 0; i-- {
-		ride := s.rides[ids[i]]
+		ride := s.rides.get(ids[i])
 		if s.latest(ride) != "COMPLETED" {
 			continue
 		}
-		chair := s.chairs[ride.ChairID.String]
+		chair := s.chairs.get(ride.ChairID.String)
 		items = append(items, getAppRidesResponseItem{
 			ID: ride.ID, PickupCoordinate: Coordinate{ride.PickupLatitude, ride.PickupLongitude},
 			DestinationCoordinate: Coordinate{ride.DestinationLatitude, ride.DestinationLongitude},
 			Fare:                  ride.Fare, Evaluation: *ride.Evaluation, RequestedAt: ride.CreatedAt.UnixMilli(), CompletedAt: ride.UpdatedAt.UnixMilli(),
-			Chair: getAppRidesResponseItemChair{ID: chair.ID, Name: chair.Name, Model: chair.Model, Owner: s.owners[chair.OwnerID].Name},
+			Chair: getAppRidesResponseItemChair{ID: chair.ID, Name: chair.Name, Model: chair.Model, Owner: s.owners.get(chair.OwnerID).Name},
 		})
 	}
-	s.mu.RUnlock()
+	lock.RUnlock()
 
 	writeJSON(w, http.StatusOK, &getAppRidesResponse{
 		Rides: items,
@@ -391,23 +392,39 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *rideState) searchNearbyChairs(lat, lon, distance int) (*appGetNearbyChairsResponse, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	snapshotAt := time.Now()
-	nearbyChairs := []appGetNearbyChairsResponseChair{}
+	s.indexMu.RLock()
 	if len(s.nearbyMissingStatus) != 0 {
+		s.indexMu.RUnlock()
 		return nil, sql.ErrNoRows
 	}
+	cells := make(map[string]*coordinateCell)
 	for id, cell := range s.nearbyChairs {
-		chair := s.chairs[id]
-		available, err := s.nearbyAvailable(id, snapshotAt)
-		if err != nil {
-			return nil, err
-		}
-		if !available {
+		if cell == nil {
 			continue
 		}
-		if cell == nil {
+		snapshot := cell.snapshot.Load()
+		if snapshot == nil {
+			continue
+		}
+		d := snapshot.distance
+		if d.Latitude.Valid && d.Longitude.Valid && calculateDistance(lat, lon, int(d.Latitude.Int64), int(d.Longitude.Int64)) <= distance {
+			cells[id] = cell
+		}
+	}
+	s.indexMu.RUnlock()
+	ids := make([]string, 0, len(cells))
+	for id := range cells {
+		ids = append(ids, id)
+	}
+	// A response fences only its candidate chairs, never every state shard.
+	unlock := lockStateKeys(&s.chairLocks, ids, true)
+	defer unlock()
+	snapshotAt := time.Now()
+	nearby := []appGetNearbyChairsResponseChair{}
+	for id, cell := range cells {
+		current := s.chairCurrent.get(id)
+		chair := s.chairs.get(id)
+		if !chair.IsActive || current == nil || len(current.unfinished) != 0 || current.completionPending != 0 || snapshotAt.Before(current.nearbyAvailableAt) || cell == nil {
 			continue
 		}
 		snapshot := cell.snapshot.Load()
@@ -419,11 +436,10 @@ func (s *rideState) searchNearbyChairs(lat, lon, distance int) (*appGetNearbyCha
 			continue
 		}
 		if calculateDistance(lat, lon, int(d.Latitude.Int64), int(d.Longitude.Int64)) <= distance {
-			nearbyChairs = append(nearbyChairs, appGetNearbyChairsResponseChair{ID: chair.ID, Name: chair.Name, Model: chair.Model, CurrentCoordinate: Coordinate{int(d.Latitude.Int64), int(d.Longitude.Int64)}})
+			nearby = append(nearby, appGetNearbyChairsResponseChair{ID: chair.ID, Name: chair.Name, Model: chair.Model, CurrentCoordinate: Coordinate{int(d.Latitude.Int64), int(d.Longitude.Int64)}})
 		}
 	}
-	retrievedAt := snapshotAt.UnixMilli()
-	return &appGetNearbyChairsResponse{Chairs: nearbyChairs, RetrievedAt: retrievedAt}, nil
+	return &appGetNearbyChairsResponse{Chairs: nearby, RetrievedAt: snapshotAt.UnixMilli()}, nil
 }
 
 func calculateFare(pickupLatitude, pickupLongitude, destLatitude, destLongitude int) int {

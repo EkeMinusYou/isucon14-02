@@ -86,7 +86,7 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 		t.Fatalf("waiting insertion invalidated a valid plan: retry=%v err=%v", retry, err)
 	}
 	assertCurrentIndexes(t, s, time.Now())
-	if s.rides["late-older"].ChairID.Valid || len(s.matchingChairs) != 0 || s.metrics.series["dispatch_wait"].count != 8 {
+	if s.rides.get("late-older").ChairID.Valid || len(s.matchingChairs) != 0 || s.metrics.series["dispatch_wait"].count != 8 {
 		t.Fatal("selection, ACK gating or existing assignment metrics lost")
 	}
 	// Exercise normal close/reopen from WAL-only creations and arbitrary removals.
@@ -95,7 +95,7 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 		t.Fatal(err)
 	}
 	restored := memoryTestState(t)
-	for id, chair := range s.chairs {
+	for id, chair := range s.chairs.all() {
 		restored.addChair(chair)
 		restored.seedCoordinateDistance(id, s.chairDistance(id))
 	}
@@ -112,8 +112,8 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 	}
 	restored.rebuildIndexes()
 	assertCurrentIndexes(t, restored, time.Now())
-	for id, ride := range s.rides {
-		if !reflect.DeepEqual(ride.Ride, restored.rides[id].Ride) {
+	for id, ride := range s.rides.all() {
+		if !reflect.DeepEqual(ride.Ride, restored.rides.get(id).Ride) {
 			t.Fatalf("recovery changed %s", id)
 		}
 	}
@@ -121,15 +121,15 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 		t.Fatal("recovery released chairs before notification ACK")
 	}
 	// Completion is still blocked by pending notifications after restart.
-	assigned := restored.rides[plan.rides[assignments[0].rideIndex].ID]
+	assigned := restored.rides.get(plan.rides[assignments[0].rideIndex].ID)
 	restored.addStatus(restored.newStatus(assigned, "COMPLETED", time.Now()))
 	if _, ready := restored.matchingChairs[assigned.ChairID.String]; ready {
 		t.Fatal("completion without notification ACK released a chair")
 	}
 	// The derived index must reset on initialize, with no old-generation rides.
 	restored.generation, restored.sequence = "initialized", 0
-	restored.rides = map[string]*memoryRide{}
-	restored.statuses = map[string]RideStatus{}
+	restored.rides = newStateMap(map[string]*memoryRide{})
+	restored.statuses = newStateMap(map[string]RideStatus{})
 	restored.rebuildIndexes()
 	if err := restored.recoverWAL(); err != nil {
 		t.Fatal(err)
@@ -186,7 +186,7 @@ func TestMatchingGeographicRescue(t *testing.T) {
 		if err := s.match(); err != nil {
 			t.Fatal(err)
 		}
-		if !s.rides[fmt.Sprintf("far-%d", batch)].ChairID.Valid {
+		if !s.rides.get(fmt.Sprintf("far-%d", batch)).ChairID.Valid {
 			t.Fatalf("nearby arrivals starved FIFO request in batch %d", batch)
 		}
 		assertCurrentIndexes(t, s, time.Now())
@@ -220,7 +220,7 @@ func TestMatchingGeographicLimitAndFallback(t *testing.T) {
 		}
 	}
 	// Unknown coordinates are usable but do not create nearby choices.
-	for id := range s.chairs {
+	for id := range s.chairs.all() {
 		s.seedCoordinateDistance(id, distanceTotal{})
 	}
 	plan, assignments = testMatchingPlan(t, s)
@@ -253,7 +253,7 @@ func TestMatchingPlanRejectsIncompleteOrDuplicatePairs(t *testing.T) {
 			case "chair-index":
 				assignments[0].chairIndex = len(plan.chairs)
 			case "status":
-				s.addStatus(s.newStatus(s.rides[plan.rides[0].ID], "COMPLETED", time.Now()))
+				s.addStatus(s.newStatus(s.rides.get(plan.rides[0].ID), "COMPLETED", time.Now()))
 			}
 			if retry, err := s.commitMatching(plan, assignments); !retry || err != nil || s.sequence != 0 {
 				t.Fatalf("invalid plan published: retry=%v err=%v sequence=%d", retry, err, s.sequence)

@@ -5,7 +5,8 @@ import (
 	"time"
 )
 
-// Derived state is updated under mu after WAL publication and rebuilt on restore.
+// Chair current state is chair-owned. Candidate indexes use indexMu and contain
+// immutable ride copies, separate from the business state.
 // Completed rides stay in the historical maps but leave the working sets.
 type chairCurrentState struct {
 	unfinished        []*memoryRide
@@ -15,8 +16,8 @@ type chairCurrentState struct {
 
 func (s *rideState) resetCurrentIndexes() {
 	s.waitingRides = nil
-	s.userActiveRides = map[string]int{}
-	s.chairCurrent = map[string]*chairCurrentState{}
+	s.userActiveRides = newStateMap(map[string]int{})
+	s.chairCurrent = newStateMap(map[string]*chairCurrentState{})
 	s.matchingChairs = map[string]struct{}{}
 	s.nearbyChairs = map[string]*coordinateCell{}
 	s.nearbyMissingStatus = map[string]struct{}{}
@@ -49,20 +50,23 @@ func removeCurrentRide(rides []*memoryRide, ride *memoryRide) []*memoryRide {
 }
 
 func (s *rideState) currentChair(id string) *chairCurrentState {
-	current := s.chairCurrent[id]
+	current := s.chairCurrent.get(id)
 	if current == nil {
 		current = &chairCurrentState{}
-		s.chairCurrent[id] = current
+		s.chairCurrent.set(id, current)
 	}
 	return current
 }
 
 func (s *rideState) indexRide(ride *memoryRide) {
 	if !ride.ChairID.Valid {
-		s.waitingRides = insertCurrentRide(s.waitingRides, ride)
+		entry := &memoryRide{Ride: ride.Ride, ownerID: ride.UserID}
+		s.indexMu.Lock()
+		s.waitingRides = insertCurrentRide(s.waitingRides, entry)
+		s.indexMu.Unlock()
 	}
 	if s.latest(ride) != "COMPLETED" {
-		s.userActiveRides[ride.UserID]++
+		s.userActiveRides.set(ride.UserID, s.userActiveRides.get(ride.UserID)+1)
 	}
 	if ride.ChairID.Valid {
 		s.indexChairRide(ride)
@@ -81,7 +85,7 @@ func (s *rideState) indexChairRide(ride *memoryRide) {
 
 func (s *rideState) indexCompletion(ride *memoryRide) {
 	current := s.currentChair(ride.ChairID.String)
-	status := s.statuses[ride.Statuses[len(ride.Statuses)-1]]
+	status := s.statuses.get(ride.Statuses[len(ride.Statuses)-1])
 	current.nearbyAvailableAt = maxTime(current.nearbyAvailableAt, status.CreatedAt.Add(nearbyCompletionGrace))
 	current.nearbyAvailableAt = maxTime(current.nearbyAvailableAt, ride.NearbyAvailableAt)
 	if ride.CompletionResponsePending {
@@ -98,10 +102,12 @@ func maxTime(a, b time.Time) time.Time {
 
 func (s *rideState) refreshChairIndexes(id string) {
 	defer func() { s.observeReusable(id); s.refreshCoordinateRoute(id) }()
+	s.indexMu.Lock()
+	defer s.indexMu.Unlock()
 	delete(s.matchingChairs, id)
 	delete(s.nearbyChairs, id)
 	delete(s.nearbyMissingStatus, id)
-	if !s.chairs[id].IsActive {
+	if !s.chairs.get(id).IsActive {
 		return
 	}
 	current := s.currentChair(id)
@@ -115,7 +121,7 @@ func (s *rideState) refreshChairIndexes(id string) {
 	// is checked at read time, so no timer or mutation during reads is needed.
 	// Cells stay stable within a generation; reads load their latest snapshot.
 	s.nearbyChairs[id] = s.coordinateCell(id)
-	queue := s.chairEvents[id]
+	queue := s.chairEvents.get(id)
 	if queue == nil || queue.pending.Len() == 0 {
 		s.matchingChairs[id] = struct{}{}
 	}

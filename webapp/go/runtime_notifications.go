@@ -18,9 +18,9 @@ type notificationQueue struct {
 
 func (s *rideState) notificationQueue(kind, id string) *notificationQueue {
 	if kind == "chair" {
-		return s.chairEvents[id]
+		return s.chairEvents.get(id)
 	}
-	return s.appEvents[id]
+	return s.appEvents.get(id)
 }
 
 func (s *rideState) appendNotification(kind, id string, status RideStatus) {
@@ -28,10 +28,10 @@ func (s *rideState) appendNotification(kind, id string, status RideStatus) {
 	if kind == "chair" {
 		queues, sent = s.chairEvents, status.ChairSentAt
 	}
-	queue := queues[id]
+	queue := queues.get(id)
 	if queue == nil {
 		queue = &notificationQueue{positions: map[string]int{}, unacked: map[string]*list.Element{}}
-		queues[id] = queue
+		queues.set(id, queue)
 	}
 	position := len(queue.ids)
 	queue.positions[status.ID] = position
@@ -59,12 +59,13 @@ func acknowledgeNotificationGeneration(ctx context.Context, kind, statusID, gene
 		return err
 	}
 	s := runtimeState
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	initial := s.statuses.get(statusID)
+	_, unlock := s.lockRide(initial.RideID, false)
+	defer unlock()
 	if generation != "" && generation != s.generation {
 		return errors.New("notification belongs to an old generation")
 	}
-	status, ok := s.statuses[statusID]
+	status, ok := s.statuses.lookup(statusID)
 	if !ok {
 		return errors.New("notification status not found")
 	}
@@ -81,14 +82,18 @@ func loadNotifications(ctx context.Context, kind, id, lastEventID string) ([]not
 		return nil, err
 	}
 	s := runtimeState
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	lock := s.userStateMutex(id)
+	if kind == "chair" {
+		lock = s.chairMutex(id)
+	}
+	lock.RLock()
+	defer lock.RUnlock()
 	if !s.ready {
 		return nil, errors.New("runtime state is unavailable")
 	}
-	queue, rides := s.notificationQueue(kind, id), s.userRides[id]
+	queue, rides := s.notificationQueue(kind, id), s.userRides.get(id)
 	if kind == "chair" {
-		rides = s.chairRides[id]
+		rides = s.chairRides.get(id)
 	}
 	cursor := -1
 	if lastEventID != "" && queue != nil {
@@ -96,41 +101,58 @@ func loadNotifications(ctx context.Context, kind, id, lastEventID string) ([]not
 			cursor = position
 		}
 	}
-	flushIndex := 0
-	if kind == "app" {
-		flushIndex = 1
-	}
-	var events []notificationEvent
-	appendEvent := func(statusID string) {
-		status := s.statuses[statusID]
-		events = append(events, notificationEvent{measureAssignment: status.Status == "MATCHING" && !s.rides[status.RideID].assignedAt.IsZero() && !s.rides[status.RideID].firstFlushed[flushIndex], statusID: status.ID, eventID: status.ID, generation: s.generation, data: s.notificationData(kind, s.rides[status.RideID], status.Status)})
-	}
+	var selected []string
 	if queue != nil {
-		// Pending events before the cursor remain required. Merge them with
-		// the entire replay suffix in recipient order, without duplicates.
+		// Merge pending events before the cursor with the complete replay suffix.
 		for element := queue.pending.Front(); element != nil; element = element.Next() {
 			position := element.Value.(int)
 			if cursor >= 0 && position > cursor {
 				break
 			}
-			appendEvent(queue.ids[position])
+			selected = append(selected, queue.ids[position])
 		}
 		if cursor >= 0 {
-			for _, statusID := range queue.ids[cursor+1:] {
-				appendEvent(statusID)
-			}
+			selected = append(selected, queue.ids[cursor+1:]...)
 		}
 	}
-	if len(events) == 0 {
+	fallback := len(selected) == 0
+	if fallback {
 		if len(rides) == 0 {
 			return []notificationEvent{{data: nil, generation: s.generation}}, nil
 		}
-		ride := s.rides[rides[len(rides)-1]]
+		ride := s.rides.get(rides[len(rides)-1])
 		if len(ride.Statuses) == 0 {
 			return nil, errors.New("ride status history is missing")
 		}
-		status := s.statuses[ride.Statuses[len(ride.Statuses)-1]]
-		events = append(events, notificationEvent{eventID: status.ID, generation: s.generation, data: s.notificationData(kind, ride, status.Status)})
+		selected = append(selected, ride.Statuses[len(ride.Statuses)-1])
+	}
+	if kind != "chair" {
+		// Only chairs appearing in this response need fencing for their statistics.
+		// The common one-event path never scans the user's historical rides.
+		chairs := make([]string, 0, len(selected))
+		for _, statusID := range selected {
+			ride := s.rides.get(s.statuses.get(statusID).RideID)
+			if ride.ChairID.Valid {
+				chairs = append(chairs, ride.ChairID.String)
+			}
+		}
+		unlock := lockStateKeys(&s.chairLocks, chairs, true)
+		defer unlock()
+	}
+	flushIndex := 0
+	if kind == "app" {
+		flushIndex = 1
+	}
+	events := make([]notificationEvent, 0, len(selected))
+	for _, statusID := range selected {
+		status := s.statuses.get(statusID)
+		ride := s.rides.get(status.RideID)
+		event := notificationEvent{eventID: status.ID, generation: s.generation, data: s.notificationData(kind, ride, status.Status)}
+		if !fallback {
+			event.statusID = status.ID
+			event.measureAssignment = status.Status == "MATCHING" && !ride.assignedAt.IsZero() && !ride.firstFlushed[flushIndex]
+		}
+		events = append(events, event)
 	}
 	return events, nil
 }
@@ -139,13 +161,13 @@ func (s *rideState) notificationData(kind string, ride *memoryRide, status strin
 	pickup := Coordinate{ride.PickupLatitude, ride.PickupLongitude}
 	destination := Coordinate{ride.DestinationLatitude, ride.DestinationLongitude}
 	if kind == "chair" {
-		user := s.users[ride.UserID]
+		user := s.users.get(ride.UserID)
 		return chairGetNotificationResponseData{RideID: ride.ID, User: simpleUser{ID: user.ID, Name: user.Firstname + " " + user.Lastname}, PickupCoordinate: pickup, DestinationCoordinate: destination, Status: status}
 	}
 	data := appGetNotificationResponseData{RideID: ride.ID, PickupCoordinate: pickup, DestinationCoordinate: destination, Fare: ride.Fare, Status: status, CreatedAt: ride.CreatedAt.UnixMilli(), UpdateAt: ride.UpdatedAt.UnixMilli()}
 	if ride.ChairID.Valid {
-		chair := s.chairs[ride.ChairID.String]
-		totals := s.stats[chair.ID]
+		chair := s.chairs.get(ride.ChairID.String)
+		totals := s.stats.get(chair.ID)
 		stats := appGetNotificationResponseChairStats{TotalRidesCount: totals.Count}
 		if totals.Count > 0 {
 			stats.TotalEvaluationAvg = float64(totals.Evaluation) / float64(totals.Count)

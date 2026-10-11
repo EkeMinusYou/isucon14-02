@@ -33,8 +33,8 @@ func requestOwnerSales(t *testing.T, ownerID, query string) ownerGetSalesRespons
 // Keep the previous history scan as an independent result oracle.
 func scanChairSales(s *rideState, chairID string, since, until time.Time) int {
 	total := 0
-	for _, id := range s.chairRides[chairID] {
-		ride := s.rides[id]
+	for _, id := range s.chairRides.get(chairID) {
+		ride := s.rides.get(id)
 		if s.latest(ride) == "COMPLETED" && !ride.UpdatedAt.Before(since) && !ride.UpdatedAt.After(until) {
 			total += calculateSale(ride.Ride)
 		}
@@ -60,9 +60,9 @@ func TestSalesPeriodsAndOwnerResponse(t *testing.T) {
 	for i, offset := range []time.Duration{2 * time.Millisecond, 999 * time.Microsecond, 0, time.Millisecond, 0, -time.Microsecond, 999*time.Microsecond + time.Nanosecond} {
 		id := fmt.Sprintf("r%d", i)
 		seedMemoryRide(s, id, "a", base.Add(-time.Hour))
-		row := s.rides[id].Ride
+		row := s.rides.get(id).Ride
 		row.UpdatedAt = base.Add(offset)
-		s.rides[id].Fare = 1 // Discounted payment must not reduce owner sales.
+		s.rides.get(id).Fare = 1 // Discounted payment must not reduce owner sales.
 		if err := s.commit(stateRecord{Rides: []Ride{row}, Statuses: []RideStatus{{ID: id + "-complete", RideID: id, Status: "COMPLETED", CreatedAt: base.Add(time.Hour)}}}); err != nil {
 			t.Fatal(err)
 		}
@@ -77,7 +77,7 @@ func TestSalesPeriodsAndOwnerResponse(t *testing.T) {
 	s.addStatus(RideStatus{ID: "unassigned-complete", RideID: "unassigned", Status: "COMPLETED", CreatedAt: base})
 	evaluation := 5
 	seedMemoryRide(s, "rated", "a", base)
-	s.rides["rated"].Evaluation = &evaluation // Evaluation alone is not completion.
+	s.rides.get("rated").Evaluation = &evaluation // Evaluation alone is not completion.
 	for lo := -2; lo <= 4; lo++ {
 		for hi := -2; hi <= 4; hi++ {
 			since := base.Add(time.Duration(lo) * time.Millisecond)
@@ -89,7 +89,7 @@ func TestSalesPeriodsAndOwnerResponse(t *testing.T) {
 			}
 		}
 	}
-	fare := calculateSale(s.rides["r0"].Ride)
+	fare := calculateSale(s.rides.get("r0").Ride)
 	for _, tc := range []struct {
 		query string
 		a, b  int
@@ -122,7 +122,7 @@ func TestSalesDuplicateCorrectionAndFailedWAL(t *testing.T) {
 	s := memoryTestState(t)
 	base := time.UnixMilli(1_000)
 	seedMemoryRide(s, "r", "c", base)
-	row := s.rides["r"].Ride
+	row := s.rides.get("r").Ride
 	completed := RideStatus{ID: "completed", RideID: "r", Status: "COMPLETED", CreatedAt: base}
 	record := stateRecord{Rides: []Ride{row}, Statuses: []RideStatus{completed}}
 	for i := 0; i < 2; i++ {
@@ -166,7 +166,7 @@ func TestSalesDuplicateCorrectionAndFailedWAL(t *testing.T) {
 	if _, err := s.complete("failed", 5); err == nil {
 		t.Fatal("completion accepted without WAL")
 	}
-	if s.latest(s.rides["failed"]) != "ARRIVED" || s.salesBetween("c", time.Time{}, base.Add(time.Hour)) != before {
+	if s.latest(s.rides.get("failed")) != "ARRIVED" || s.salesBetween("c", time.Time{}, base.Add(time.Hour)) != before {
 		t.Fatal("failed WAL published sales")
 	}
 }
@@ -186,8 +186,8 @@ func TestSalesSQLAndWALRecovery(t *testing.T) {
 	previous := runtimeState
 	runtimeState = s
 	t.Cleanup(func() { runtimeState.close(); runtimeState = previous })
-	fare := calculateSale(s.rides["seed"].Ride)
-	if s.rides["seed"].Fare >= fare || requestOwnerSales(t, "o", "").TotalSales != fare {
+	fare := calculateSale(s.rides.get("seed").Ride)
+	if s.rides.get("seed").Fare >= fare || requestOwnerSales(t, "o", "").TotalSales != fare {
 		t.Fatal("SQL seed must use undiscounted sales")
 	}
 	completedAt, err := s.complete("pending", 4)

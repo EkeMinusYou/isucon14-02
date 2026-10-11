@@ -70,8 +70,8 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 	s := memoryTestState(t)
 	s.addChair(Chair{ID: "c", IsActive: true})
 	seedMemoryRide(s, "r", "c", time.Now().Add(-time.Second))
-	arrived := s.newStatus(s.rides["r"], "ARRIVED", time.Now())
-	if err := s.commit(stateRecord{CreatedRide: &createdRide{Ride: s.rides["r"].Ride, Fare: s.rides["r"].Fare}, Statuses: []RideStatus{s.statuses["r-matching"], arrived}}); err != nil {
+	arrived := s.newStatus(s.rides.get("r"), "ARRIVED", time.Now())
+	if err := s.commit(stateRecord{CreatedRide: &createdRide{Ride: s.rides.get("r").Ride, Fare: s.rides.get("r").Fare}, Statuses: []RideStatus{s.statuses.get("r-matching"), arrived}}); err != nil {
 		t.Fatal(err)
 	}
 	_, fare, key, err := s.completionCandidate("r", "u")
@@ -116,14 +116,14 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 		return response
 	}
 	response := evaluate()
-	if response.Code != http.StatusBadGateway || posts.Load() != 11 || s.latest(s.rides["r"]) != "ARRIVED" || s.stats["c"].Count != 0 {
-		t.Fatalf("premature completion: %d posts=%d status=%s", response.Code, posts.Load(), s.latest(s.rides["r"]))
+	if response.Code != http.StatusBadGateway || posts.Load() != 11 || s.latest(s.rides.get("r")) != "ARRIVED" || s.stats.get("c").Count != 0 {
+		t.Fatalf("premature completion: %d posts=%d status=%s", response.Code, posts.Load(), s.latest(s.rides.get("r")))
 	}
 	// Restore the same persisted generation and replay the WAL after a restart.
 	restored := memoryTestState(t)
 	restored.generation = s.generation
 	restored.paymentGatewayURL, restored.paymentGatewayConfigured = server.URL, true
-	restored.addChair(s.chairs["c"])
+	restored.addChair(s.chairs.get("c"))
 	restored.wal = s.wal
 	if err := restored.recoverWAL(); err != nil {
 		t.Fatal(err)
@@ -134,10 +134,10 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 	}
 	runtimeState = restored
 	response = evaluate()
-	if response.Code != http.StatusOK || posts.Load() != 12 || charges.Load() != 1 || restored.latest(restored.rides["r"]) != "COMPLETED" || restored.stats["c"].Count != 1 {
+	if response.Code != http.StatusOK || posts.Load() != 12 || charges.Load() != 1 || restored.latest(restored.rides.get("r")) != "COMPLETED" || restored.stats.get("c").Count != 1 {
 		t.Fatalf("replay failed: %d posts=%d charges=%d", response.Code, posts.Load(), charges.Load())
 	}
-	completed := restored.statuses[restored.rides["r"].Statuses[len(restored.rides["r"].Statuses)-1]]
+	completed := restored.statuses.get(restored.rides.get("r").Statuses[len(restored.rides.get("r").Statuses)-1])
 	if completed.AppSentAt != nil || completed.ChairSentAt != nil {
 		t.Fatal("completion acknowledged before SSE delivery")
 	}
@@ -147,12 +147,12 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 	}
 	// A different ride and a reused ride ID in a new generation need new keys.
 	seedMemoryRide(restored, "other", "c", time.Now())
-	restored.addStatus(restored.newStatus(restored.rides["other"], "ARRIVED", time.Now()))
+	restored.addStatus(restored.newStatus(restored.rides.get("other"), "ARRIVED", time.Now()))
 	_, _, otherKey, _ := restored.completionCandidate("other", "u")
 	fresh := memoryTestState(t)
 	fresh.generation = "next-initialize"
 	seedMemoryRide(fresh, "r", "c", time.Now())
-	fresh.addStatus(fresh.newStatus(fresh.rides["r"], "ARRIVED", time.Now()))
+	fresh.addStatus(fresh.newStatus(fresh.rides.get("r"), "ARRIVED", time.Now()))
 	_, _, freshKey, _ := fresh.completionCandidate("r", "u")
 	if key == "" || otherKey == "" || freshKey == "" || key == otherKey || key == freshKey {
 		t.Fatal("payment keys collide across rides or initialize")

@@ -153,12 +153,12 @@ func TestMatchingRPCFailuresDoNotPublish(t *testing.T) {
 			if s.sequence != 0 || len(readTestWAL(t, s)) != 0 || len(s.waitingRides) != rides || len(s.matchingChairs) != chairs {
 				t.Fatal("failed RPC wrote WAL or changed assignment indexes")
 			}
-			for _, ride := range s.rides {
+			for _, ride := range s.rides.all() {
 				if ride.ChairID.Valid || !ride.assignedAt.IsZero() {
 					t.Fatal("failed RPC published ride assignment")
 				}
 			}
-			for _, queue := range s.chairEvents {
+			for _, queue := range s.chairEvents.all() {
 				if queue.pending.Len() != 0 {
 					t.Fatal("failed RPC published chair notification")
 				}
@@ -202,9 +202,9 @@ func TestMatchingRPCSnapshotRevalidation(t *testing.T) {
 					t.Fatal(err)
 				}
 			case "generation":
-				s.mu.Lock()
+				s.walMu.Lock()
 				s.generation = "initialized-again"
-				s.mu.Unlock()
+				s.walMu.Unlock()
 			case "coordinate":
 				if _, err := s.coordinate("chair-000", Coordinate{Latitude: 10, Longitude: 20}); err != nil {
 					t.Fatal(err)
@@ -225,7 +225,7 @@ func TestMatchingRPCSnapshotRevalidation(t *testing.T) {
 				if calls.Load() != 2 || s.sequence != sequence+1 || len(s.waitingRides) != 0 {
 					t.Fatal("conflict did not retry a fresh snapshot")
 				}
-				for _, ride := range s.rides {
+				for _, ride := range s.rides.all() {
 					if ride.ChairID.String == "chair-000" {
 						t.Fatal("stale chair committed")
 					}
@@ -234,14 +234,14 @@ func TestMatchingRPCSnapshotRevalidation(t *testing.T) {
 				if calls.Load() != 1 || s.sequence != sequence+1 || len(s.waitingRides) != 0 {
 					t.Fatal("coordinate update changed snapshot acceptance")
 				}
-				if s.rides["ride-000"].ChairID.String != "chair-000" {
+				if s.rides.get("ride-000").ChairID.String != "chair-000" {
 					t.Fatal("RPC did not retain snapshot assignment")
 				}
 			case "generation", "wal-failure":
 				if calls.Load() != 1 || s.sequence != sequence || len(s.waitingRides) != 2 {
 					t.Fatal("uncommitted result was published")
 				}
-				for _, ride := range s.rides {
+				for _, ride := range s.rides.all() {
 					if ride.ChairID.Valid {
 						t.Fatal("stale or failed WAL result published")
 					}

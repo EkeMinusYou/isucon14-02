@@ -35,6 +35,8 @@ type chairStatsTotal struct {
 }
 
 type memoryRide struct {
+	mu           sync.RWMutex
+	ownerID      string // Immutable, including while replacing the Ride after-image.
 	waitIndex    int
 	assignedAt   time.Time
 	firstFlushed [2]bool
@@ -50,45 +52,52 @@ type memoryRide struct {
 // of nearby listings; coordinate writes and matching do not wait here.
 const nearbyCompletionGrace = 100 * time.Millisecond
 
-// Control mutations serialize validation, WAL append and publication under mu.
-// Ordinary coordinates use chair cells and striped WALs; SQL/payment stay outside mu.
+// Business state uses user -> ride -> chair locks. Index and metric locks cover
+// only derived publication; WAL append is the sole shared write ordering point.
 type rideState struct {
 	accountState
-	// Immutable after initial startup; request normalization does not hold mu.
-	collationWeights []uint16
-	coordinateCalls  atomic.Uint64
-	coordinateReady  atomic.Bool
-	coordinateFailed atomic.Pointer[coordinateFailure]
-	coordinates      *coordinateState
-	metrics          *rideMetrics
-	dispatch         *dispatchMetrics
-	mu               sync.RWMutex
-	matchingMu       sync.Mutex
-	matchingSolver   *matchingRPCClient
-	userLocks        sync.Map
-	database         *sqlx.DB
-	wal              *os.File
-	generation       string
-	sequence         uint64
-	ready            bool
-	failed           error
-	chairs           map[string]Chair
-	modelSpeeds      map[string]int
-	chairTokens      map[string]string
-	stats            map[string]chairStatsTotal
-	rides            map[string]*memoryRide
-	statuses         map[string]RideStatus
-	userRides        map[string][]string
-	chairRides       map[string][]string
-	sales            map[string][]salesPoint
-	appEvents        map[string]*notificationQueue
-	chairEvents      map[string]*notificationQueue
-	stop             chan struct{}
-	done             chan struct{}
+	// Immutable after initial startup; request normalization needs no state lock.
+	collationWeights  []uint16
+	coordinateCalls   atomic.Uint64
+	coordinateReady   atomic.Bool
+	coordinateFailed  atomic.Pointer[coordinateFailure]
+	coordinates       *coordinateState
+	metrics           *rideMetrics
+	dispatch          *dispatchMetrics
+	walMu             sync.RWMutex // Append order and failure state only.
+	indexMu           sync.RWMutex // Candidate indexes only; calculation uses immutable copies.
+	observationMu     sync.RWMutex // Existing fixed-size metric aggregates only.
+	registrationLocks sync.Map
+	userStateLocks    sync.Map
+	chairLocks        sync.Map
+	ownerStateLocks   sync.Map
+	ownerChairs       *stateMap[[]string]
+	matchingMu        sync.Mutex
+	matchingSolver    *matchingRPCClient
+	userLocks         sync.Map // Per-user payment/request gate, separate from state locks.
+	database          *sqlx.DB
+	wal               *os.File
+	generation        string
+	sequence          uint64
+	ready             bool
+	failed            error
+	chairs            *stateMap[Chair]
+	modelSpeeds       map[string]int
+	chairTokens       *stateMap[string]
+	stats             *stateMap[chairStatsTotal]
+	rides             *stateMap[*memoryRide]
+	statuses          *stateMap[RideStatus]
+	userRides         *stateMap[[]string]
+	chairRides        *stateMap[[]string]
+	sales             *stateMap[[]salesPoint]
+	appEvents         *stateMap[*notificationQueue]
+	chairEvents       *stateMap[*notificationQueue]
+	stop              chan struct{}
+	done              chan struct{}
 
 	waitingRides        []*memoryRide
-	userActiveRides     map[string]int
-	chairCurrent        map[string]*chairCurrentState
+	userActiveRides     *stateMap[int]
+	chairCurrent        *stateMap[*chairCurrentState]
 	matchingChairs      map[string]struct{}
 	nearbyChairs        map[string]*coordinateCell
 	nearbyMissingStatus map[string]struct{}
@@ -123,6 +132,8 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.ready = false
 	s.coordinateReady.Store(false)
 	s.coordinates.reset()
+	// Restore runs under exclusive lifecycle ownership; discard old recipient locks.
+	s.userLocks, s.userStateLocks, s.chairLocks, s.ownerStateLocks, s.registrationLocks = sync.Map{}, sync.Map{}, sync.Map{}, sync.Map{}, sync.Map{}
 	s.metrics = nil
 	s.dispatch = nil
 	if err := s.loadCollation(ctx); err != nil {
@@ -169,17 +180,19 @@ func (s *rideState) restore(ctx context.Context) error {
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-	s.chairs, s.chairTokens = map[string]Chair{}, map[string]string{}
+	s.ownerChairs = newStateMap(map[string][]string{})
+	s.chairs, s.chairTokens = newStateMap(map[string]Chair{}), newStateMap(map[string]string{})
 	s.modelSpeeds = map[string]int{}
 	for _, model := range models {
 		s.modelSpeeds[model.Name] = model.Speed
 	}
-	s.stats = map[string]chairStatsTotal{}
-	s.rides, s.statuses = map[string]*memoryRide{}, map[string]RideStatus{}
-	s.userRides, s.chairRides = map[string][]string{}, map[string][]string{}
+	s.stats = newStateMap(map[string]chairStatsTotal{})
+	s.rides, s.statuses = newStateMap(map[string]*memoryRide{}), newStateMap(map[string]RideStatus{})
+	s.userRides, s.chairRides = newStateMap(map[string][]string{}), newStateMap(map[string][]string{})
 	// Build sales once from the final SQL and WAL state, in timestamp order.
-	s.sales = nil
-	s.appEvents, s.chairEvents = map[string]*notificationQueue{}, map[string]*notificationQueue{}
+	s.sales = newStateMap(map[string][]salesPoint{})
+
+	s.appEvents, s.chairEvents = newStateMap(map[string]*notificationQueue{}), newStateMap(map[string]*notificationQueue{})
 	s.resetCurrentIndexes()
 	s.generation, s.sequence, s.failed = generation, 0, nil
 	discounts := accounts.install(s)
@@ -190,7 +203,7 @@ func (s *rideState) restore(ctx context.Context) error {
 		s.seedCoordinateDistance(d.ChairID, d)
 	}
 	for _, stats := range stats {
-		s.stats[stats.ChairID] = stats
+		s.stats.set(stats.ChairID, stats)
 	}
 	for _, r := range rides {
 		s.addRide(r, initialFare+max(0, calculateSale(r)-initialFare-discounts[r.ID]))
@@ -211,16 +224,16 @@ func (s *rideState) restore(ctx context.Context) error {
 	s.ready = true
 	s.coordinateFailed.Store(nil)
 	s.coordinateReady.Store(true)
-	s.observeOpportunity(time.Now())
+	s.observeOpportunity()
 	return nil
 }
 
 func (s *rideState) rebuildIndexes() {
-	s.userRides, s.chairRides = map[string][]string{}, map[string][]string{}
-	s.appEvents, s.chairEvents = map[string]*notificationQueue{}, map[string]*notificationQueue{}
+	s.userRides, s.chairRides = newStateMap(map[string][]string{}), newStateMap(map[string][]string{})
+	s.appEvents, s.chairEvents = newStateMap(map[string]*notificationQueue{}), newStateMap(map[string]*notificationQueue{})
 	s.resetCurrentIndexes()
-	rides := make([]*memoryRide, 0, len(s.rides))
-	for _, ride := range s.rides {
+	rides := make([]*memoryRide, 0, s.rides.len())
+	for _, ride := range s.rides.all() {
 		rides = append(rides, ride)
 	}
 	sort.Slice(rides, func(i, j int) bool {
@@ -232,7 +245,7 @@ func (s *rideState) rebuildIndexes() {
 	order := map[string]int{"MATCHING": 1, "ENROUTE": 2, "PICKUP": 3, "CARRYING": 4, "ARRIVED": 5, "COMPLETED": 6}
 	for _, ride := range rides {
 		sort.Slice(ride.Statuses, func(i, j int) bool {
-			a, b := s.statuses[ride.Statuses[i]], s.statuses[ride.Statuses[j]]
+			a, b := s.statuses.get(ride.Statuses[i]), s.statuses.get(ride.Statuses[j])
 			if !a.CreatedAt.Equal(b.CreatedAt) {
 				return a.CreatedAt.Before(b.CreatedAt)
 			}
@@ -241,10 +254,10 @@ func (s *rideState) rebuildIndexes() {
 			}
 			return a.ID < b.ID
 		})
-		s.userRides[ride.UserID] = append(s.userRides[ride.UserID], ride.ID)
+		s.userRides.set(ride.UserID, append(s.userRides.get(ride.UserID), ride.ID))
 		s.indexRide(ride)
 		for _, id := range ride.Statuses {
-			s.appendNotification("app", ride.UserID, s.statuses[id])
+			s.appendNotification("app", ride.UserID, s.statuses.get(id))
 		}
 	}
 	// Chair order follows assignment/completion, not request creation.
@@ -256,23 +269,27 @@ func (s *rideState) rebuildIndexes() {
 	})
 	for _, ride := range rides {
 		if ride.ChairID.Valid {
-			s.chairRides[ride.ChairID.String] = append(s.chairRides[ride.ChairID.String], ride.ID)
+			s.chairRides.set(ride.ChairID.String, append(s.chairRides.get(ride.ChairID.String), ride.ID))
 			for _, id := range ride.Statuses {
-				s.appendNotification("chair", ride.ChairID.String, s.statuses[id])
+				s.appendNotification("chair", ride.ChairID.String, s.statuses.get(id))
 			}
 		}
 	}
-	for id := range s.chairs {
+	for id := range s.chairs.all() {
 		s.refreshChairIndexes(id)
 	}
-	s.sales = map[string][]salesPoint{}
+	s.sales = newStateMap(map[string][]salesPoint{})
 	for _, ride := range rides {
 		s.updateRideSale(rideSale{}, ride)
 	}
 }
 
 func (s *rideState) addChair(c Chair) {
-	s.chairs[c.ID], s.chairTokens[s.accountKey(c.AccessToken)] = c, c.ID
+	if _, exists := s.chairs.lookup(c.ID); !exists {
+		s.ownerChairs.set(c.OwnerID, append(s.ownerChairs.get(c.OwnerID), c.ID))
+	}
+	s.chairs.set(c.ID, c)
+	s.chairTokens.set(s.accountKey(c.AccessToken), c.ID)
 	s.publishCoordinateChair(c)
 	if s.dispatch != nil {
 		s.dispatch.changeChair(c.ID, func(state *chairMetricState) { state.active = c.IsActive })
@@ -281,24 +298,26 @@ func (s *rideState) addChair(c Chair) {
 }
 
 func (s *rideState) addRide(r Ride, fare int) {
-	s.rides[r.ID] = &memoryRide{Ride: r, Fare: fare, waitIndex: -1}
+	s.rides.set(r.ID, &memoryRide{Ride: r, ownerID: r.UserID, Fare: fare, waitIndex: -1})
 	if s.dispatch != nil {
 		if !r.ChairID.Valid {
-			heap.Push(&s.dispatch.waiting, s.rides[r.ID])
+			s.observationMu.Lock()
+			heap.Push(&s.dispatch.waiting, s.rides.get(r.ID))
+			s.observationMu.Unlock()
 		} else {
 			s.dispatch.changeChair(r.ChairID.String, func(c *chairMetricState) { c.unfinished++ })
 		}
 	}
-	s.indexRide(s.rides[r.ID])
-	s.userRides[r.UserID] = append(s.userRides[r.UserID], r.ID)
+	s.indexRide(s.rides.get(r.ID))
+	s.userRides.set(r.UserID, append(s.userRides.get(r.UserID), r.ID))
 	if r.ChairID.Valid {
-		s.chairRides[r.ChairID.String] = append(s.chairRides[r.ChairID.String], r.ID)
-		s.startFlow(s.rides[r.ID], time.Now(), true)
+		s.chairRides.set(r.ChairID.String, append(s.chairRides.get(r.ChairID.String), r.ID))
+		s.startFlow(s.rides.get(r.ID), time.Now(), true)
 	}
 }
 
 func (s *rideState) addStatus(status RideStatus) {
-	ride := s.rides[status.RideID]
+	ride := s.rides.get(status.RideID)
 	before := s.saleForRide(ride)
 	wasCompleted := s.latest(ride) == "COMPLETED"
 	if s.dispatch != nil && ride.ChairID.Valid {
@@ -315,15 +334,15 @@ func (s *rideState) addStatus(status RideStatus) {
 			}
 		})
 	}
-	s.statuses[status.ID] = status
+	s.statuses.set(status.ID, status)
 	ride.Statuses = append(ride.Statuses, status.ID)
 	s.observeFlowStatus(ride, status.Status)
 	s.appendNotification("app", ride.UserID, status)
 	if wasCompleted != (status.Status == "COMPLETED") {
 		if status.Status == "COMPLETED" {
-			s.userActiveRides[ride.UserID]--
+			s.userActiveRides.set(ride.UserID, s.userActiveRides.get(ride.UserID)-1)
 		} else {
-			s.userActiveRides[ride.UserID]++
+			s.userActiveRides.set(ride.UserID, s.userActiveRides.get(ride.UserID)+1)
 		}
 	}
 	if ride.ChairID.Valid {
@@ -345,7 +364,7 @@ func (s *rideState) apply(record stateRecord) {
 	s.applyAccounts(record.Accounts)
 	if seed := record.CreatedRide; seed != nil {
 		// Initial SQL data may already contain an older WAL creation record.
-		if s.rides[seed.Ride.ID] == nil {
+		if s.rides.get(seed.Ride.ID) == nil {
 			s.addRide(seed.Ride, seed.Fare)
 		}
 	}
@@ -356,27 +375,31 @@ func (s *rideState) apply(record stateRecord) {
 		s.addChair(*record.Chair)
 	}
 	for _, row := range record.Rides {
-		ride := s.rides[row.ID]
+		ride := s.rides.get(row.ID)
 		before := s.saleForRide(ride)
 		assigned := !ride.ChairID.Valid && row.ChairID.Valid
 		if assigned {
 			if s.dispatch != nil {
+				s.observationMu.Lock()
 				heap.Remove(&s.dispatch.waiting, ride.waitIndex)
+				s.observationMu.Unlock()
 				s.dispatch.changeChair(row.ChairID.String, func(c *chairMetricState) {
 					if s.latest(ride) != "COMPLETED" {
 						c.unfinished++
 					}
 					for _, id := range ride.Statuses {
-						if s.statuses[id].ChairSentAt == nil {
+						if s.statuses.get(id).ChairSentAt == nil {
 							c.pending++
 						}
 					}
 				})
 			}
-			s.chairRides[row.ChairID.String] = append(s.chairRides[row.ChairID.String], row.ID)
+			s.chairRides.set(row.ChairID.String, append(s.chairRides.get(row.ChairID.String), row.ID))
+			s.indexMu.Lock()
 			s.waitingRides = removeCurrentRide(s.waitingRides, ride)
+			s.indexMu.Unlock()
 			for _, id := range ride.Statuses {
-				s.appendNotification("chair", row.ChairID.String, s.statuses[id])
+				s.appendNotification("chair", row.ChairID.String, s.statuses.get(id))
 			}
 		}
 		ride.Ride = row
@@ -387,19 +410,19 @@ func (s *rideState) apply(record stateRecord) {
 		s.updateRideSale(before, ride)
 	}
 	for _, status := range record.Statuses {
-		if _, exists := s.statuses[status.ID]; !exists {
+		if _, exists := s.statuses.lookup(status.ID); !exists {
 			s.addStatus(status)
 		}
 	}
 	if record.Stats != nil {
-		s.stats[record.Stats.ChairID] = *record.Stats
+		s.stats.set(record.Stats.ChairID, *record.Stats)
 	}
 	if ack := record.Ack; ack != nil {
-		status := s.statuses[ack.StatusID]
+		status := s.statuses.get(ack.StatusID)
 		at := ack.At
 		if ack.Kind == "chair" {
 			if s.dispatch != nil && status.ChairSentAt == nil {
-				r := s.rides[status.RideID]
+				r := s.rides.get(status.RideID)
 				if r.ChairID.Valid {
 					s.dispatch.changeChair(r.ChairID.String, func(c *chairMetricState) { c.pending-- })
 				}
@@ -408,8 +431,8 @@ func (s *rideState) apply(record stateRecord) {
 		} else {
 			status.AppSentAt = &at
 		}
-		s.statuses[status.ID] = status
-		ride := s.rides[status.RideID]
+		s.statuses.set(status.ID, status)
+		ride := s.rides.get(status.RideID)
 		id := ride.UserID
 		if ack.Kind == "chair" {
 			id = ride.ChairID.String
@@ -424,6 +447,9 @@ func (s *rideState) apply(record stateRecord) {
 }
 
 func (s *rideState) userMutex(id string) *sync.Mutex {
+	if lock, ok := s.userLocks.Load(id); ok {
+		return lock.(*sync.Mutex)
+	}
 	lock, _ := s.userLocks.LoadOrStore(id, &sync.Mutex{})
 	return lock.(*sync.Mutex)
 }
@@ -432,7 +458,7 @@ func (s *rideState) latest(ride *memoryRide) string {
 	if len(ride.Statuses) == 0 {
 		return ""
 	}
-	return s.statuses[ride.Statuses[len(ride.Statuses)-1]].Status
+	return s.statuses.get(ride.Statuses[len(ride.Statuses)-1]).Status
 }
 
 func (s *rideState) newStatus(ride *memoryRide, status string, at time.Time) RideStatus {
@@ -440,7 +466,7 @@ func (s *rideState) newStatus(ride *memoryRide, status string, at time.Time) Rid
 		at = ride.UpdatedAt.Add(time.Microsecond)
 	}
 	if len(ride.Statuses) != 0 {
-		last := s.statuses[ride.Statuses[len(ride.Statuses)-1]].CreatedAt
+		last := s.statuses.get(ride.Statuses[len(ride.Statuses)-1]).CreatedAt
 		if !at.After(last) {
 			at = last.Add(time.Microsecond)
 		}
@@ -449,9 +475,10 @@ func (s *rideState) newStatus(ride *memoryRide, status string, at time.Time) Rid
 }
 
 func (s *rideState) continuingRide(userID string) bool {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.userActiveRides[userID] != 0
+	lock := s.userStateMutex(userID)
+	lock.RLock()
+	defer lock.RUnlock()
+	return s.userActiveRides.get(userID) != 0
 }
 
 type stateHTTPError struct {
@@ -471,9 +498,8 @@ func writeStateError(w http.ResponseWriter, err error) {
 }
 
 func (s *rideState) chairStatus(chairID, rideID, status string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	ride := s.rides[rideID]
+	ride, unlock := s.lockRide(rideID, false)
+	defer unlock()
 	if ride == nil {
 		return stateError(http.StatusNotFound, "ride not found")
 	}
@@ -500,9 +526,10 @@ func (s *rideState) chairStatus(chairID, rideID, status string) error {
 }
 
 func (s *rideState) activity(chairID string, active bool) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	c, ok := s.chairs[chairID]
+	lock := s.chairMutex(chairID)
+	lock.Lock()
+	defer lock.Unlock()
+	c, ok := s.chairs.lookup(chairID)
 	if !ok {
 		return sql.ErrNoRows
 	}
@@ -511,20 +538,21 @@ func (s *rideState) activity(chairID string, active bool) error {
 }
 
 func (s *rideState) nearbyAvailable(chairID string, at time.Time) (bool, error) {
+	s.indexMu.RLock()
+	defer s.indexMu.RUnlock()
 	if _, missing := s.nearbyMissingStatus[chairID]; missing {
 		return false, sql.ErrNoRows
 	}
 	if _, idle := s.nearbyChairs[chairID]; !idle {
 		return false, nil
 	}
-	current := s.chairCurrent[chairID]
+	current := s.chairCurrent.get(chairID)
 	return current.completionPending == 0 && !at.Before(current.nearbyAvailableAt), nil
 }
 
 func (s *rideState) completionCandidate(rideID, userID string) (Ride, int, string, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	ride := s.rides[rideID]
+	ride, unlock := s.lockRide(rideID, true)
+	defer unlock()
 	if ride == nil {
 		return Ride{}, 0, "", stateError(http.StatusNotFound, "ride not found")
 	}
@@ -539,16 +567,15 @@ func (s *rideState) completionCandidate(rideID, userID string) (Ride, int, strin
 }
 
 func (s *rideState) complete(rideID string, evaluation int) (time.Time, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	ride := s.rides[rideID]
+	ride, unlock := s.lockRide(rideID, false)
+	defer unlock()
 	if ride == nil || s.latest(ride) != "ARRIVED" {
 		return time.Time{}, stateError(http.StatusBadRequest, "not arrived yet")
 	}
 	status := s.newStatus(ride, "COMPLETED", time.Now().UTC().Truncate(time.Microsecond))
 	row := ride.Ride
 	row.Evaluation, row.UpdatedAt = &evaluation, status.CreatedAt
-	stats := s.stats[row.ChairID.String]
+	stats := s.stats.get(row.ChairID.String)
 	stats.ChairID, stats.Count, stats.Evaluation = row.ChairID.String, stats.Count+1, stats.Evaluation+evaluation
 	if err := s.commit(stateRecord{Rides: []Ride{row}, Statuses: []RideStatus{status}, Stats: &stats}); err != nil {
 		return time.Time{}, err
@@ -560,9 +587,9 @@ func (s *rideState) complete(rideID string, evaluation int) (time.Time, error) {
 }
 
 func (s *rideState) finishCompletionResponse(rideID string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if ride := s.rides[rideID]; ride != nil && ride.CompletionResponsePending {
+	ride, unlock := s.lockRide(rideID, false)
+	defer unlock()
+	if ride != nil && ride.CompletionResponsePending {
 		ride.CompletionResponsePending = false
 		ride.NearbyAvailableAt = time.Now().UTC().Add(nearbyCompletionGrace)
 		current := s.currentChair(ride.ChairID.String)
@@ -572,10 +599,8 @@ func (s *rideState) finishCompletionResponse(rideID string) {
 }
 
 func (s *rideState) checkReady() error {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
-		return fmt.Errorf("runtime state is unavailable: %v", s.failed)
+	if err := s.coordinateAvailable(); err != nil {
+		return fmt.Errorf("runtime state is unavailable: %w", err)
 	}
 	return nil
 }

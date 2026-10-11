@@ -35,7 +35,16 @@ func (m *rideMetrics) registerMatching() {
 	}
 }
 
-func (s *rideState) observeOpportunity(at time.Time) {
+func (s *rideState) observeOpportunity() {
+	s.indexMu.RLock()
+	defer s.indexMu.RUnlock()
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
+	s.observeOpportunityLocked(time.Now())
+}
+
+// Caller holds indexMu and observationMu, never a WAL lock.
+func (s *rideState) observeOpportunityLocked(at time.Time) {
 	if s.metrics == nil || s.dispatch == nil {
 		return
 	}
@@ -53,7 +62,7 @@ func (s *rideState) observeOpportunity(at time.Time) {
 		}
 		o.generation, o.ready, o.pending = s.generation, false, false
 	}
-	ready := s.ready && s.failed == nil && s.coordinateFailed.Load() == nil && len(s.waitingRides) > 0 && len(s.matchingChairs) > 0
+	ready := s.coordinateAvailable() == nil && len(s.waitingRides) > 0 && len(s.matchingChairs) > 0
 	if ready == o.ready {
 		return
 	}
@@ -72,8 +81,8 @@ func (s *rideState) observeOpportunity(at time.Time) {
 }
 
 func (s *rideState) observeMatcherCall(wait time.Duration) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	if s.metrics != nil {
 		s.metrics.counters["match_calls"]++
 		s.metrics.observeState("match_mu", milliseconds(wait))
@@ -84,10 +93,12 @@ func (s *rideState) observeMatcherCall(wait time.Duration) {
 // the existing snapshot and solver still run at their original boundaries.
 func (s *rideState) beginPlan() *planTiming {
 	t := &planTiming{started: time.Now()}
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.indexMu.RLock()
+	defer s.indexMu.RUnlock()
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	t.startLock = time.Since(t.started)
-	s.observeOpportunity(time.Now())
+	s.observeOpportunityLocked(time.Now())
 	t.metrics, t.generation = s.metrics, s.generation
 	if t.metrics == nil {
 		return t
@@ -103,9 +114,13 @@ func (s *rideState) beginPlan() *planTiming {
 	return t
 }
 
-// Called under s.mu, including the existing commit lock. Old epochs are never
-// aggregated into a new one, even if a test changes generation mid-plan.
+// Old epochs are never aggregated into a new one, even if a test changes
+// generation mid-plan.
 func (s *rideState) finishPlan(t *planTiming, reason string, commitLock, commit time.Duration, committed bool) {
+	s.indexMu.RLock()
+	defer s.indexMu.RUnlock()
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	if t == nil || t.metrics == nil || t.metrics != s.metrics {
 		return
 	}
@@ -149,7 +164,7 @@ func (s *rideState) finishPlan(t *planTiming, reason string, commitLock, commit 
 		m.observeState("match_commit", milliseconds(commit))
 	}
 	m.opportunity.planning--
-	s.observeOpportunity(finished)
+	s.observeOpportunityLocked(finished)
 	if t.rides == 0 && t.claimed && m.opportunity.ready && m.opportunity.transitions == t.readyVersion {
 		// An empty/below-minimum snapshot did not process this opportunity.
 		m.opportunity.pending, m.opportunity.pendingSince = true, t.readySince
@@ -162,8 +177,6 @@ func (s *rideState) finishPlan(t *planTiming, reason string, commitLock, commit 
 }
 
 func (s *rideState) finishEmptyPlan(t *planTiming, reason string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	s.finishPlan(t, reason, 0, 0, false)
 }
 

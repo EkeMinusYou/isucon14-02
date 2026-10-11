@@ -14,12 +14,17 @@ func appAuthMiddleware(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, errors.New("app_session cookie is required"))
 			return
 		}
+		stream := r.URL.Path == "/api/app/notification" || r.URL.Path == "/api/chair/notification"
+		if stream {
+			stateLifecycle.RLock()
+		}
 		accessToken := runtimeState.accountKey(c.Value)
-		runtimeState.mu.RLock()
-		userID, ok := runtimeState.userTokens[accessToken]
-		user := runtimeState.users[userID]
+		userID, ok := runtimeState.userTokens.lookup(accessToken)
+		user := runtimeState.users.get(userID)
 		ready := runtimeState.ready
-		runtimeState.mu.RUnlock()
+		if stream {
+			stateLifecycle.RUnlock()
+		}
 		if !ready {
 			writeError(w, http.StatusServiceUnavailable, errors.New("runtime state is unavailable"))
 			return
@@ -42,12 +47,17 @@ func ownerAuthMiddleware(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, errors.New("owner_session cookie is required"))
 			return
 		}
+		stream := r.URL.Path == "/api/app/notification" || r.URL.Path == "/api/chair/notification"
+		if stream {
+			stateLifecycle.RLock()
+		}
 		accessToken := runtimeState.accountKey(c.Value)
-		runtimeState.mu.RLock()
-		ownerID, ok := runtimeState.ownerTokens[accessToken]
-		owner := runtimeState.owners[ownerID]
+		ownerID, ok := runtimeState.ownerTokens.lookup(accessToken)
+		owner := runtimeState.owners.get(ownerID)
 		ready := runtimeState.ready
-		runtimeState.mu.RUnlock()
+		if stream {
+			stateLifecycle.RUnlock()
+		}
 		if !ready {
 			writeError(w, http.StatusServiceUnavailable, errors.New("runtime state is unavailable"))
 			return
@@ -70,6 +80,10 @@ func chairAuthMiddleware(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, errors.New("chair_session cookie is required"))
 			return
 		}
+		stream := r.URL.Path == "/api/app/notification" || r.URL.Path == "/api/chair/notification"
+		if stream {
+			stateLifecycle.RLock()
+		}
 		accessToken := runtimeState.accountKey(c.Value)
 		var chair Chair
 		var ok, ready bool
@@ -83,10 +97,11 @@ func chairAuthMiddleware(next http.Handler) http.Handler {
 				}
 			}
 		} else {
-			runtimeState.mu.RLock()
-			chairID, found := runtimeState.chairTokens[accessToken]
-			chair, ok, ready = runtimeState.chairs[chairID], found, runtimeState.ready
-			runtimeState.mu.RUnlock()
+			chairID, found := runtimeState.chairTokens.lookup(accessToken)
+			chair, ok, ready = runtimeState.chairs.get(chairID), found, runtimeState.ready
+		}
+		if stream {
+			stateLifecycle.RUnlock()
 		}
 		if !ready {
 			writeError(w, http.StatusServiceUnavailable, errors.New("runtime state is unavailable"))

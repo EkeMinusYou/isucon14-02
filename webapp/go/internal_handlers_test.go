@@ -37,10 +37,10 @@ func TestMatchingTravelTime(t *testing.T) {
 			for i, pickup := range test.pickups {
 				id := fmt.Sprintf("ride-%d", i)
 				seedMemoryRide(s, id, "", time.Unix(1700000000+int64(i), 0))
-				s.rides[id].PickupLatitude, s.rides[id].PickupLongitude = pickup.Latitude, pickup.Longitude
-				s.rides[id].DestinationLatitude, s.rides[id].DestinationLongitude = pickup.Latitude, pickup.Longitude
+				s.rides.get(id).PickupLatitude, s.rides.get(id).PickupLongitude = pickup.Latitude, pickup.Longitude
+				s.rides.get(id).DestinationLatitude, s.rides.get(id).DestinationLongitude = pickup.Latitude, pickup.Longitude
 				if test.name == "ManhattanFractionalTime" {
-					s.rides[id].DestinationLatitude++
+					s.rides.get(id).DestinationLatitude++
 				}
 			}
 			// These fixtures mutate fixed pickup positions after seeding.
@@ -49,7 +49,7 @@ func TestMatchingTravelTime(t *testing.T) {
 				t.Fatal(err)
 			}
 			for i, want := range test.want {
-				if got := s.rides[fmt.Sprintf("ride-%d", i)].ChairID.String; got != want {
+				if got := s.rides.get(fmt.Sprintf("ride-%d", i)).ChairID.String; got != want {
 					t.Fatalf("ride %d chair=%s want=%s", i, got, want)
 				}
 			}
@@ -67,12 +67,12 @@ func TestMatching(t *testing.T) {
 		}
 		seedMemoryRide(s, "short", "", time.Unix(1700000000, 0))
 		seedMemoryRide(s, "long", "", time.Unix(1700000001, 0))
-		s.rides["short"].Ride.PickupLatitude, s.rides["short"].Ride.PickupLongitude = 0, 0
-		s.rides["short"].Ride.DestinationLatitude, s.rides["short"].Ride.DestinationLongitude = 1, 1
-		s.rides["long"].Ride.PickupLatitude, s.rides["long"].Ride.PickupLongitude = 0, 0
-		s.rides["long"].Ride.DestinationLatitude, s.rides["long"].Ride.DestinationLongitude = 100, 0
+		s.rides.get("short").Ride.PickupLatitude, s.rides.get("short").Ride.PickupLongitude = 0, 0
+		s.rides.get("short").Ride.DestinationLatitude, s.rides.get("short").Ride.DestinationLongitude = 1, 1
+		s.rides.get("long").Ride.PickupLatitude, s.rides.get("long").Ride.PickupLongitude = 0, 0
+		s.rides.get("long").Ride.DestinationLatitude, s.rides.get("long").Ride.DestinationLongitude = 100, 0
 		s.rebuildIndexes()
-		beforeShort, beforeLong := s.rides["short"].Ride, s.rides["long"].Ride
+		beforeShort, beforeLong := s.rides.get("short").Ride, s.rides.get("long").Ride
 		if err := s.match(); err != nil {
 			t.Fatal(err)
 		}
@@ -80,7 +80,7 @@ func TestMatching(t *testing.T) {
 			before Ride
 			chair  string
 		}{{beforeShort, "slow"}, {beforeLong, "fast"}} {
-			got := s.rides[pair.before.ID].Ride
+			got := s.rides.get(pair.before.ID).Ride
 			if got.ChairID.String != pair.chair || got.PickupLatitude != pair.before.PickupLatitude || got.PickupLongitude != pair.before.PickupLongitude || got.DestinationLatitude != pair.before.DestinationLatitude || got.DestinationLongitude != pair.before.DestinationLongitude {
 				t.Fatalf("assignment changed coordinates or selected wrong chair: %+v", got)
 			}
@@ -107,7 +107,7 @@ func TestMatching(t *testing.T) {
 			t.Fatal(code)
 		}
 		for i := 0; i < 2*matchingPlanLimit+2; i++ {
-			assigned := s.rides[fmt.Sprintf("ride-%03d", i)].ChairID.Valid
+			assigned := s.rides.get(fmt.Sprintf("ride-%03d", i)).ChairID.Valid
 			if assigned != (i < 2*matchingPlanLimit) {
 				t.Fatal("batch must match oldest rides first")
 			}
@@ -127,7 +127,7 @@ func TestMatching(t *testing.T) {
 		}
 		wg.Wait()
 		assigned := map[string]bool{}
-		for _, ride := range s.rides {
+		for _, ride := range s.rides.all() {
 			if !ride.ChairID.Valid || assigned[ride.ChairID.String] {
 				t.Fatal("missing or duplicate assignment")
 			}
@@ -145,13 +145,13 @@ func TestMatching(t *testing.T) {
 		s.addChair(Chair{ID: "c", IsActive: true})
 		seedMemoryRide(s, "old", "c", time.Now().Add(-time.Hour))
 		for _, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED", "COMPLETED"} {
-			s.addStatus(s.newStatus(s.rides["old"], status, time.Now().UTC()))
+			s.addStatus(s.newStatus(s.rides.get("old"), status, time.Now().UTC()))
 		}
 		seedMemoryRide(s, "next", "", time.Now().UTC())
 		if err := s.match(); err != nil {
 			t.Fatal(err)
 		}
-		if s.rides["next"].ChairID.Valid {
+		if s.rides.get("next").ChairID.Valid {
 			t.Fatal("chair reused before consuming completion")
 		}
 		events, err := loadNotifications(context.Background(), "chair", "c", "")
@@ -166,7 +166,7 @@ func TestMatching(t *testing.T) {
 		if err := s.match(); err != nil {
 			t.Fatal(err)
 		}
-		if s.rides["next"].ChairID.String != "c" {
+		if s.rides.get("next").ChairID.String != "c" {
 			t.Fatal("chair not reused after completion was consumed")
 		}
 	})
@@ -180,7 +180,7 @@ func TestMatching(t *testing.T) {
 		if err := s.match(); err != nil {
 			t.Fatal(err)
 		}
-		if s.rides["r"].ChairID.Valid {
+		if s.rides.get("r").ChairID.Valid {
 			t.Fatal("inactive chair assigned")
 		}
 		if err := s.activity("c", true); err != nil {
@@ -193,7 +193,7 @@ func TestMatching(t *testing.T) {
 		if err := s.match(); err == nil {
 			t.Fatal("assignment accepted without WAL")
 		}
-		if s.rides["r"].ChairID.Valid || len(sub.wake) != 0 {
+		if s.rides.get("r").ChairID.Valid || len(sub.wake) != 0 {
 			t.Fatal("failed WAL published assignment")
 		}
 	})

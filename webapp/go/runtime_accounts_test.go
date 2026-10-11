@@ -121,14 +121,14 @@ func TestRuntimeAccountsAtomicConcurrencyAndReplay(t *testing.T) {
 	if n := count(rides, 202); n != 1 {
 		t.Fatalf("ride successes=%d", n)
 	}
-	rideID := s.userRides[u.ID][0]
-	if s.rides[rideID].Fare != 1500 || s.couponCounts[s.accountKey("INV_"+u.InvitationCode)] != 3 || len(s.unusedCoupons[u.ID]) != 3 {
+	rideID := s.userRides.get(u.ID)[0]
+	if s.rides.get(rideID).Fare != 1500 || s.couponCounts.get(s.accountKey("INV_"+u.InvitationCode)) != 3 || len(s.unusedCoupons.get(u.ID)) != 3 {
 		t.Fatal("coupon consumption or limit changed")
 	}
-	for _, guest := range s.users {
+	for _, guest := range s.users.all() {
 		if guest.ID != u.ID {
 			campaign, ok := s.nextCoupon(guest.ID, true)
-			if !ok || campaign.Code != "CP_NEW2024" || len(s.coupons[guest.ID]) != 2 {
+			if !ok || campaign.Code != "CP_NEW2024" || len(s.coupons.get(guest.ID)) != 2 {
 				t.Fatal("invited campaign priority or atomic benefits")
 			}
 		}
@@ -149,7 +149,7 @@ func TestRuntimeAccountsAtomicConcurrencyAndReplay(t *testing.T) {
 		}
 	}
 	// Exercise completed history with a WAL-only owner, chair, and user.
-	row := s.rides[rideID].Ride
+	row := s.rides.get(rideID).Ride
 	row.ChairID = sql.NullString{String: c.ID, Valid: true}
 	row.UpdatedAt = time.Now().UTC()
 	if err := s.commit(stateRecord{Rides: []Ride{row}, Statuses: []RideStatus{{ID: "arrived", RideID: rideID, Status: "ARRIVED", CreatedAt: row.UpdatedAt}}}); err != nil {
@@ -167,7 +167,7 @@ func TestRuntimeAccountsAtomicConcurrencyAndReplay(t *testing.T) {
 	}
 	recovered := memoryTestStateIn(t, directory, s.generation, nil)
 	runtimeState = recovered
-	if len(recovered.users) != 4 || len(recovered.owners) != 1 || len(recovered.chairs) != 1 || recovered.rides[rideID].Fare != 1500 || len(recovered.unusedCoupons[u.ID]) != 3 || recovered.paymentTokens[u.ID].Token != "payment" {
+	if recovered.users.len() != 4 || recovered.owners.len() != 1 || recovered.chairs.len() != 1 || recovered.rides.get(rideID).Fare != 1500 || len(recovered.unusedCoupons.get(u.ID)) != 3 || recovered.paymentTokens.get(u.ID).Token != "payment" {
 		t.Fatal("account/coupon/ride after-images lost after restart")
 	}
 	historyResponse := accountRequest(appGetRides, "", u.ID)
@@ -234,7 +234,7 @@ func TestRuntimeAccountsWALFailureDoesNotPublish(t *testing.T) {
 			case "ride":
 				_, _, err = s.createRide(u.ID, Coordinate{}, Coordinate{1, 1})
 			}
-			if err == nil || s.failed == nil || s.sequence != before || len(s.users) != 1 || len(s.owners) != 1 || len(s.chairs) != 0 || len(s.paymentTokens) != 0 || len(s.rides) != 0 || len(s.coupons[u.ID]) != 1 || len(s.unusedCoupons[u.ID]) != 1 {
+			if err == nil || s.failed == nil || s.sequence != before || s.users.len() != 1 || s.owners.len() != 1 || s.chairs.len() != 0 || s.paymentTokens.len() != 0 || s.rides.len() != 0 || len(s.coupons.get(u.ID)) != 1 || len(s.unusedCoupons.get(u.ID)) != 1 {
 				t.Fatal("failed WAL published state")
 			}
 		})
@@ -264,7 +264,7 @@ func TestRuntimeAccountsCouponOrdering(t *testing.T) {
 	if err != nil || fare != 3500 {
 		t.Fatalf("oldest reward: %d %v", fare, err)
 	}
-	if len(s.unusedCoupons["u"]) != 1 {
+	if len(s.unusedCoupons.get("u")) != 1 {
 		t.Fatal("coupon used more than once")
 	}
 }
@@ -316,7 +316,7 @@ func TestRuntimeAccountsSQLCollationAndSeedReload(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer restored.close()
-	if restored.users[u.ID].Username != "new" || restored.paymentTokens[u.ID].Token != "new-payment" || restored.rides[ride.ID].Fare != fare || len(restored.unusedCoupons[u.ID]) != 0 || len(restored.unusedCoupons["u"]) != 2 {
+	if restored.users.get(u.ID).Username != "new" || restored.paymentTokens.get(u.ID).Token != "new-payment" || restored.rides.get(ride.ID).Fare != fare || len(restored.unusedCoupons.get(u.ID)) != 0 || len(restored.unusedCoupons.get("u")) != 2 {
 		t.Fatal("SQL seeds and runtime WAL did not restore")
 	}
 	var count int
@@ -328,7 +328,7 @@ func TestRuntimeAccountsSQLCollationAndSeedReload(t *testing.T) {
 	if err := restored.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	if len(restored.users) != 1 || restored.users[u.ID].ID != "" || len(restored.rides) != 0 || len(restored.paymentTokens) != 1 || len(restored.unusedCoupons["u"]) != 2 || restored.sequence != 0 {
+	if restored.users.len() != 1 || restored.users.get(u.ID).ID != "" || restored.rides.len() != 0 || restored.paymentTokens.len() != 1 || len(restored.unusedCoupons.get("u")) != 2 || restored.sequence != 0 {
 		t.Fatal("generation reset replayed runtime accounts")
 	}
 }

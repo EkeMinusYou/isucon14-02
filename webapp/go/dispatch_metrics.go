@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"sync"
 	"time"
 )
 
@@ -9,6 +10,7 @@ import (
 // its <=64 boundary, with larger plans in the existing infinity bucket.
 // These indexes are observational only; matching still uses its existing rules.
 type dispatchMetrics struct {
+	mu                 *sync.RWMutex
 	waiting            waitingHeap
 	chair              map[string]*chairMetricState
 	available, blocked int
@@ -48,12 +50,12 @@ func (h *waitingHeap) Pop() any {
 }
 
 func (s *rideState) resetDispatchMetrics() {
-	d := &dispatchMetrics{chair: map[string]*chairMetricState{}}
+	d := &dispatchMetrics{mu: &s.observationMu, chair: map[string]*chairMetricState{}}
 	s.dispatch = d
-	for id, c := range s.chairs {
+	for id, c := range s.chairs.all() {
 		d.chair[id] = &chairMetricState{active: c.IsActive}
 	}
-	for _, r := range s.rides {
+	for _, r := range s.rides.all() {
 		r.waitIndex = -1
 		r.assignedAt = time.Time{}
 		r.firstFlushed = [2]bool{}
@@ -66,7 +68,7 @@ func (s *rideState) resetDispatchMetrics() {
 			c.unfinished++
 		}
 		for _, id := range r.Statuses {
-			if s.statuses[id].ChairSentAt == nil {
+			if s.statuses.get(id).ChairSentAt == nil {
 				c.pending++
 			}
 		}
@@ -82,14 +84,20 @@ func (s *rideState) resetDispatchMetrics() {
 	s.metrics.register("dispatch_batch", [4]float64{1, 8, 32, 64})
 	s.resetCoordinateMetrics()
 	s.resetFlow()
-	for id := range s.chairs {
+	for id := range s.chairs.all() {
 		s.refreshCoordinateRoute(id)
 	}
-	s.observeOpportunity(s.metrics.started)
+	s.indexMu.RLock()
+	s.observationMu.Lock()
+	s.observeOpportunityLocked(s.metrics.started)
+	s.observationMu.Unlock()
+	s.indexMu.RUnlock()
 }
 
-// Called under the state lock. No chair ride history is revisited.
+// Only fixed-size observational aggregates share this short lock.
 func (d *dispatchMetrics) changeChair(id string, change func(*chairMetricState)) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	c := d.chair[id]
 	if c == nil {
 		c = &chairMetricState{}
@@ -108,6 +116,8 @@ func (s *rideState) observeAssignments(rows []Ride, candidates []matchingChair, 
 	if s.metrics == nil {
 		return
 	}
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	m := s.metrics
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -119,7 +129,7 @@ func (s *rideState) observeAssignments(rows []Ride, candidates []matchingChair, 
 		group, name = 1, "pickup_b2_8"
 	}
 	for i, row := range rows {
-		r := s.rides[row.ID]
+		r := s.rides.get(row.ID)
 		r.assignedAt = at
 		m.observe("dispatch_wait", float64(max(0, at.Sub(r.CreatedAt)))/float64(time.Millisecond))
 		c := candidates[assignments[i].chairIndex]
@@ -137,13 +147,14 @@ func observeAssignmentFlush(kind, statusID, generation string, at time.Time) {
 	stateLifecycle.RLock()
 	defer stateLifecycle.RUnlock()
 	s := runtimeState
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	initial := s.statuses.get(statusID)
+	_, unlock := s.lockRide(initial.RideID, false)
+	defer unlock()
 	if s.metrics == nil || s.generation != generation {
 		return
 	}
-	status := s.statuses[statusID]
-	r := s.rides[status.RideID]
+	status := s.statuses.get(statusID)
+	r := s.rides.get(status.RideID)
 	if r == nil || status.Status != "MATCHING" || r.assignedAt.IsZero() {
 		return
 	}

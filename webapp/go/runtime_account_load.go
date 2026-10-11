@@ -51,7 +51,7 @@ func (seed *accountSeed) install(s *rideState) map[string]int {
 		}
 	}
 	for _, token := range seed.paymentTokens {
-		s.paymentTokens[token.UserID] = token
+		s.paymentTokens.set(token.UserID, token)
 	}
 	for _, setting := range seed.settings {
 		if s.accountKey(setting.Name) == s.accountKey("payment_gateway_url") {

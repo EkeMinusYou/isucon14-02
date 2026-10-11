@@ -85,7 +85,7 @@ func addHistogram(a *metricHistogram, b metricHistogram) {
 	}
 }
 
-// Caller owns lifecycle and control state. Writers never hold a stripe while
+// Caller owns lifecycle and observationMu. Writers never hold a stripe while
 // waiting for control. Snapshot briefly fences all stripes for one observation
 // instant. Failed acquisition releases every stripe before retrying, within
 // the snapshot's existing deadline; no writer waits behind a blocked snapshot.

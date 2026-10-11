@@ -184,10 +184,8 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 
 	stateLifecycle.Lock()
 	defer stateLifecycle.Unlock()
-	runtimeState.mu.Lock()
 	runtimeState.ready = false
 	runtimeState.coordinateReady.Store(false)
-	runtimeState.mu.Unlock()
 	notifications.reset()
 
 	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
@@ -211,9 +209,7 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	runtimeState.mu.Lock()
 	err := runtimeState.restore(ctx)
-	runtimeState.mu.Unlock()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return

@@ -18,9 +18,9 @@ const coordinateStripeCount = 8
 
 type coordinateFailure struct{ err error }
 
-// Operation order is cell.mu -> control state, only for arrivals. Control
+// Operation order is cell.mu -> user/ride/chair locks, only for arrivals. Control
 // writers may fence routing with routeMu, but never take cell.mu. Coordinates
-// release routeMu before acquiring s.mu. Position readers only load snapshots.
+// release routeMu before acquiring user/ride/chair locks. Position readers only load snapshots.
 type coordinateCell struct {
 	mu       sync.Mutex
 	routeMu  sync.RWMutex
@@ -101,7 +101,7 @@ func (s *rideState) coordinateCell(id string) *coordinateCell {
 	return v.(*coordinateCell)
 }
 
-// Called by control-state writers under s.mu, or during exclusive restore.
+// Called under the affected chair lock, or during exclusive restore.
 func (s *rideState) publishCoordinateChair(chair Chair) {
 	cell := s.coordinateCell(chair.ID)
 	if cell == nil {
@@ -138,8 +138,8 @@ func (s *rideState) refreshCoordinateRoute(id string) {
 		return
 	}
 	route := coordinateRoute{}
-	if ids := s.chairRides[id]; len(ids) != 0 {
-		ride := s.rides[ids[len(ids)-1]]
+	if ids := s.chairRides.get(id); len(ids) != 0 {
+		ride := s.rides.get(ids[len(ids)-1])
 		route.rideID, route.status = ride.ID, s.latest(ride)
 		if route.status == "ENROUTE" {
 			route.latitude, route.longitude = ride.PickupLatitude, ride.PickupLongitude
@@ -149,9 +149,11 @@ func (s *rideState) refreshCoordinateRoute(id string) {
 		}
 	}
 	if s.dispatch != nil {
+		s.observationMu.RLock()
 		if c := s.dispatch.chair[id]; c != nil {
 			route.stage = c.flow.stage
 		}
+		s.observationMu.RUnlock()
 	}
 	cell.routeMu.Lock()
 	cell.route = route
@@ -163,7 +165,7 @@ func (r coordinateRoute) arrival(p Coordinate) bool {
 }
 
 func (s *rideState) coordinateAvailable() error {
-	if !s.coordinateReady.Load() {
+	if !s.ready || !s.coordinateReady.Load() {
 		return errors.New("runtime state is unavailable")
 	}
 	if failure := s.coordinateFailed.Load(); failure != nil {
@@ -200,12 +202,7 @@ func (s *rideState) coordinate(chairID string, p Coordinate) (time.Time, error) 
 			stripe.mu.Unlock()
 		}
 		if writeFailure != nil {
-			s.mu.Lock()
-			if s.failed == nil {
-				s.failed = writeFailure
-				s.observeOpportunity(time.Now())
-			}
-			s.mu.Unlock()
+			s.markWALFailure(writeFailure)
 		}
 	}()
 	if cell == nil || cell.chair.Load() == nil {
@@ -218,10 +215,19 @@ func (s *rideState) coordinate(chairID string, p Coordinate) (time.Time, error) 
 	if route.arrival(p) {
 		// Drop routing before waiting for control. No control->operation inversion.
 		cell.routeMu.RUnlock()
-		s.mu.Lock()
-		defer s.mu.Unlock()
-		cell.routeMu.RLock()
-		route = cell.route
+		var unlock func()
+		for {
+			expected := route.rideID
+			_, unlock = s.lockRide(expected, false)
+			cell.routeMu.RLock()
+			route = cell.route
+			if route.rideID == expected {
+				break
+			}
+			cell.routeMu.RUnlock()
+			unlock()
+		}
+		defer unlock()
 	}
 	routeLocked := true
 	defer func() {
@@ -297,7 +303,7 @@ func (s *rideState) coordinate(chairID string, p Coordinate) (time.Time, error) 
 		// control WAL reference. Recovery ignores an uncommitted prepared arrival.
 		cell.routeMu.RUnlock()
 		routeLocked = false
-		ride := s.rides[route.rideID]
+		ride := s.rides.get(route.rideID)
 		status := "PICKUP"
 		if route.status == "CARRYING" {
 			status = "ARRIVED"
@@ -309,6 +315,8 @@ func (s *rideState) coordinate(chairID string, p Coordinate) (time.Time, error) 
 		}
 		err := s.commitMeasured(stateRecord{Coordinate: &ref, Statuses: []RideStatus{s.newStatus(ride, status, at)}}, controlTiming)
 		if timing != nil {
+			timing.elapsed[0] += controlTiming.elapsed[0]
+			timing.waitAfter += controlTiming.waitAfter
 			for i := 2; i <= 4; i++ {
 				if controlTiming.visited[i] {
 					timing.elapsed[i] += controlTiming.elapsed[i]

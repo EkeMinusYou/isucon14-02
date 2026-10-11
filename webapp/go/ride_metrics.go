@@ -91,7 +91,7 @@ func exportHistogram(values map[string]any, name string, h *metricHistogram) {
 }
 
 // State-owned series never acquire m.mu. Existing evaluation/flush series
-// retain their mutex; all snapshots follow lifecycle -> state -> metrics.
+// retain their mutex; snapshots follow lifecycle -> observation -> metrics.
 func (m *rideMetrics) registerState(name string, limits [4]float64) {
 	m.stateSeries[name] = &metricHistogram{limits: limits}
 }
@@ -114,7 +114,7 @@ func rideMeasurementSnapshot() measurement.Snapshot {
 	histograms := make([]histogramSample, 0, 64)
 	counters := make([]counterSample, 0, 64)
 	// Copy only fixed-size aggregates under the locks. Formatting the hundreds
-	// of output scalars takes place after releasing the common state lock.
+	// of output scalars takes place after releasing the observation lock.
 	func() {
 		if !stateLifecycle.TryRLock() {
 			return
@@ -127,14 +127,14 @@ func rideMeasurementSnapshot() measurement.Snapshot {
 		}
 		// Bounded acquisition without a goroutine left waiting after HTTP timeout.
 		deadline := started.Add(20 * time.Millisecond)
-		for !s.mu.TryRLock() {
+		for !s.observationMu.TryRLock() {
 			if !time.Now().Before(deadline) {
 				values["snapshot_status"] = 3
 				return
 			}
 			time.Sleep(500 * time.Microsecond)
 		}
-		defer s.mu.RUnlock()
+		defer s.observationMu.RUnlock()
 		if s.metrics == nil || !s.ready {
 			values["snapshot_status"] = 2
 			return
@@ -153,7 +153,7 @@ func rideMeasurementSnapshot() measurement.Snapshot {
 		observed = at
 		values["snapshot_observed_us"] = at.UnixMicro()
 		values["ride_state_available"] = 0
-		if s.failed == nil && s.coordinateFailed.Load() == nil {
+		if s.coordinateAvailable() == nil {
 			values["ride_state_available"] = 1
 		}
 		values["ride_metrics_ready"], values["snapshot_status"] = 1, 0

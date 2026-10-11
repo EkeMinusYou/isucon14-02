@@ -318,8 +318,8 @@ func TestChairStatsCompletionAndWALRecovery(t *testing.T) {
 	}
 	runtimeState = s
 	t.Cleanup(func() { s.close() })
-	stats := s.stats["c"]
-	if stats.Count != 1 || stats.Evaluation != 5 || s.latest(s.rides["a"]) != "COMPLETED" {
+	stats := s.stats.get("c")
+	if stats.Count != 1 || stats.Evaluation != 5 || s.latest(s.rides.get("a")) != "COMPLETED" {
 		t.Fatalf("invalid recovered completion: %+v", stats)
 	}
 }

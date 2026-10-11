@@ -50,7 +50,7 @@ func TestMatchingBatchSaturation(t *testing.T) {
 			}
 			seen := map[string]bool{}
 			for i := 0; i < test.rides; i++ {
-				ride := s.rides[fmt.Sprintf("ride-%03d", i)]
+				ride := s.rides.get(fmt.Sprintf("ride-%03d", i))
 				if ride.ChairID.Valid != (i < test.assigned) || (ride.ChairID.Valid && seen[ride.ChairID.String]) {
 					t.Fatalf("FIFO or unique assignment violated at ride %d: %+v", i, ride.Ride)
 				}
@@ -93,22 +93,22 @@ func TestMatchingAdditionalBatchRevalidates(t *testing.T) {
 				}
 			case "ack-pending":
 				// A completed ride with an unacknowledged notification blocks reuse.
-				s.mu.Lock()
+				s.walMu.Lock()
 				seedMemoryRide(s, "completed", remaining, time.Unix(1600000000, 0))
-				s.addStatus(s.newStatus(s.rides["completed"], "COMPLETED", time.Unix(1600000001, 0)))
-				s.mu.Unlock()
+				s.addStatus(s.newStatus(s.rides.get("completed"), "COMPLETED", time.Unix(1600000001, 0)))
+				s.walMu.Unlock()
 			case "waiting-drained":
 				if err := s.match(); err != nil {
 					t.Fatal(err)
 				}
 			case "generation":
-				s.mu.Lock()
+				s.walMu.Lock()
 				s.generation = "initialized"
-				s.mu.Unlock()
+				s.walMu.Unlock()
 			case "not-ready":
-				s.mu.Lock()
+				s.walMu.Lock()
 				s.ready = false
-				s.mu.Unlock()
+				s.walMu.Unlock()
 			case "failed-wal":
 				if err := s.wal.Close(); err != nil {
 					t.Fatal(err)
@@ -127,7 +127,7 @@ func TestMatchingAdditionalBatchRevalidates(t *testing.T) {
 				t.Fatalf("additional batch error: %v", err)
 			}
 			if change == "coordinate" {
-				if s.sequence != sequence+1 || len(s.waitingRides) != 0 || len(s.chairRides[fmt.Sprintf("chair-%03d", 2*matchingPlanLimit)]) != 1 {
+				if s.sequence != sequence+1 || len(s.waitingRides) != 0 || len(s.chairRides.get(fmt.Sprintf("chair-%03d", 2*matchingPlanLimit))) != 1 {
 					t.Fatal("additional batch did not use the updated coordinate")
 				}
 			} else if s.sequence != sequence || s.metrics.series["dispatch_batch"].count != batches {
@@ -160,8 +160,8 @@ func TestMatchingTwoBatchesRecoverWAL(t *testing.T) {
 	if restored.sequence != 2 || len(restored.waitingRides) != matchingPlanLimit || len(restored.matchingChairs) != matchingPlanLimit {
 		t.Fatal("two committed batches were not recovered")
 	}
-	for id, ride := range s.rides {
-		if restored.rides[id].ChairID != ride.ChairID || len(restored.rides[id].Statuses) != len(ride.Statuses) {
+	for id, ride := range s.rides.all() {
+		if restored.rides.get(id).ChairID != ride.ChairID || len(restored.rides.get(id).Statuses) != len(ride.Statuses) {
 			t.Fatalf("recovered assignment or notification changed for %s", id)
 		}
 	}

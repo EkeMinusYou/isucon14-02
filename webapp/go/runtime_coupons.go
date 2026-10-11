@@ -6,17 +6,17 @@ import "sort"
 // invitation benefits, while the small ordered index only contains unused ones.
 func (s *rideState) addCoupon(c Coupon) {
 	key := s.accountKey(c.Code)
-	byCode := s.coupons[c.UserID]
+	byCode := s.coupons.get(c.UserID)
 	if byCode == nil {
 		byCode = map[string]Coupon{}
-		s.coupons[c.UserID] = byCode
+		s.coupons.set(c.UserID, byCode)
 	}
 	old, exists := byCode[key]
 	if !exists {
-		s.couponCounts[key]++
+		s.couponCounts.update(key, func(n int) int { return n + 1 })
 	}
 	byCode[key] = c
-	queue := s.unusedCoupons[c.UserID]
+	queue := s.unusedCoupons.get(c.UserID)
 	if exists && old.UsedBy == nil {
 		for i, candidate := range queue {
 			if candidate == key {
@@ -34,22 +34,22 @@ func (s *rideState) addCoupon(c Coupon) {
 		copy(queue[i+1:], queue[i:])
 		queue[i] = key
 	}
-	s.unusedCoupons[c.UserID] = queue
+	s.unusedCoupons.set(c.UserID, queue)
 }
 
 // Estimates preserve the original campaign priority; ride creation requests it
 // only for the first ride. Neither selection nor estimates consume a coupon.
 func (s *rideState) nextCoupon(userID string, campaignPriority bool) (Coupon, bool) {
 	if campaignPriority {
-		if c, ok := s.coupons[userID][s.accountKey("CP_NEW2024")]; ok && c.UsedBy == nil {
+		if c, ok := s.coupons.get(userID)[s.accountKey("CP_NEW2024")]; ok && c.UsedBy == nil {
 			return c, true
 		}
 	}
-	queue := s.unusedCoupons[userID]
+	queue := s.unusedCoupons.get(userID)
 	if len(queue) == 0 {
 		return Coupon{}, false
 	}
-	return s.coupons[userID][queue[0]], true
+	return s.coupons.get(userID)[queue[0]], true
 }
 
 func discountedRideFare(ride Ride, discount int) int {

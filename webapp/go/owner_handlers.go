@@ -92,10 +92,14 @@ func ownerGetSales(w http.ResponseWriter, r *http.Request) {
 	until = until.Add(999 * time.Microsecond)
 
 	s := runtimeState
-	s.mu.RLock()
+	ownerLock := keyedStateMutex(&s.ownerStateLocks, owner.ID)
+	ownerLock.RLock()
+	ids := s.ownerChairs.get(owner.ID)
+	unlock := lockStateKeys(&s.chairLocks, append([]string(nil), ids...), true)
 	res := ownerGetSalesResponse{}
 	modelSalesByModel := map[string]int{}
-	for _, chair := range s.chairs {
+	for _, id := range ids {
+		chair := s.chairs.get(id)
 		if chair.OwnerID != owner.ID {
 			continue
 		}
@@ -104,7 +108,8 @@ func ownerGetSales(w http.ResponseWriter, r *http.Request) {
 		res.Chairs = append(res.Chairs, chairSales{ID: chair.ID, Name: chair.Name, Sales: sales})
 		modelSalesByModel[chair.Model] += sales
 	}
-	s.mu.RUnlock()
+	unlock()
+	ownerLock.RUnlock()
 
 	models := []modelSales{}
 	for model, sales := range modelSalesByModel {
@@ -141,9 +146,13 @@ func ownerGetChairs(w http.ResponseWriter, r *http.Request) {
 	owner := ctx.Value("owner").(*Owner)
 
 	s := runtimeState
-	s.mu.RLock()
+	ownerLock := keyedStateMutex(&s.ownerStateLocks, owner.ID)
+	ownerLock.RLock()
+	ids := s.ownerChairs.get(owner.ID)
+	unlock := lockStateKeys(&s.chairLocks, append([]string(nil), ids...), true)
 	res := ownerGetChairResponse{}
-	for _, chair := range s.chairs {
+	for _, id := range ids {
+		chair := s.chairs.get(id)
 		if chair.OwnerID != owner.ID {
 			continue
 		}
@@ -155,6 +164,7 @@ func ownerGetChairs(w http.ResponseWriter, r *http.Request) {
 		}
 		res.Chairs = append(res.Chairs, c)
 	}
-	s.mu.RUnlock()
+	unlock()
+	ownerLock.RUnlock()
 	writeJSON(w, http.StatusOK, res)
 }

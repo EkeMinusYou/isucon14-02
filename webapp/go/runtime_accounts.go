@@ -19,29 +19,29 @@ type accountRecord struct {
 }
 
 type accountState struct {
-	owners                   map[string]Owner
-	users                    map[string]User
-	userTokens               map[string]string
-	invitationUsers          map[string]string
-	userNames                map[string]string
-	ownerNames               map[string]string
-	ownerTokens              map[string]string
-	chairRegisterTokens      map[string]string
-	paymentTokens            map[string]PaymentToken
+	owners                   *stateMap[Owner]
+	users                    *stateMap[User]
+	userTokens               *stateMap[string]
+	invitationUsers          *stateMap[string]
+	userNames                *stateMap[string]
+	ownerNames               *stateMap[string]
+	ownerTokens              *stateMap[string]
+	chairRegisterTokens      *stateMap[string]
+	paymentTokens            *stateMap[PaymentToken]
 	paymentGatewayURL        string
 	paymentGatewayConfigured bool
-	coupons                  map[string]map[string]Coupon
-	unusedCoupons            map[string][]string
-	couponCounts             map[string]int
+	coupons                  *stateMap[map[string]Coupon]
+	unusedCoupons            *stateMap[[]string]
+	couponCounts             *stateMap[int]
 }
 
 func (s *rideState) resetAccounts() {
 	s.accountState = accountState{
-		owners: map[string]Owner{}, users: map[string]User{}, userTokens: map[string]string{}, invitationUsers: map[string]string{},
-		userNames: map[string]string{}, ownerNames: map[string]string{},
-		ownerTokens: map[string]string{}, chairRegisterTokens: map[string]string{},
-		paymentTokens: map[string]PaymentToken{}, coupons: map[string]map[string]Coupon{},
-		unusedCoupons: map[string][]string{}, couponCounts: map[string]int{},
+		owners: newStateMap(map[string]Owner{}), users: newStateMap(map[string]User{}), userTokens: newStateMap(map[string]string{}), invitationUsers: newStateMap(map[string]string{}),
+		userNames: newStateMap(map[string]string{}), ownerNames: newStateMap(map[string]string{}),
+		ownerTokens: newStateMap(map[string]string{}), chairRegisterTokens: newStateMap(map[string]string{}),
+		paymentTokens: newStateMap(map[string]PaymentToken{}), coupons: newStateMap(map[string]map[string]Coupon{}),
+		unusedCoupons: newStateMap(map[string][]string{}), couponCounts: newStateMap(map[string]int{}),
 	}
 }
 
@@ -125,10 +125,10 @@ func normalizeAccountStrings(values ...varcharField) error {
 func varchar(value *string, limit int) varcharField { return varcharField{value, limit} }
 
 func (s *rideState) addOwner(o Owner) {
-	s.owners[o.ID] = o
-	s.ownerNames[s.accountKey(o.Name)] = o.ID
-	s.ownerTokens[s.accountKey(o.AccessToken)] = o.ID
-	s.chairRegisterTokens[s.accountKey(o.ChairRegisterToken)] = o.ID
+	s.owners.set(o.ID, o)
+	s.ownerNames.set(s.accountKey(o.Name), o.ID)
+	s.ownerTokens.set(s.accountKey(o.AccessToken), o.ID)
+	s.chairRegisterTokens.set(s.accountKey(o.ChairRegisterToken), o.ID)
 }
 
 func (s *rideState) applyAccounts(record *accountRecord) {
@@ -145,12 +145,13 @@ func (s *rideState) applyAccounts(record *accountRecord) {
 		s.addCoupon(coupon)
 	}
 	if record.PaymentToken != nil {
-		s.paymentTokens[record.PaymentToken.UserID] = *record.PaymentToken
+		s.paymentTokens.set(record.PaymentToken.UserID, *record.PaymentToken)
 	}
 }
 
 func (s *rideState) addUser(u User) {
-	s.users[u.ID], s.userTokens[s.accountKey(u.AccessToken)] = u, u.ID
-	s.userNames[s.accountKey(u.Username)] = u.ID
-	s.invitationUsers[s.accountKey(u.InvitationCode)] = u.ID
+	s.users.set(u.ID, u)
+	s.userTokens.set(s.accountKey(u.AccessToken), u.ID)
+	s.userNames.set(s.accountKey(u.Username), u.ID)
+	s.invitationUsers.set(s.accountKey(u.InvitationCode), u.ID)
 }

@@ -23,27 +23,37 @@ func (s *rideState) registerUser(req appPostUsersRequest) (User, error) {
 	benefitCode, rewardCode := "INV_"+invitation, "RWD_"+invitation+"_"+rewardID
 	couponError := normalizeAccountStrings(varchar(&benefitCode, 255), varchar(&rewardCode, 255))
 	inviterKey, benefitKey := s.accountKey(invitation), s.accountKey(benefitCode)
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	keys := []string{"user-name:" + nameKey, "user-token:" + tokenKey, "invitation:" + invitationKey}
+	if invitation != "" {
+		keys = append(keys, "invitation:"+inviterKey)
+	}
+	unlockKeys := lockStateKeys(&s.registrationLocks, keys, false)
+	defer unlockKeys()
 	inviterID := ""
 	if invitation != "" {
 		var ok bool
-		inviterID, ok = s.invitationUsers[inviterKey]
-		if !ok || s.couponCounts[benefitKey] >= 3 {
+		inviterID, ok = s.invitationUsers.lookup(inviterKey)
+		if !ok || s.couponCounts.get(benefitKey) >= 3 {
 			return User{}, stateError(http.StatusBadRequest, "この招待コードは使用できません。")
 		}
 	}
 	if fieldError != nil {
 		return User{}, fieldError
 	}
-	if s.userNames[nameKey] != "" || s.userTokens[tokenKey] != "" || s.invitationUsers[invitationKey] != "" || s.users[u.ID].ID != "" {
+	if s.userNames.get(nameKey) != "" || s.userTokens.get(tokenKey) != "" || s.invitationUsers.get(invitationKey) != "" || s.users.get(u.ID).ID != "" {
 		return User{}, errors.New("duplicate user key")
 	}
 	if invitation != "" && couponError != nil {
 		return User{}, couponError
 	}
+	users := []string{u.ID}
+	if inviterID != "" {
+		users = append(users, inviterID)
+	}
+	unlockUsers := lockStateKeys(&s.userStateLocks, users, false)
+	defer unlockUsers()
 	if invitation != "" {
-		if _, exists := s.coupons[inviterID][s.accountKey(rewardCode)]; exists {
+		if _, exists := s.coupons.get(inviterID)[s.accountKey(rewardCode)]; exists {
 			return User{}, errors.New("duplicate reward coupon key")
 		}
 	}
@@ -66,9 +76,9 @@ func (s *rideState) registerOwner(name string) (Owner, error) {
 	}
 	o := Owner{ID: ulid.Make().String(), Name: name, AccessToken: secureRandomStr(32), ChairRegisterToken: secureRandomStr(32)}
 	nameKey, tokenKey, chairKey := s.accountKey(name), s.accountKey(o.AccessToken), s.accountKey(o.ChairRegisterToken)
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if s.ownerNames[nameKey] != "" || s.ownerTokens[tokenKey] != "" || s.chairRegisterTokens[chairKey] != "" || s.owners[o.ID].ID != "" {
+	unlock := lockStateKeys(&s.registrationLocks, []string{"owner-name:" + nameKey, "owner-token:" + tokenKey, "chair-token:" + chairKey}, false)
+	defer unlock()
+	if s.ownerNames.get(nameKey) != "" || s.ownerTokens.get(tokenKey) != "" || s.chairRegisterTokens.get(chairKey) != "" || s.owners.get(o.ID).ID != "" {
 		return Owner{}, errors.New("duplicate owner key")
 	}
 	at := time.Now().UTC().Truncate(time.Microsecond)
@@ -87,17 +97,21 @@ func (s *rideState) registerChair(req chairPostChairsRequest) (Chair, error) {
 	}
 	c := Chair{ID: ulid.Make().String(), Name: req.Name, Model: req.Model, AccessToken: secureRandomStr(32)}
 	ownerKey := s.accountKey(req.ChairRegisterToken)
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	var ok bool
-	c.OwnerID, ok = s.chairRegisterTokens[ownerKey]
+	c.OwnerID, ok = s.chairRegisterTokens.lookup(ownerKey)
 	if !ok {
 		return Chair{}, stateError(http.StatusUnauthorized, "invalid chair_register_token")
 	}
 	if fieldError != nil {
 		return Chair{}, fieldError
 	}
-	if s.chairs[c.ID].ID != "" {
+	ownerLock := keyedStateMutex(&s.ownerStateLocks, c.OwnerID)
+	ownerLock.Lock()
+	defer ownerLock.Unlock()
+	lock := s.chairMutex(c.ID)
+	lock.Lock()
+	defer lock.Unlock()
+	if s.chairs.get(c.ID).ID != "" {
 		return Chair{}, errors.New("duplicate chair key")
 	}
 	at := time.Now().UTC().Truncate(time.Microsecond)
@@ -112,9 +126,10 @@ func (s *rideState) registerPaymentToken(userID, token string) error {
 	if err := normalizeAccountStrings(varchar(&token, 255)); err != nil {
 		return err
 	}
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if _, exists := s.paymentTokens[userID]; exists {
+	lock := s.userStateMutex(userID)
+	lock.Lock()
+	defer lock.Unlock()
+	if _, exists := s.paymentTokens.lookup(userID); exists {
 		return errors.New("duplicate payment token user")
 	}
 	p := PaymentToken{UserID: userID, Token: token, CreatedAt: time.Now().UTC().Truncate(time.Microsecond)}
@@ -122,9 +137,10 @@ func (s *rideState) registerPaymentToken(userID, token string) error {
 }
 
 func (s *rideState) paymentConfiguration(userID string) (PaymentToken, string, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	token, ok := s.paymentTokens[userID]
+	lock := s.userStateMutex(userID)
+	lock.RLock()
+	defer lock.RUnlock()
+	token, ok := s.paymentTokens.lookup(userID)
 	if !ok {
 		return PaymentToken{}, "", stateError(http.StatusBadRequest, "payment token not registered")
 	}
@@ -148,9 +164,10 @@ func (s *rideState) createRide(userID string, pickup, destination Coordinate) (R
 	lock := s.userMutex(userID)
 	lock.Lock()
 	defer lock.Unlock()
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if s.userActiveRides[userID] > 0 {
+	stateLock := s.userStateMutex(userID)
+	stateLock.Lock()
+	defer stateLock.Unlock()
+	if s.userActiveRides.get(userID) > 0 {
 		return Ride{}, 0, stateError(http.StatusConflict, "ride already exists")
 	}
 	if coordinateError != nil {
@@ -158,7 +175,7 @@ func (s *rideState) createRide(userID string, pickup, destination Coordinate) (R
 	}
 	at := time.Now().UTC().Truncate(time.Microsecond)
 	ride.CreatedAt, ride.UpdatedAt, status.CreatedAt = at, at, at
-	coupon, hasCoupon := s.nextCoupon(userID, len(s.userRides[userID]) == 0)
+	coupon, hasCoupon := s.nextCoupon(userID, len(s.userRides.get(userID)) == 0)
 	fare := discountedRideFare(ride, coupon.Discount)
 	record := stateRecord{CreatedRide: &createdRide{Ride: ride, Fare: fare}, Statuses: []RideStatus{status}}
 	if hasCoupon {
@@ -172,9 +189,10 @@ func (s *rideState) createRide(userID string, pickup, destination Coordinate) (R
 }
 
 func (s *rideState) estimatedFare(userID string, pickup, destination Coordinate) int {
-	s.mu.RLock()
+	lock := s.userStateMutex(userID)
+	lock.RLock()
 	coupon, _ := s.nextCoupon(userID, true)
-	s.mu.RUnlock()
+	lock.RUnlock()
 	return discountedRideFare(Ride{PickupLatitude: pickup.Latitude, PickupLongitude: pickup.Longitude,
 		DestinationLatitude: destination.Latitude, DestinationLongitude: destination.Longitude}, coupon.Discount)
 }

@@ -47,7 +47,7 @@ func TestDispatchMetricsTransitionsAndFirstFlush(t *testing.T) {
 		t.Fatalf("assignment observation missing from pending queue: %+v %v", events, err)
 	}
 	statusID := "r-matching"
-	at := s.rides["r"].assignedAt.Add(150 * time.Millisecond)
+	at := s.rides.get("r").assignedAt.Add(150 * time.Millisecond)
 	observeAssignmentFlush("chair", statusID, "old-generation", at)
 	observeAssignmentFlush("chair", statusID, s.generation, at)
 	// An ACK failure leaves the event pending; another flush must not count twice.
@@ -61,7 +61,7 @@ func TestDispatchMetricsTransitionsAndFirstFlush(t *testing.T) {
 		t.Fatalf("first flush: %+v", h)
 	}
 	for _, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
-		if err := s.commit(stateRecord{Statuses: []RideStatus{s.newStatus(s.rides["r"], status, time.Now())}}); err != nil {
+		if err := s.commit(stateRecord{Statuses: []RideStatus{s.newStatus(s.rides.get("r"), status, time.Now())}}); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -69,7 +69,7 @@ func TestDispatchMetricsTransitionsAndFirstFlush(t *testing.T) {
 		t.Fatal(err)
 	}
 	check(0, 0, 1)
-	for _, id := range s.rides["r"].Statuses {
+	for _, id := range s.rides.get("r").Statuses {
 		if err := acknowledgeNotification(context.Background(), "chair", id); err != nil {
 			t.Fatal(err)
 		}
@@ -91,7 +91,7 @@ func TestDispatchMetricsTransitionsAndFirstFlush(t *testing.T) {
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
 	check(0, 1, 0)
-	if s.metrics.epoch == oldEpoch || s.metrics.series["dispatch_wait"].count != 0 || !s.rides["r"].assignedAt.IsZero() {
+	if s.metrics.epoch == oldEpoch || s.metrics.series["dispatch_wait"].count != 0 || !s.rides.get("r").assignedAt.IsZero() {
 		t.Fatal("metrics reset")
 	}
 	observeAssignmentFlush("chair", statusID, s.generation, at)
@@ -106,7 +106,7 @@ func TestDispatchMetricsUnknownAndFailedAssignment(t *testing.T) {
 	s.resetDispatchMetrics()
 	s.addChair(Chair{ID: "c", IsActive: true})
 	seedMemoryRide(s, "r", "", time.Now())
-	s.failed = context.Canceled
+	s.markWALFailure(context.Canceled)
 	if err := s.match(); err == nil {
 		t.Fatal("expected WAL rejection")
 	}
@@ -114,6 +114,7 @@ func TestDispatchMetricsUnknownAndFailedAssignment(t *testing.T) {
 		t.Fatal("failed assignment counted")
 	}
 	s.failed = nil
+	s.coordinateFailed.Store(nil)
 	if err := s.match(); err != nil {
 		t.Fatal(err)
 	}

@@ -6,8 +6,8 @@ const coordinateSampleEvery = 64
 
 var coordinateStages = [...]string{"wait", "hold", "json", "frame", "write", "apply"}
 
-// Local to a sampled call. Wait sums cell/routing/control/stripe acquisition;
-// hold excludes later stripe acquisition and aggregate publication.
+// Local to a sampled call. Wait sums cell/routing/target/stripe/append acquisition;
+// hold excludes later lock acquisition and aggregate publication.
 type coordinateTiming struct {
 	started, locked time.Time
 	waitAfter       time.Duration

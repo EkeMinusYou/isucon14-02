@@ -55,7 +55,7 @@ func TestMatchingJointRevalidatesOnlySelectedRowsAndKeepsMetricPopulation(t *tes
 			}
 			// Complete a candidate after the immutable snapshot. A selected
 			// change invalidates the whole plan; an omitted row is irrelevant.
-			s.addStatus(s.newStatus(s.rides[plan.rides[changed].ID], "COMPLETED", time.Now()))
+			s.addStatus(s.newStatus(s.rides.get(plan.rides[changed].ID), "COMPLETED", time.Now()))
 			retry, err := s.commitMatching(plan, assignments)
 			if err != nil || retry != (change == "selected") {
 				t.Fatalf("retry=%v err=%v", retry, err)
@@ -129,8 +129,8 @@ func TestMatchingPlanRevalidation(t *testing.T) {
 			case "Unfinished", "PendingACK":
 				seedMemoryRide(s, "old", "c", time.Unix(1699999999, 0))
 				if reason == "PendingACK" {
-					s.addStatus(s.newStatus(s.rides["old"], "COMPLETED", time.Now()))
-					if len(s.chairCurrent["c"].unfinished) != 0 {
+					s.addStatus(s.newStatus(s.rides.get("old"), "COMPLETED", time.Now()))
+					if len(s.chairCurrent.get("c").unfinished) != 0 {
 						t.Fatal("test requires only pending notification ACKs")
 					}
 				}
@@ -144,7 +144,7 @@ func TestMatchingPlanRevalidation(t *testing.T) {
 			if err != nil || retry != (reason != "Generation") || sequence != s.sequence {
 				t.Fatalf("stale plan: retry=%v err=%v sequence=%d->%d", retry, err, sequence, s.sequence)
 			}
-			if reason != "AlreadyAssigned" && s.rides["r"].ChairID.Valid {
+			if reason != "AlreadyAssigned" && s.rides.get("r").ChairID.Valid {
 				t.Fatal("stale plan published an assignment")
 			}
 		})
@@ -274,8 +274,8 @@ func TestLargeMatchingWALReplayAndMetricContract(t *testing.T) {
 		t.Fatal(err)
 	}
 	restored.rebuildIndexes()
-	for id, ride := range s.rides {
-		if !reflect.DeepEqual(ride.Ride, restored.rides[id].Ride) || restored.chairEvents[ride.ChairID.String].pending.Len() == 0 {
+	for id, ride := range s.rides.all() {
+		if !reflect.DeepEqual(ride.Ride, restored.rides.get(id).Ride) || restored.chairEvents.get(ride.ChairID.String).pending.Len() == 0 {
 			t.Fatalf("WAL replay lost ride or assignment notification: %s", id)
 		}
 	}

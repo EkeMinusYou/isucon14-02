@@ -134,7 +134,13 @@ tasks:
   test-app:
     desc: GoアプリのWAL・状態遷移・通知・統計を検証（MYSQL_TEST_DSN指定時はローカルMySQLで統合テスト）
     dir: '{{.APP_DIR}}'
-    cmds: [go test -race ./...]
+    cmds: [go test -race -count=1 -timeout=120s ./...]
+
+  test-state-partitions:
+    desc: ユーザー・ライド・椅子の独立更新、WAL復元、通知順序をrace detectorで確認
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - go test -race -count=1 -timeout=60s -v -run '^Test(StatePartitions|RuntimeAccounts|IndexedNotifications|IndexedACK|MatchingPlanConcurrentCommit|CoordinateConcurrent|CoordinateControl|CoordinateRecovery|NearbyCompletionPublication)' .
 
   test-coordinate-cells:
     desc: 椅子セル・stripe WALの排他・到着順序・履歴復元をローカルで確認
@@ -159,7 +165,7 @@ tasks:
         if [ "$ready" != 1 ]; then docker logs "$accounts_container"; exit 1; fi
         accounts_address=$(docker port "$accounts_container" 3306/tcp)
         export MYSQL_TEST_DSN="root:accounts-local-test@tcp($accounts_address)/isuride?parseTime=true&multiStatements=true"
-        go test -race -count=1 -v -run '^Test(RuntimeAccountsSQLCollationAndSeedReload|ConcurrentInvitationsAndCouponConsumption|NewRideAndCouponWithWALCompletion|SalesSQLAndWALRecovery|NearbyWhileEvaluationResponseIsBlocked)$' .
+        go test -race -count=1 -v -run '^Test(RuntimeAccountsSQLCollationAndSeedReload|ConcurrentInvitationsAndCouponConsumption|NewRideAndCouponWithWALCompletion|SalesSQLAndWALRecovery|NearbyWhileEvaluationResponseIsBlocked|NotificationsHistoryAndStats|NotificationsFailedWrite|NotificationStreamWakeup|ChairStatsCompletionAndWALRecovery|RuntimeRecoveryFromWAL)$' .
 
   check-chair-distance:
     desc: ローカルの一時MySQLでSQL照合・WAL復元・通知・距離集計・初期化の統合テストだけをrace検査

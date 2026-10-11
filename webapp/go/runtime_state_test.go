@@ -39,8 +39,8 @@ func reloadTestRuntime(t *testing.T) {
 // Read immutable history from disk without retaining a projection backlog.
 func readTestWAL(t *testing.T, s *rideState) []stateRecord {
 	t.Helper()
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	s.walMu.RLock()
+	defer s.walMu.RUnlock()
 	f, err := os.Open(s.wal.Name())
 	if err != nil {
 		t.Fatal(err)
@@ -91,13 +91,14 @@ func memoryTestStateIn(t *testing.T, directory, generation string, seed func(*ri
 		t.Fatal(err)
 	}
 	s := &rideState{wal: f, coordinates: coordinates, generation: generation,
-		chairs: map[string]Chair{}, modelSpeeds: map[string]int{}, chairTokens: map[string]string{}, stats: map[string]chairStatsTotal{},
-		rides: map[string]*memoryRide{}, statuses: map[string]RideStatus{}, userRides: map[string][]string{}, chairRides: map[string][]string{},
-		appEvents: map[string]*notificationQueue{}, chairEvents: map[string]*notificationQueue{}, sales: map[string][]salesPoint{},
+		chairs: newStateMap(map[string]Chair{}), modelSpeeds: map[string]int{}, chairTokens: newStateMap(map[string]string{}), stats: newStateMap(map[string]chairStatsTotal{}),
+		rides: newStateMap(map[string]*memoryRide{}), statuses: newStateMap(map[string]RideStatus{}), userRides: newStateMap(map[string][]string{}), chairRides: newStateMap(map[string][]string{}),
+		appEvents: newStateMap(map[string]*notificationQueue{}), chairEvents: newStateMap(map[string]*notificationQueue{}), sales: newStateMap(map[string][]salesPoint{}),
 	}
 	s.matchingSolver = testMatchingRPCClient(t, nil)
 	t.Cleanup(func() { s.close() })
 	s.collationWeights = testAccountWeights
+	s.ownerChairs = newStateMap(map[string][]string{})
 	s.resetAccounts()
 	s.coordinates.reset()
 	s.resetCurrentIndexes()
@@ -156,13 +157,13 @@ func TestCoordinatesAndTransitionsWithoutDB(t *testing.T) {
 		t.Fatal("duplicate completion accepted")
 	}
 	var statuses []string
-	for _, id := range s.rides["r"].Statuses {
-		statuses = append(statuses, s.statuses[id].Status)
+	for _, id := range s.rides.get("r").Statuses {
+		statuses = append(statuses, s.statuses.get(id).Status)
 	}
 	if !reflect.DeepEqual(statuses, []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED", "COMPLETED"}) {
 		t.Fatal(statuses)
 	}
-	if s.chairDistance("c").TotalDistance != 70 || s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 5 {
+	if s.chairDistance("c").TotalDistance != 70 || s.stats.get("c").Count != 1 || s.stats.get("c").Evaluation != 5 {
 		t.Fatal("incorrect distance or stats")
 	}
 	var locations int
@@ -253,7 +254,7 @@ func TestWALFramingAndRecovery(t *testing.T) {
 					t.Fatal("corrupt WAL accepted")
 				}
 			} else {
-				if err != nil || s.sequence != 1 || !s.chairs["c"].IsActive {
+				if err != nil || s.sequence != 1 || !s.chairs.get("c").IsActive {
 					t.Fatalf("recovery: %v", err)
 				}
 				info, _ := s.wal.Stat()
@@ -289,6 +290,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	s.matchingSolver = testMatchingRPCClient(t, nil)
 	previous := runtimeState
 	runtimeState = s
 	t.Cleanup(func() { runtimeState.close(); runtimeState = previous })
@@ -335,7 +337,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if s.sequence != sequence || s.latest(s.rides["a"]) != "COMPLETED" || s.chairDistance("c").TotalDistance != 20 || s.stats["c"].Count != 1 || !s.chairs["c"].IsActive || s.rides["a"].ChairID.String != "c" {
+	if s.sequence != sequence || s.latest(s.rides.get("a")) != "COMPLETED" || s.chairDistance("c").TotalDistance != 20 || s.stats.get("c").Count != 1 || !s.chairs.get("c").IsActive || s.rides.get("a").ChairID.String != "c" {
 		t.Fatal("unprojected state not recovered")
 	}
 	replay, err := loadNotifications(context.Background(), "chair", "c", events[3].eventID)
@@ -353,7 +355,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 	if _, reusable := s.matchingChairs["c"]; reusable {
 		t.Fatal("chair reused before recovered completion ACK")
 	}
-	if s.statuses[events[0].statusID].AppSentAt == nil {
+	if s.statuses.get(events[0].statusID).AppSentAt == nil {
 		t.Fatal("app ACK not recovered")
 	}
 	if err := acknowledgeNotification(context.Background(), "chair", events[len(events)-1].statusID); err != nil {
@@ -371,7 +373,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if _, reusable := s.matchingChairs["c"]; s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 4 || s.chairDistance("c").TotalDistance != 20 || !reusable {
+	if _, reusable := s.matchingChairs["c"]; s.stats.get("c").Count != 1 || s.stats.get("c").Evaluation != 4 || s.chairDistance("c").TotalDistance != 20 || !reusable {
 		t.Fatal("full WAL replay duplicated totals")
 	}
 	if err := s.close(); err != nil {
@@ -384,7 +386,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if s.sequence != 0 || s.latest(s.rides["a"]) != "MATCHING" || s.chairDistance("c").UpdatedAt.Valid {
+	if s.sequence != 0 || s.latest(s.rides.get("a")) != "MATCHING" || s.chairDistance("c").UpdatedAt.Valid {
 		t.Fatal("old generation replayed")
 	}
 	if err := acknowledgeNotificationGeneration(context.Background(), "chair", events[0].statusID, events[0].generation); err == nil {
@@ -491,30 +493,30 @@ func TestRecoveredChairOrderFollowsAssignment(t *testing.T) {
 	s.addChair(Chair{ID: "c", IsActive: true})
 	seedMemoryRide(s, "younger", "c", time.Now().Add(-time.Hour))
 	for _, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED", "COMPLETED"} {
-		s.addStatus(s.newStatus(s.rides["younger"], status, time.Now().UTC().Add(-time.Minute)))
+		s.addStatus(s.newStatus(s.rides.get("younger"), status, time.Now().UTC().Add(-time.Minute)))
 	}
-	s.rides["younger"].UpdatedAt = time.Now().Add(-time.Minute)
-	for _, id := range s.rides["younger"].Statuses {
-		status := s.statuses[id]
+	s.rides.get("younger").UpdatedAt = time.Now().Add(-time.Minute)
+	for _, id := range s.rides.get("younger").Statuses {
+		status := s.statuses.get(id)
 		at := time.Now().UTC()
 		status.ChairSentAt = &at
-		s.statuses[id] = status
+		s.statuses.set(id, status)
 	}
 	// An older request was still in its DB transaction while the younger ride
 	// used this chair; only now does the older request become assignable.
 	seedMemoryRide(s, "late", "c", time.Now().Add(-2*time.Hour))
-	s.rides["late"].UpdatedAt = time.Now().UTC()
+	s.rides.get("late").UpdatedAt = time.Now().UTC()
 	if err := s.chairStatus("c", "late", "ENROUTE"); err != nil {
 		t.Fatal(err)
 	}
 	s.rebuildIndexes()
-	if ids := s.chairRides["c"]; len(ids) != 2 || ids[1] != "late" {
+	if ids := s.chairRides.get("c"); len(ids) != 2 || ids[1] != "late" {
 		t.Fatalf("wrong current ride: %v", ids)
 	}
 	if _, err := s.coordinate("c", Coordinate{10, 20}); err != nil {
 		t.Fatal(err)
 	}
-	if s.latest(s.rides["late"]) != "PICKUP" {
+	if s.latest(s.rides.get("late")) != "PICKUP" {
 		t.Fatal("arrival lost after recovery of a delayed request")
 	}
 	events, err := loadNotifications(context.Background(), "chair", "c", "late-matching")

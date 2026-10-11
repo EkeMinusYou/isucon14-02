@@ -24,7 +24,7 @@ func (s *rideState) saleForRide(ride *memoryRide) rideSale {
 	return rideSale{ChairID: ride.ChairID.String, At: ride.UpdatedAt, Amount: calculateSale(ride.Ride)}
 }
 
-// Called under mu after a successful WAL append, or during reconstruction.
+// Called under the affected ride/chair locks after WAL append, or during reconstruction.
 // Comparing contributions makes repeated completion records and
 // evaluation-only changes idempotent.
 func (s *rideState) updateRideSale(before rideSale, ride *memoryRide) {
@@ -41,7 +41,7 @@ func (s *rideState) updateRideSale(before rideSale, ride *memoryRide) {
 }
 
 func (s *rideState) addSale(chairID string, at time.Time, amount int) {
-	points := s.sales[chairID]
+	points := s.sales.get(chairID)
 	n := len(points)
 	// Normal completions append in constant amortized time.
 	if n == 0 || at.After(points[n-1].At) {
@@ -49,7 +49,7 @@ func (s *rideState) addSale(chairID string, at time.Time, amount int) {
 		if n != 0 {
 			total += points[n-1].Total
 		}
-		s.sales[chairID] = append(points, salesPoint{At: at, Total: total})
+		s.sales.set(chairID, append(points, salesPoint{At: at, Total: total}))
 		return
 	}
 	i := n - 1
@@ -68,12 +68,12 @@ func (s *rideState) addSale(chairID string, at time.Time, amount int) {
 	for j := i; j < len(points); j++ {
 		points[j].Total += amount
 	}
-	s.sales[chairID] = points
+	s.sales.set(chairID, points)
 }
 
 // Both bounds are inclusive; the handler supplies the existing 999us extension.
 func (s *rideState) salesBetween(chairID string, since, until time.Time) int {
-	points := s.sales[chairID]
+	points := s.sales.get(chairID)
 	if len(points) == 0 || until.Before(since) {
 		return 0
 	}

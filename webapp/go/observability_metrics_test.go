@@ -125,7 +125,7 @@ func TestFlowMetricsStagesDistanceAndReuse(t *testing.T) {
 	if err := s.activity("c", false); err != nil {
 		t.Fatal(err)
 	}
-	for _, id := range s.rides["r"].Statuses {
+	for _, id := range s.rides.get("r").Statuses {
 		if err := acknowledgeNotification(context.Background(), "chair", id); err != nil {
 			t.Fatal(err)
 		}
@@ -161,7 +161,7 @@ func TestFlowMetricsResetAndOccupancy(t *testing.T) {
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
 	m := s.metrics
-	if epoch == m.epoch || m.flow.known != 0 || m.flow.restored != 1 || m.flow.stage[flowEnroute].chairs != 1 || coordinateCounter(t, s, "coord_calls_ok") != 0 || !s.rides["r"].assignedAt.IsZero() {
+	if epoch == m.epoch || m.flow.known != 0 || m.flow.restored != 1 || m.flow.stage[flowEnroute].chairs != 1 || coordinateCounter(t, s, "coord_calls_ok") != 0 || !s.rides.get("r").assignedAt.IsZero() {
 		t.Fatal("reset replayed complete observations")
 	}
 	if _, err := s.coordinate("c", Coordinate{10, 20}); err != nil {
@@ -179,7 +179,7 @@ func TestFlowMetricsResetAndOccupancy(t *testing.T) {
 	if _, err := s.complete("r", 5); err != nil {
 		t.Fatal(err)
 	}
-	for _, id := range s.rides["r"].Statuses {
+	for _, id := range s.rides.get("r").Statuses {
 		if err := acknowledgeNotification(context.Background(), "chair", id); err != nil {
 			t.Fatal(err)
 		}
@@ -191,7 +191,7 @@ func TestFlowMetricsResetAndOccupancy(t *testing.T) {
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
 	m = s.metrics
-	r := s.rides["r"]
+	r := s.rides.get("r")
 	r.Statuses = []string{"r-matching"}
 	at := m.started.Add(time.Second)
 	s.startFlow(r, at, true)
@@ -258,9 +258,9 @@ func TestPlanningMetricsReadinessAndReasons(t *testing.T) {
 
 func TestRideMetricsSnapshotMissingAndConcurrent(t *testing.T) {
 	s := observedState(t)
-	s.mu.Lock()
+	s.observationMu.Lock()
 	v := rideMeasurementSnapshot().Metrics
-	s.mu.Unlock()
+	s.observationMu.Unlock()
 	if v["ride_metrics_ready"] != 0 || v["snapshot_status"] != 3 || v["snapshot_acquire_ms"].(float64) < 20 {
 		t.Fatal("busy sample was stale/zero-filled")
 	}

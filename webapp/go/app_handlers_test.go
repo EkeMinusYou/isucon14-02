@@ -239,10 +239,10 @@ func TestAppGetNearbyChairsEmptyRetry(t *testing.T) {
 		res := httptest.NewRecorder()
 		startedAt := time.Now()
 		done := start(t, handler, req, ctx, res)
-		if !s.mu.TryLock() {
+		if !s.indexMu.TryLock() {
 			t.Fatal("wait retained control state lock")
 		}
-		s.mu.Unlock()
+		s.indexMu.Unlock()
 		if stateLifecycle.TryLock() {
 			stateLifecycle.Unlock()
 			t.Fatal("wait lost initialization generation protection")
@@ -284,7 +284,7 @@ func TestAppGetNearbyChairsEmptyRetry(t *testing.T) {
 			}
 			// Holding the state lock makes any extra search after cancellation
 			// block, while the cancelled request must return without writing.
-			s.mu.Lock()
+			s.indexMu.Lock()
 			cancel()
 			if done == nil {
 				completed := make(chan struct{})
@@ -297,11 +297,11 @@ func TestAppGetNearbyChairsEmptyRetry(t *testing.T) {
 			select {
 			case <-done:
 			case <-time.After(time.Second):
-				s.mu.Unlock()
+				s.indexMu.Unlock()
 				await(t, done)
 				t.Fatal("cancelled request attempted another state read")
 			}
-			s.mu.Unlock()
+			s.indexMu.Unlock()
 			if res.Code != 0 || res.Body.Len() != 0 {
 				t.Fatalf("cancelled request wrote response: %d %s", res.Code, res.Body.String())
 			}
@@ -351,7 +351,7 @@ func TestNearbyCompletionPublication(t *testing.T) {
 	s.addChair(Chair{ID: "c", IsActive: true})
 	seedMemoryRide(s, "r", "c", time.Now().Add(-time.Hour))
 	for _, status := range []string{"ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
-		s.addStatus(s.newStatus(s.rides["r"], status, time.Now().UTC()))
+		s.addStatus(s.newStatus(s.rides.get("r"), status, time.Now().UTC()))
 	}
 	if _, err := s.complete("r", 5); err != nil {
 		t.Fatal(err)
@@ -361,7 +361,7 @@ func TestNearbyCompletionPublication(t *testing.T) {
 		t.Fatalf("unflushed completion became available: %v %v", available, err)
 	}
 	s.finishCompletionResponse("r")
-	ready := s.rides["r"].NearbyAvailableAt
+	ready := s.rides.get("r").NearbyAvailableAt
 	for _, elapsed := range []time.Duration{time.Millisecond, 6 * time.Millisecond, nearbyCompletionGrace - time.Nanosecond} {
 		if available, err := s.nearbyAvailable("c", ready.Add(-nearbyCompletionGrace+elapsed)); available || err != nil {
 			t.Fatalf("completion published at %v: %v %v", elapsed, available, err)
@@ -434,17 +434,18 @@ func TestNearbyWhileEvaluationResponseIsBlocked(t *testing.T) {
 		t.Fatalf("evaluation response was not flushed: %+v", response)
 	}
 	s := runtimeState
-	s.mu.RLock()
-	ready := s.rides["r"].NearbyAvailableAt
+	lock := s.chairMutex("c")
+	lock.RLock()
+	ready := s.rides.get("r").NearbyAvailableAt
 	available, err := s.nearbyAvailable("c", ready)
-	s.mu.RUnlock()
+	lock.RUnlock()
 	if !available || err != nil {
 		t.Fatalf("flushed completion did not reopen chair: %v %v", available, err)
 	}
 	if err := s.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	completed := s.statuses[s.rides["r"].Statuses[len(s.rides["r"].Statuses)-1]].CreatedAt
+	completed := s.statuses.get(s.rides.get("r").Statuses[len(s.rides.get("r").Statuses)-1]).CreatedAt
 	if available, err := s.nearbyAvailable("c", completed.Add(6*time.Millisecond)); available || err != nil {
 		t.Fatalf("recovery lost completion grace: %v %v", available, err)
 	}

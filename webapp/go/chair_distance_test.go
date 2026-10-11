@@ -68,7 +68,7 @@ func TestChairDistance(t *testing.T) {
 	checkTotals := func() {
 		t.Helper()
 		expected := historyTotals()
-		for id := range runtimeState.chairs {
+		for id := range runtimeState.chairs.all() {
 			d, e := runtimeState.chairDistance(id), expected[id]
 			if d.TotalDistance != e.TotalDistance || d.Latitude != e.Latitude || d.Longitude != e.Longitude || d.UpdatedAt.Valid != e.UpdatedAt.Valid || (d.UpdatedAt.Valid && !d.UpdatedAt.Time.Equal(e.UpdatedAt.Time)) {
 				t.Fatalf("distance differs from SQL seed + WAL for %s: %+v != %+v", id, d, e)
@@ -224,11 +224,11 @@ func TestChairDistance(t *testing.T) {
 		if res := coordinate(registered.ID, 100, 100); res.Code != http.StatusOK {
 			t.Fatalf("pickup: %d %s", res.Code, res.Body.String())
 		}
-		if runtimeState.latest(runtimeState.rides["distance-ride"]) != "PICKUP" {
+		if runtimeState.latest(runtimeState.rides.get("distance-ride")) != "PICKUP" {
 			t.Fatal("WAL pickup status missing")
 		}
 		reloadTestRuntime(t)
-		if runtimeState.latest(runtimeState.rides["distance-ride"]) != "PICKUP" {
+		if runtimeState.latest(runtimeState.rides.get("distance-ride")) != "PICKUP" {
 			t.Fatal("pickup lost after restart")
 		}
 		checkTotals()

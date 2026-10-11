@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -181,22 +182,92 @@ func (s *rideState) recoverWAL() error {
 	return nil
 }
 
-// Called with s.mu held; no memory state is published before a complete write.
+// Caller holds the affected business locks through publication. Encoding is
+// concurrent; only sequence assignment, framing and append share walMu.
 func (s *rideState) commit(record stateRecord) error { return s.commitMeasured(record, nil) }
-
 func (s *rideState) commitMeasured(record stateRecord, timing *coordinateTiming) error {
-	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
-		return errors.New("state WAL is unavailable")
-	}
-	record.Version, record.Generation, record.Sequence = 1, s.generation, s.sequence+1
-	if err := writeWALRecordMeasured(s.wal, record, timing); err != nil {
-		s.failed = err
-		s.failCoordinates(err)
-		s.observeOpportunity(time.Now())
+	if err := s.coordinateAvailable(); err != nil {
 		return err
 	}
-	s.sequence = record.Sequence
+	record.Version, record.Generation, record.Sequence = 1, s.generation, 0
+	type body stateRecord
 	var started time.Time
+	if timing != nil {
+		started = time.Now()
+	}
+	payload, err := json.Marshal(struct {
+		*body
+		Sequence uint64 `json:"s,omitempty"`
+	}{body: (*body)(&record)})
+	if err == nil && len(payload)+32 > maxWALRecordBytes {
+		err = errors.New("state WAL record too large")
+	}
+	if timing != nil {
+		timing.elapsed[2], timing.visited[2], timing.ok[2] = time.Since(started), true, err == nil
+	}
+	if err != nil {
+		s.markWALFailure(err)
+		return err
+	}
+	// Reserve framing and sequence space outside the append critical section.
+	if timing != nil {
+		started = time.Now()
+	}
+	frame := make([]byte, 8, len(payload)+40)
+	frame = append(frame, payload[:len(payload)-1]...)
+	frame = append(frame, `,"s":`...)
+	prefixEnd := len(frame)
+	prefixCRC := crc32.ChecksumIEEE(frame[8:])
+	if timing != nil {
+		timing.elapsed[3], timing.visited[3], timing.ok[3] = time.Since(started), true, true
+	}
+	var waitStarted time.Time
+	if timing != nil {
+		waitStarted = time.Now()
+	}
+	err = func() error {
+		s.walMu.Lock()
+		defer s.walMu.Unlock()
+		if timing != nil {
+			timing.waitAfter = time.Since(waitStarted)
+			timing.elapsed[0] = timing.waitAfter
+		}
+		if err := s.coordinateAvailable(); err != nil {
+			return err
+		}
+		if timing != nil {
+			started = time.Now()
+		}
+		record.Sequence = s.sequence + 1
+		frame = strconv.AppendUint(frame, record.Sequence, 10)
+		frame = append(frame, '}')
+		binary.LittleEndian.PutUint32(frame, uint32(len(frame)-8))
+		binary.LittleEndian.PutUint32(frame[4:], crc32.Update(prefixCRC, crc32.IEEETable, frame[prefixEnd:]))
+		if timing != nil {
+			timing.elapsed[3] += time.Since(started)
+		}
+		if timing != nil {
+			started = time.Now()
+		}
+		n, err := s.wal.Write(frame)
+		if err == nil && n != len(frame) {
+			err = io.ErrShortWrite
+		}
+		if timing != nil {
+			timing.elapsed[4], timing.visited[4], timing.ok[4], timing.bytes = time.Since(started), true, err == nil, n
+		}
+		if err != nil {
+			s.failed = err
+			s.failCoordinates(err)
+			return err
+		}
+		s.sequence = record.Sequence
+		return nil
+	}()
+	if err != nil {
+		s.observeOpportunity()
+		return err
+	}
 	if timing != nil {
 		started = time.Now()
 	}
@@ -205,9 +276,18 @@ func (s *rideState) commitMeasured(record stateRecord, timing *coordinateTiming)
 		timing.elapsed[5], timing.visited[5], timing.ok[5] = time.Since(started), true, true
 	}
 	if s.metrics != nil && (record.CreatedRide != nil || record.Chair != nil || len(record.Rides) > 0 || len(record.Statuses) > 0 || record.Ack != nil) {
-		s.observeOpportunity(time.Now())
+		s.observeOpportunity()
 	}
 	return nil
+}
+func (s *rideState) markWALFailure(err error) {
+	s.walMu.Lock()
+	if s.failed == nil {
+		s.failed = err
+	}
+	s.failCoordinates(err)
+	s.walMu.Unlock()
+	s.observeOpportunity()
 }
 
 func (s *rideState) start() {
@@ -224,11 +304,7 @@ func (s *rideState) start() {
 				stateLifecycle.RLock()
 				// Sync does not hold the mutation mutex or wait in request handlers.
 				if err := errors.Join(s.coordinates.sync(), s.wal.Sync()); err != nil {
-					s.mu.Lock()
-					s.failed = err
-					s.failCoordinates(err)
-					s.observeOpportunity(time.Now())
-					s.mu.Unlock()
+					s.markWALFailure(err)
 					slog.Error("sync runtime WAL", "error", err)
 				}
 				stateLifecycle.RUnlock()
@@ -245,8 +321,8 @@ func (s *rideState) close() error {
 	}
 	stateLifecycle.Lock()
 	defer stateLifecycle.Unlock()
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.walMu.Lock()
+	defer s.walMu.Unlock()
 	s.ready = false
 	s.coordinateReady.Store(false)
 	return errors.Join(s.coordinates.close(), s.wal.Sync(), s.wal.Close())

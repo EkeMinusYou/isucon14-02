@@ -20,7 +20,7 @@ type matchingPlan struct {
 }
 
 func (s *rideState) matchingChair(id string) matchingChair {
-	chair, d := s.chairs[id], s.chairDistance(id)
+	chair, d := s.chairs.get(id), s.chairDistance(id)
 	speed := s.modelSpeeds[chair.Model]
 	if speed <= 0 || !d.Latitude.Valid || !d.Longitude.Valid {
 		speed = 0
@@ -28,36 +28,32 @@ func (s *rideState) matchingChair(id string) matchingChair {
 	return matchingChair{ID: id, Latitude: int(d.Latitude.Int64), Longitude: int(d.Longitude.Int64), Speed: speed}
 }
 
-// Extract ride candidates and copy values under mu. Chair pruning and solving
-// use only this snapshot; coordinates can continue changing during the solver.
+// Copy bounded immutable candidate values under the index lock. Spatial
+// candidate construction and joint selection run on the worker without locks.
 func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*planTiming) (matchingPlan, error) {
 	var t *planTiming
-	var started, acquired time.Time
 	if len(timing) > 0 {
 		t = timing[0]
-		started = time.Now()
 	}
-	s.mu.RLock()
+	started := time.Now()
+	s.indexMu.RLock()
+	acquired := time.Now()
 	if t != nil {
-		acquired = time.Now()
 		t.snapshotLock = acquired.Sub(started)
+		defer func() { t.snapshot = time.Since(acquired) }()
 	}
-	defer func() {
-		if t != nil {
-			t.snapshot = time.Since(acquired)
-		}
-		s.mu.RUnlock()
-	}()
-	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
-		return matchingPlan{}, errors.New("state WAL is unavailable")
+	if err := s.coordinateAvailable(); err != nil {
+		s.indexMu.RUnlock()
+		return matchingPlan{}, err
 	}
 	n := min(len(s.waitingRides), len(s.matchingChairs), matchingPlanLimit)
 	plan := matchingPlan{generation: s.generation, waiting: len(s.waitingRides), available: len(s.matchingChairs)}
 	if n == 0 || n < minimum || (generation != "" && generation != s.generation) {
+		s.indexMu.RUnlock()
 		return plan, nil
 	}
 	plan.count = n
-	// Only copy bounded immutable values under the state lock. All spatial
+	// Only copy bounded immutable values under the index lock. All spatial
 	// candidate construction and pair scoring run on the matching worker.
 	plan.rides = make([]Ride, min(len(s.waitingRides), matching.MaxRides))
 	for i := range plan.rides {
@@ -82,6 +78,7 @@ func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*
 	for i, id := range ids {
 		plan.chairs[i] = s.matchingChair(id)
 	}
+	s.indexMu.RUnlock()
 	return plan, nil
 }
 
@@ -90,14 +87,53 @@ func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*
 // Return retry only for conflicts within the same initialization generation.
 func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssignment) (retry bool, err error) {
 	started := time.Now()
-	s.mu.Lock()
+	users := make([]string, 0, len(assignments))
+	selected := make([]Ride, 0, len(assignments))
+	for _, a := range assignments {
+		if a.rideIndex >= 0 && a.rideIndex < len(plan.rides) {
+			row := plan.rides[a.rideIndex]
+			users = append(users, row.UserID)
+			selected = append(selected, row)
+		}
+	}
+	unlockUsers := lockStateKeys(&s.userStateLocks, users, false)
+	defer unlockUsers()
+	owners := make(map[string]string, len(selected))
+	ids := make([]string, 0, len(selected))
+	for _, row := range selected {
+		ids = append(ids, row.ID)
+		owners[row.ID] = row.UserID
+	}
+	sort.Strings(ids)
+	lockedRides := make([]*memoryRide, 0, len(ids))
+	for i, id := range ids {
+		if i > 0 && ids[i-1] == id {
+			continue
+		}
+		if r := s.rides.get(id); r != nil && r.ownerID == owners[id] {
+			r.mu.Lock()
+			lockedRides = append(lockedRides, r)
+		}
+	}
+	defer func() {
+		for i := len(lockedRides) - 1; i >= 0; i-- {
+			lockedRides[i].mu.Unlock()
+		}
+	}()
+	chairs := make([]string, 0, len(assignments))
+	for _, a := range assignments {
+		if a.chairIndex >= 0 && a.chairIndex < len(plan.chairs) {
+			chairs = append(chairs, plan.chairs[a.chairIndex].ID)
+		}
+	}
+	unlockChairs := lockStateKeys(&s.chairLocks, chairs, false)
+	defer unlockChairs()
 	acquired := time.Now()
 	reason := "ok"
 	defer func() {
 		s.finishPlan(plan.observation, reason, acquired.Sub(started), time.Since(acquired), true)
-		s.mu.Unlock()
 	}()
-	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
+	if s.coordinateAvailable() != nil {
 		reason = "unavailable"
 		return false, errors.New("state WAL is unavailable")
 	}
@@ -118,8 +154,8 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 			return true, nil
 		}
 		row := plan.rides[assignment.rideIndex]
-		current := s.rides[row.ID]
-		if current == nil || current.ChairID.Valid || s.latest(current) != "MATCHING" || seenRides[row.ID] {
+		current := s.rides.get(row.ID)
+		if current == nil || current.ownerID != row.UserID || current.ChairID.Valid || s.latest(current) != "MATCHING" || seenRides[row.ID] {
 			reason = "conflict_rides"
 			return true, nil
 		}
@@ -129,8 +165,8 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 			return true, nil
 		}
 		id := plan.chairs[assignment.chairIndex].ID
-		chair, exists := s.chairs[id]
-		currentChair, queue := s.chairCurrent[id], s.chairEvents[id]
+		chair, exists := s.chairs.lookup(id)
+		currentChair, queue := s.chairCurrent.get(id), s.chairEvents.get(id)
 		if !exists || !chair.IsActive || seenChairs[id] || (currentChair != nil && len(currentChair.unfinished) != 0) ||
 			(queue != nil && queue.pending.Len() != 0) {
 			reason = "conflict_chairs"
@@ -146,12 +182,12 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 	}
 	record := stateRecord{Rides: make([]Ride, 0, len(assignments))}
 	for _, assignment := range assignments {
-		row := s.rides[plan.rides[assignment.rideIndex].ID].Ride
+		row := s.rides.get(plan.rides[assignment.rideIndex].ID).Ride
 		chairID := plan.chairs[assignment.chairIndex].ID
 		at := time.Now().UTC().Truncate(time.Microsecond)
-		previous := s.chairRides[chairID]
+		previous := s.chairRides.get(chairID)
 		if len(previous) > 0 {
-			last := s.rides[previous[len(previous)-1]].UpdatedAt
+			last := s.rides.get(previous[len(previous)-1]).UpdatedAt
 			if !at.After(last) {
 				at = last.Add(time.Microsecond)
 			}
@@ -230,11 +266,11 @@ func (s *rideState) matchBatch(generation string, minimum int) (string, error) {
 			return plan.generation, err
 		}
 	}
-	s.mu.Lock()
+	s.observationMu.Lock()
 	if lastTiming.metrics != nil && lastTiming.metrics == s.metrics && lastTiming.generation == s.generation {
 		s.metrics.counters["match_abandon_limit"]++
 	}
-	s.mu.Unlock()
+	s.observationMu.Unlock()
 	// Continued churn defers work to the next external matcher invocation.
 	return "", nil
 }

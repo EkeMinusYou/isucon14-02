@@ -88,7 +88,7 @@ func TestCoordinatePathIndependentOfControlAndOtherStripe(t *testing.T) {
 		t.Fatal("test requires different stripes")
 	}
 	// Fence both common state and an unrelated chair's WAL/operation mutex.
-	s.mu.Lock()
+	s.walMu.Lock()
 	stripe := &s.coordinates.stripes[coordinateStripeIndex("b")]
 	stripe.mu.Lock()
 	cell := s.coordinateCell("b")
@@ -99,7 +99,7 @@ func TestCoordinatePathIndependentOfControlAndOtherStripe(t *testing.T) {
 			unlocked = true
 			cell.mu.Unlock()
 			stripe.mu.Unlock()
-			s.mu.Unlock()
+			s.walMu.Unlock()
 		}
 	}
 	defer unlock()
@@ -129,7 +129,7 @@ func TestCoordinatePathIndependentOfControlAndOtherStripe(t *testing.T) {
 	readerCell := s.coordinateCell("a")
 	readerCell.mu.Lock()
 	read := make(chan distanceTotal, 1)
-	go func() { s.mu.RLock(); d := s.chairDistance("a"); s.mu.RUnlock(); read <- d }()
+	go func() { d := s.chairDistance("a"); read <- d }()
 	select {
 	case d := <-read:
 		if d.TotalDistance != 0 || d.Latitude.Int64 != 3 {
@@ -183,7 +183,7 @@ func TestCoordinateRecoveryArrivalsAndGeneration(t *testing.T) {
 		}
 		s = memoryTestStateIn(t, directory, "generation-one", seed)
 		d := s.chairDistance("a")
-		if d.TotalDistance != before.TotalDistance || d.Latitude != before.Latitude || !d.UpdatedAt.Time.Equal(before.UpdatedAt.Time) || s.latest(s.rides["r"]) != "ARRIVED" || s.sequence != controlSequence {
+		if d.TotalDistance != before.TotalDistance || d.Latitude != before.Latitude || !d.UpdatedAt.Time.Equal(before.UpdatedAt.Time) || s.latest(s.rides.get("r")) != "ARRIVED" || s.sequence != controlSequence {
 			t.Fatal("restart lost distance, position or arrival")
 		}
 		history := readTestCoordinates(t, s)
@@ -191,8 +191,8 @@ func TestCoordinateRecoveryArrivalsAndGeneration(t *testing.T) {
 			t.Fatalf("history length %d", len(history))
 		}
 		var statuses []string
-		for _, id := range s.chairEvents["a"].ids {
-			statuses = append(statuses, s.statuses[id].Status)
+		for _, id := range s.chairEvents.get("a").ids {
+			statuses = append(statuses, s.statuses.get(id).Status)
 		}
 		if !reflect.DeepEqual(statuses, []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED"}) {
 			t.Fatalf("notification order: %v", statuses)
@@ -202,7 +202,7 @@ func TestCoordinateRecoveryArrivalsAndGeneration(t *testing.T) {
 		t.Fatal(err)
 	}
 	s = memoryTestStateIn(t, directory, "generation-two", seed)
-	if len(readTestCoordinates(t, s)) != 0 || s.chairDistance("a").UpdatedAt.Valid || s.latest(s.rides["r"]) != "MATCHING" {
+	if len(readTestCoordinates(t, s)) != 0 || s.chairDistance("a").UpdatedAt.Valid || s.latest(s.rides.get("r")) != "MATCHING" {
 		t.Fatal("initialize retained old coordinate generation")
 	}
 	if _, ok := s.coordinates.tokens.Load(s.accountKey("token")); !ok {
@@ -228,13 +228,13 @@ func TestCoordinateControlWriteFailureDoesNotPublishOrReplay(t *testing.T) {
 	if _, err := s.coordinate("a", Coordinate{10, 20}); err == nil {
 		t.Fatal("failed control WAL accepted arrival")
 	}
-	if s.chairDistance("a") != before || s.latest(s.rides["r"]) != "ENROUTE" {
+	if s.chairDistance("a") != before || s.latest(s.rides.get("r")) != "ENROUTE" {
 		t.Fatal("failed control WAL published arrival")
 	}
 	s.close()
 	s = memoryTestStateIn(t, directory, "test", seed)
 	d := s.chairDistance("a")
-	if d.TotalDistance != before.TotalDistance || d.Latitude != before.Latitude || s.latest(s.rides["r"]) != "ENROUTE" || len(readTestCoordinates(t, s)) != 1 {
+	if d.TotalDistance != before.TotalDistance || d.Latitude != before.Latitude || s.latest(s.rides.get("r")) != "ENROUTE" || len(readTestCoordinates(t, s)) != 1 {
 		t.Fatal("prepared arrival replayed without control commit")
 	}
 	// Reuse the unpublished chair sequence after restart; stripe sequence still
@@ -246,7 +246,7 @@ func TestCoordinateControlWriteFailureDoesNotPublishOrReplay(t *testing.T) {
 		t.Fatal(err)
 	}
 	s = memoryTestStateIn(t, directory, "test", seed)
-	if s.latest(s.rides["r"]) != "PICKUP" || s.chairDistance("a").TotalDistance != 27 || len(readTestCoordinates(t, s)) != 2 {
+	if s.latest(s.rides.get("r")) != "PICKUP" || s.chairDistance("a").TotalDistance != 27 || len(readTestCoordinates(t, s)) != 2 {
 		t.Fatal("retry arrival did not survive restart")
 	}
 }
@@ -336,12 +336,10 @@ func TestCoordinateConcurrentStripesTransitionsAndReaders(t *testing.T) {
 			default:
 			}
 			rideMeasurementSnapshot()
-			s.mu.RLock()
-			for id := range s.chairs {
+			for id := range s.chairs.all() {
 				s.matchingChair(id)
 				s.chairDistance(id)
 			}
-			s.mu.RUnlock()
 		}
 	}()
 	var workers sync.WaitGroup
@@ -380,8 +378,8 @@ func TestCoordinateConcurrentStripesTransitionsAndReaders(t *testing.T) {
 	workers.Wait()
 	close(done)
 	wg.Wait()
-	for id := range s.chairs {
-		if s.latest(s.rides[id]) != "ARRIVED" || s.chairDistance(id).TotalDistance != 70 {
+	for id := range s.chairs.all() {
+		if s.latest(s.rides.get(id)) != "ARRIVED" || s.chairDistance(id).TotalDistance != 70 {
 			t.Fatalf("chair %s lost transition or distance", id)
 		}
 	}

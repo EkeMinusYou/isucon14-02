@@ -64,8 +64,8 @@ func TestConcurrentInvitationsAndCouponConsumption(t *testing.T) {
 	for i := 0; i < inviters; i++ {
 		id := fmt.Sprintf("inviter-%d", i)
 		var issued, rewards, consumed int
-		issued = runtimeState.couponCounts[runtimeState.accountKey("INV_"+id)]
-		for _, coupon := range runtimeState.coupons[id] {
+		issued = runtimeState.couponCounts.get(runtimeState.accountKey("INV_" + id))
+		for _, coupon := range runtimeState.coupons.get(id) {
 			if strings.HasPrefix(coupon.Code, "RWD_") {
 				rewards++
 			}
@@ -82,7 +82,7 @@ func TestConcurrentInvitationsAndCouponConsumption(t *testing.T) {
 	if err := runtimeState.restore(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	if runtimeState.invitationUsers[runtimeState.accountKey("inviter-0")] != "inviter-0" {
+	if runtimeState.invitationUsers.get(runtimeState.accountKey("inviter-0")) != "inviter-0" {
 		t.Fatal("invitation lookup was not restored")
 	}
 	res := httptest.NewRecorder()

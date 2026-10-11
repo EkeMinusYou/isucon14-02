@@ -66,7 +66,7 @@ func flowStage(status string) int {
 	}
 }
 
-// These aggregates live under s.mu and only touch the affected chair. Snapshot
+// These aggregates use observationMu and only touch the affected chair. Snapshot
 // derives active ages and integrated chair-ms without scanning ride history.
 func (s *rideState) startFlow(r *memoryRide, at time.Time, full bool) {
 	if r.ChairID.Valid {
@@ -75,6 +75,8 @@ func (s *rideState) startFlow(r *memoryRide, at time.Time, full bool) {
 	if s.metrics == nil || s.dispatch == nil || !r.ChairID.Valid {
 		return
 	}
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	c := s.dispatch.chair[r.ChairID.String]
 	if c == nil || c.flow.stage != flowNone {
 		return
@@ -132,6 +134,8 @@ func (s *rideState) observeFlowStatus(r *memoryRide, status string) {
 	if s.metrics == nil || s.dispatch == nil || !r.ChairID.Valid {
 		return
 	}
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	c := s.dispatch.chair[r.ChairID.String]
 	if c != nil && c.flow.stage != flowNone {
 		s.changeFlow(c, flowStage(status), time.Now(), true)
@@ -142,11 +146,14 @@ func (s *rideState) observeReusable(id string) {
 	if s.metrics == nil || s.dispatch == nil {
 		return
 	}
+	s.indexMu.RLock()
+	_, available := s.matchingChairs[id]
+	s.indexMu.RUnlock()
+	s.observationMu.Lock()
+	defer s.observationMu.Unlock()
 	c := s.dispatch.chair[id]
-	if c != nil && c.flow.stage == flowReuse {
-		if _, available := s.matchingChairs[id]; available {
-			s.changeFlow(c, flowNone, time.Now(), true)
-		}
+	if c != nil && c.flow.stage == flowReuse && available {
+		s.changeFlow(c, flowNone, time.Now(), true)
 	}
 }
 
@@ -154,10 +161,10 @@ func (s *rideState) resetFlow() {
 	m := s.metrics
 	// Restore only current work. Historical completions never become new cycles.
 	for id, c := range s.dispatch.chair {
-		current := s.chairCurrent[id]
+		current := s.chairCurrent.get(id)
 		if current != nil && len(current.unfinished) > 0 {
 			s.startFlow(current.unfinished[len(current.unfinished)-1], m.started, false)
-		} else if c.pending > 0 || (!c.active && len(s.chairRides[id]) > 0 && s.latest(s.rides[s.chairRides[id][len(s.chairRides[id])-1]]) == "COMPLETED") {
+		} else if c.pending > 0 || (!c.active && len(s.chairRides.get(id)) > 0 && s.latest(s.rides.get(s.chairRides.get(id)[len(s.chairRides.get(id))-1])) == "COMPLETED") {
 			// A restored completion blocked by its ACK queue or activity.
 			c.flow = chairFlow{started: m.started}
 			m.flow.ongoing.chairs++
