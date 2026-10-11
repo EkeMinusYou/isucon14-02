@@ -57,9 +57,10 @@ func requestPaymentGatewayPostPayment(ctx context.Context, paymentGatewayURL str
 			return retryable, fmt.Errorf("[POST /payments] unexpected status code (%d): %w", res.StatusCode, erroredUpstream)
 		}()
 		if err != nil {
-			if retryable && ctx.Err() == nil && retry < 5 {
+			// Keep up to 500 ms of fixed waits, excluding request duration.
+			if retryable && ctx.Err() == nil && retry < 10 {
 				retry++
-				time.Sleep(100 * time.Millisecond)
+				time.Sleep(50 * time.Millisecond)
 				continue
 			} else {
 				return retry, err

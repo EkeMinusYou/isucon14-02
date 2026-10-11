@@ -1,0 +1,254 @@
+2026-10-11T00:14:27.156071222Z	BENCHMARK_START
+time=09:14:27.515 level=INFO msg=負荷走行を開始します
+time=09:14:27.515 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=09:14:32.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=09:14:32.930 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=09:14:34.702 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=1
+time=09:14:34.702 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=1
+time=09:14:34.702 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=1
+time=09:14:34.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=09:14:34.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=19 score="[0 0 0 11 8]" criteria="[19 8 19 19]"
+time=09:14:36.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=1
+time=09:14:36.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=09:14:36.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=09:14:36.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=09:14:36.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=2
+time=09:14:36.529 level=INFO msg=これまでに地域内の評判によって6人、既存ユーザーの招待経由で36人が新規登録しました
+time=09:14:36.529 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、70.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.4%のライドは椅子の実移動時間に不満がありました
+time=09:14:36.529 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=09:14:36.529 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=37 score="[0 0 1 25 11]" criteria="[37 11 37 36]"
+time=09:14:38.302 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=09:14:38.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=09:14:38.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=2
+time=09:14:38.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=09:14:38.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=2
+time=09:14:38.329 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=09:14:38.329 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=58 score="[0 0 1 38 19]" criteria="[58 19 58 57]"
+time=09:14:40.102 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=2
+time=09:14:40.102 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=1
+time=09:14:40.102 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=09:14:40.102 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=2
+time=09:14:40.102 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=2
+time=09:14:40.129 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=09:14:40.129 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=82 score="[0 0 1 56 25]" criteria="[82 25 82 81]"
+time=09:14:41.902 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=1
+time=09:14:41.902 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=4
+time=09:14:41.902 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=2
+time=09:14:41.902 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=3
+time=09:14:41.903 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=09:14:41.929 level=INFO msg=これまでに地域内の評判によって18人、既存ユーザーの招待経由で113人が新規登録しました
+time=09:14:41.929 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、64.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=09:14:41.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=09:14:41.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=121 score="[0 0 1 77 43]" criteria="[121 43 121 120]"
+time=09:14:43.702 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=2
+time=09:14:43.703 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=09:14:43.704 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=3
+time=09:14:43.705 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=3
+time=09:14:43.705 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=6
+time=09:14:43.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=09:14:43.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=169 score="[0 0 1 113 55]" criteria="[169 55 169 168]"
+time=09:14:45.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=3
+time=09:14:45.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=4
+time=09:14:45.502 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=3
+time=09:14:45.505 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=6
+time=09:14:45.506 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=09:14:45.529 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=09:14:45.529 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=236 score="[0 0 1 139 96]" criteria="[236 97 236 234]"
+time=09:14:47.302 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=6
+time=09:14:47.302 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=5
+time=09:14:47.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=4
+time=09:14:47.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=4
+time=09:14:47.306 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=4
+time=09:14:47.329 level=INFO msg=これまでに地域内の評判によって30人、既存ユーザーの招待経由で305人が新規登録しました
+time=09:14:47.329 level=INFO msg=0.3%のライドは椅子がマッチされるまでの時間、57.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=09:14:47.329 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=09:14:47.329 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=333 score="[0 0 1 193 139]" criteria="[332 142 333 330]"
+time=09:14:49.103 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=4
+time=09:14:49.104 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=09:14:49.104 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=5
+time=09:14:49.104 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=5
+time=09:14:49.105 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=5
+time=09:14:49.129 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=09:14:49.129 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=438 score="[0 0 1 241 196]" criteria="[437 199 438 435]"
+time=09:14:50.903 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=8
+time=09:14:50.905 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=4
+time=09:14:50.905 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=6
+time=09:14:50.906 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=6
+time=09:14:50.906 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=6
+time=09:14:50.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=09:14:50.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=575 score="[0 0 21 331 223]" criteria="[506 277 574 570]"
+time=09:14:52.706 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=7
+time=09:14:52.706 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=7
+time=09:14:52.706 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=9
+time=09:14:52.707 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=6
+time=09:14:52.707 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=6
+time=09:14:52.729 level=INFO msg=これまでに地域内の評判によって42人、既存ユーザーの招待経由で613人が新規登録しました
+time=09:14:52.729 level=INFO msg=30.8%のライドは椅子がマッチされるまでの時間、46.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=09:14:52.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=09:14:52.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=753 score="[0 0 64 463 226]" criteria="[521 401 752 747]"
+time=09:14:54.503 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=7
+time=09:14:54.504 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=8
+time=09:14:54.507 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=9
+time=09:14:54.507 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=8
+time=09:14:54.507 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=09:14:54.529 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=09:14:54.529 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=984 score="[0 0 115 616 253]" criteria="[569 561 983 977]"
+time=09:14:56.304 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=7
+time=09:14:56.306 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=7
+time=09:14:56.324 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=09:14:56.328 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=8
+time=09:14:56.328 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=11
+time=09:14:56.329 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=09:14:56.329 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1247 score="[0 0 177 808 262]" criteria="[582 759 1246 1239]"
+time=09:14:58.106 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=8
+time=09:14:58.107 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=9
+time=09:14:58.129 level=INFO msg=これまでに地域内の評判によって54人、既存ユーザーの招待経由で1136人が新規登録しました
+time=09:14:58.129 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=09:14:58.129 level=INFO msg=62.0%のライドは椅子がマッチされるまでの時間、35.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=09:14:58.130 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=8
+time=09:14:58.130 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=9
+time=09:14:58.130 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=11
+time=09:14:58.129 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=09:14:58.129 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1538 score="[0 1 235 1040 262]" criteria="[584 991 1537 1527]"
+time=09:14:59.908 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=7
+time=09:14:59.908 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=9
+time=09:14:59.927 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=11
+time=09:14:59.928 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=14
+time=09:14:59.928 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=12
+time=09:14:59.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=09:14:59.929 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1890 score="[0 3 328 1297 262]" criteria="[585 1254 1888 1871]"
+time=09:15:01.710 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=10
+time=09:15:01.711 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=9
+time=09:15:01.711 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=10
+time=09:15:01.715 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=9
+time=09:15:01.716 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=14
+time=09:15:01.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=09:15:01.729 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2227 score="[0 5 392 1568 262]" criteria="[585 1527 2225 2204]"
+time=09:15:03.689 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=13
+time=09:15:03.690 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=11
+time=09:15:03.691 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=11
+time=09:15:03.693 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=15
+time=09:15:03.700 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=13
+time=09:15:03.710 level=INFO msg=これまでに地域内の評判によって66人、既存ユーザーの招待経由で1855人が新規登録しました
+time=09:15:03.710 level=INFO msg=これまでに低評価なライドによって2人が利用をやめました
+time=09:15:03.710 level=INFO msg=77.9%のライドは椅子がマッチされるまでの時間、29.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.0%のライドは椅子の実移動時間に不満がありました
+time=09:15:03.709 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=09:15:03.709 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2651 score="[0 9 489 1891 262]" criteria="[585 1874 2649 2600]"
+time=09:15:05.485 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=11
+time=09:15:05.488 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=10
+time=09:15:05.494 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=14
+time=09:15:05.494 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=14
+time=09:15:05.497 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=18
+time=09:15:05.509 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=09:15:05.509 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3106 score="[4 32 605 2203 262]" criteria="[585 2244 3088 2982]"
+time=09:15:06.876 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:15:07.295 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=12
+time=09:15:07.295 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=12
+time=09:15:07.301 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=11
+time=09:15:07.302 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=17
+time=09:15:07.303 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=13
+time=09:15:07.309 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=09:15:07.309 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3530 score="[11 48 758 2451 262]" criteria="[585 2606 3495 3279]"
+time=09:15:09.089 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=12
+time=09:15:09.094 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=10
+time=09:15:09.100 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=17
+time=09:15:09.109 level=INFO msg=これまでに地域内の評判によって78人、既存ユーザーの招待経由で2521人が新規登録しました
+time=09:15:09.109 level=INFO msg=これまでに低評価なライドによって34人が利用をやめました
+time=09:15:09.109 level=INFO msg=85.3%のライドは椅子がマッチされるまでの時間、25.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、5.7%のライドは椅子の実移動時間に不満がありました
+time=09:15:09.118 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=14
+time=09:15:09.109 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=09:15:09.109 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3967 score="[16 82 923 2684 262]" criteria="[585 2964 3904 3575]"
+time=09:15:09.152 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=12
+time=09:15:10.886 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=13
+time=09:15:10.890 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=13
+time=09:15:10.901 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=14
+time=09:15:10.901 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=14
+time=09:15:10.901 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=20
+time=09:15:10.909 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=09:15:10.909 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4448 score="[33 117 1199 2837 262]" criteria="[585 3369 4348 3772]"
+time=09:15:12.708 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=19
+time=09:15:12.708 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=17
+time=09:15:12.709 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=09:15:12.709 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5061 score="[59 160 1525 3055 262]" criteria="[585 3895 4906 4037]"
+time=09:15:12.736 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=17
+time=09:15:12.747 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=19
+time=09:15:12.748 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=24
+time=09:15:14.838 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=11
+time=09:15:14.839 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=12
+time=09:15:14.839 level=INFO msg=これまでに地域内の評判によって90人、既存ユーザーの招待経由で3057人が新規登録しました
+time=09:15:14.839 level=INFO msg=これまでに低評価なライドによって92人が利用をやめました
+time=09:15:14.839 level=INFO msg=89.6%のライドは椅子がマッチされるまでの時間、21.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、13.3%のライドは椅子の実移動時間に不満がありました
+time=09:15:14.839 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=09:15:14.839 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5603 score="[67 169 1809 3296 262]" criteria="[585 4418 5432 4288]"
+time=09:15:14.845 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=20
+time=09:15:14.858 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=17
+time=09:15:14.858 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=17
+time=09:15:16.619 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=26
+time=09:15:16.620 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=15
+time=09:15:16.620 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=19
+time=09:15:16.621 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=20
+time=09:15:16.621 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=14
+time=09:15:16.640 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=09:15:16.640 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6202 score="[70 178 2305 3387 262]" criteria="[585 5012 6020 4380]"
+time=09:15:18.431 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=15
+time=09:15:18.433 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=15
+time=09:15:18.436 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=17
+time=09:15:18.437 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=17
+time=09:15:18.439 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=24
+time=09:15:18.440 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=09:15:18.440 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6808 score="[72 189 2765 3520 262]" criteria="[585 5608 6618 4516]"
+time=09:15:20.240 level=INFO msg=これまでに地域内の評判によって104人、既存ユーザーの招待経由で3304人が新規登録しました
+time=09:15:20.240 level=INFO msg=これまでに低評価なライドによって99人が利用をやめました
+time=09:15:20.240 level=INFO msg=91.9%のライドは椅子がマッチされるまでの時間、16.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、19.5%のライドは椅子の実移動時間に不満がありました
+time=09:15:20.240 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=09:15:20.240 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7197 score="[76 197 3069 3593 262]" criteria="[585 5990 6994 4593]"
+time=09:15:20.321 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=12
+time=09:15:20.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=14
+time=09:15:20.334 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=12
+time=09:15:20.335 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=11
+time=09:15:22.018 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=19
+time=09:15:22.019 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=18
+time=09:15:22.022 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=24
+time=09:15:22.024 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=22
+time=09:15:22.024 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=44
+time=09:15:22.039 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=09:15:22.039 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7968 score="[91 270 3677 3668 262]" criteria="[585 6744 7671 4676]"
+time=09:15:23.835 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=15
+time=09:15:23.836 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4M50D2AAK4QVJ0YXK2W8GNC, got: 57000)"
+time=09:15:23.839 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=09:15:23.839 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8583 score="[101 361 4086 3773 262]" criteria="[585 7339 8174 4802]"
+time=09:15:23.894 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=19
+time=09:15:25.699 level=INFO msg=これまでに地域内の評判によって121人、既存ユーザーの招待経由で3479人が新規登録しました
+time=09:15:25.699 level=INFO msg=これまでに低評価なライドによって178人が利用をやめました
+time=09:15:25.699 level=INFO msg=93.5%のライドは椅子がマッチされるまでの時間、14.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、25.9%のライドは椅子の実移動時間に不満がありました
+time=09:15:25.700 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=29
+time=09:15:25.699 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=09:15:25.699 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9025 score="[117 443 4381 3822 262]" criteria="[585 7760 8510 4864]"
+time=09:15:25.825 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=30
+time=09:15:26.196 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:15:27.499 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=09:15:27.499 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9753 score="[139 701 4809 3842 262]" criteria="[585 8455 8941 4912]"
+time=09:15:27.504 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=PulseRide 増加数=30
+time=09:15:27.584 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=CityRide 増加数=63
+time=09:15:27.585 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=ひまわり交通 増加数=34
+time=09:15:29.325 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=38
+time=09:15:29.362 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子のめぐりや 増加数=32
+time=09:15:29.299 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1920
+time=09:15:29.299 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10297 score="[169 865 5139 3862 262]" criteria="[585 8966 9279 4947]"
+time=09:15:36.129 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=2654 アクティブユーザー数=2475
+time=09:15:36.129 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1110 アクティブユーザー数=994
+time=09:15:36.129 level=INFO msg=最終オーナー情報 名前=CityRide 売上=17185900 椅子数=402
+time=09:15:36.129 level=INFO msg=最終オーナー情報 名前=椅子のめぐりや 売上=11448500 椅子数=286
+time=09:15:36.129 level=INFO msg=最終オーナー情報 名前=つばさ交通 売上=13200600 椅子数=328
+time=09:15:36.129 level=INFO msg=最終オーナー情報 名前=PulseRide 売上=11319000 椅子数=269
+time=09:15:36.129 level=INFO msg=最終オーナー情報 名前=ひまわり交通 売上=13232300 椅子数=311
+time=09:15:36.129 level=INFO msg=94.8%のライドは椅子がマッチされるまでの時間、12.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、33.1%のライドは椅子の実移動時間に不満がありました
+time=09:15:36.130 level=INFO msg=結果 pass=true スコア=727170 種別エラー数="map[17:2 24:1]"
+time=09:15:36.130 level=INFO msg=負荷走行が終了しました
+
+SCORE: 727170
+BENCHMARK_PASS
+2026-10-11T00:15:36.646804173Z	BENCHMARK_END
+
+SCORE: 727170
+BENCHMARK_PASS
