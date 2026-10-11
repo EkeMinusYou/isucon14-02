@@ -58,9 +58,9 @@ tasks:
           {{if eq .ITEM (splitList " " .APP_HOSTS | first)}}
           result=$(curl --fail-with-body --silent --show-error --max-time 3
           -H "Content-Type: application/json"
-          -d "{\"r\":[{\"d\":1}],\"c\":[{\"s\":2}]}"
+          -d "{\"n\":1,\"f\":1,\"r\":[{\"d\":1}],\"c\":[{\"s\":2}]}"
           http://{{index .IP (splitList " " .SOLVER_HOSTS | first)}}:{{.SOLVER_PORT}}/solve);
-          test "$result" = "{\"c\":[0]}";
+          test "$result" = "{\"r\":[0],\"c\":[0]}";
           echo "private solver RPC OK";
           {{else}}
           code=$(curl --silent --show-error --max-time 3 -o /dev/null -w "%{http_code}"

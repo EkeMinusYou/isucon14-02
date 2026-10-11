@@ -43,8 +43,9 @@ func newMatchingRPCClient(endpoint string) (*matchingRPCClient, error) {
 	}}, nil
 }
 
-func matchingRequest(rides []Ride, chairs []matchingChair) matching.Request {
-	request := matching.Request{Rides: make([]matching.Ride, len(rides)), Chairs: make([]matching.Chair, len(chairs))}
+func matchingRequest(plan matchingPlan) matching.Request {
+	rides, chairs := plan.rides, plan.chairs
+	request := matching.Request{Count: plan.count, Required: plan.required, Rides: make([]matching.Ride, len(rides)), Chairs: make([]matching.Chair, len(chairs))}
 	for i, ride := range rides {
 		request.Rides[i] = matching.Ride{PickupLatitude: ride.PickupLatitude, PickupLongitude: ride.PickupLongitude,
 			DestinationLatitude: ride.DestinationLatitude, DestinationLongitude: ride.DestinationLongitude}
@@ -55,14 +56,18 @@ func matchingRequest(rides []Ride, chairs []matchingChair) matching.Request {
 	return request
 }
 
-func (c *matchingRPCClient) solve(rides []Ride, chairs []matchingChair) ([]matchingAssignment, error) {
+func (c *matchingRPCClient) solve(plan matchingPlan) ([]matchingAssignment, error) {
 	if c == nil {
 		return nil, errors.New("matching solver is unavailable")
 	}
 	// Include conversion, encoding, dialing, decoding and validation in the bound.
 	ctx, cancel := context.WithTimeout(context.Background(), c.client.Timeout)
 	defer cancel()
-	body, err := json.Marshal(matchingRequest(rides, chairs))
+	request := matchingRequest(plan)
+	if err := request.Validate(); err != nil {
+		return nil, err
+	}
+	body, err := json.Marshal(request)
 	if err != nil {
 		return nil, err
 	}
@@ -93,17 +98,12 @@ func (c *matchingRPCClient) solve(rides []Ride, chairs []matchingChair) ([]match
 	if err := matching.Decode(bytes.NewReader(data), &result); err != nil {
 		return nil, fmt.Errorf("matching response: %w", err)
 	}
-	if len(result.Chairs) != len(rides) {
-		return nil, errors.New("matching response has wrong assignment count")
+	if err := result.Validate(request); err != nil {
+		return nil, err
 	}
-	seen := make([]bool, len(chairs))
-	assignments := make([]matchingAssignment, len(rides))
-	for i, chair := range result.Chairs {
-		if chair < 0 || chair >= len(chairs) || seen[chair] {
-			return nil, errors.New("matching response has invalid or duplicate chair index")
-		}
-		seen[chair] = true
-		assignments[i] = matchingAssignment{rideIndex: i, chairIndex: chair}
+	assignments := make([]matchingAssignment, len(result.Rides))
+	for i, ride := range result.Rides {
+		assignments[i] = matchingAssignment{rideIndex: ride, chairIndex: result.Chairs[i]}
 	}
 	if err := ctx.Err(); err != nil {
 		return nil, err

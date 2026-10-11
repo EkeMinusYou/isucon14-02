@@ -1,9 +1,7 @@
 package main
 
 import (
-	"crypto/sha256"
 	"errors"
-	"fmt"
 	"io"
 	"math/rand/v2"
 	"net/http"
@@ -18,14 +16,13 @@ import (
 	"github.com/isucon/isucon14/webapp/go/internal/matching"
 )
 
-// This fixture locks down the pre-extraction solver's exact assignments,
-// including stable ties, unknown metadata, and the full planning horizon.
+// Exercise RPC parity for joint choices, ties, fallback and full horizon.
 func matchingRPCFixtures() []matchingPlan {
 	rng := rand.New(rand.NewPCG(17, 31))
 	var plans []matchingPlan
 	for _, n := range []int{0, 1, 2, 7, 32, 127, 256} {
 		for _, mode := range []string{"random", "ties", "unknown"} {
-			plan := matchingPlan{rides: make([]Ride, n), chairs: make([]matchingChair, n*3+1)}
+			plan := matchingPlan{count: n, required: (n + 3) / 4, rides: make([]Ride, n*2), chairs: make([]matchingChair, n*3+1)}
 			for i := range plan.rides {
 				plan.rides[i] = Ride{PickupLatitude: rng.IntN(100) - 50, PickupLongitude: rng.IntN(100) - 50,
 					DestinationLatitude: rng.IntN(100) - 50, DestinationLongitude: rng.IntN(100) - 50}
@@ -45,19 +42,21 @@ func matchingRPCFixtures() []matchingPlan {
 			plans = append(plans, plan)
 		}
 	}
-	plans = append(plans, matchingPlan{rides: []Ride{{PickupLatitude: -2147483648, DestinationLongitude: 2147483647}}, chairs: []matchingChair{{Latitude: 2147483647, Longitude: -2147483648, Speed: 3}}})
+	plans = append(plans, matchingPlan{count: 1, required: 1, rides: []Ride{{PickupLatitude: -2147483648, DestinationLongitude: 2147483647}}, chairs: []matchingChair{{Latitude: 2147483647, Longitude: -2147483648, Speed: 3}}})
 	return plans
 }
 
-func TestMatchingRPCOriginalAssignments(t *testing.T) {
+func TestMatchingRPCJointAssignments(t *testing.T) {
 	client := testMatchingRPCClient(t, nil)
-	h := sha256.New()
 	for _, plan := range matchingRPCFixtures() {
-		expected := assignMatchingChairs(plan.rides, plan.chairs)
+		var expected []matchingAssignment
+		if plan.count != 0 {
+			expected = assignMatchingPlan(plan)
+		}
 		var actual []matchingAssignment
 		if len(plan.rides) != 0 {
 			var err error
-			actual, err = client.solve(plan.rides, plan.chairs)
+			actual, err = client.solve(plan)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -65,15 +64,8 @@ func TestMatchingRPCOriginalAssignments(t *testing.T) {
 		if !reflect.DeepEqual(actual, expected) {
 			t.Fatalf("RPC changed assignments: %v != %v", actual, expected)
 		}
-		for _, a := range actual {
-			fmt.Fprintln(h, a.rideIndex, a.chairIndex)
-		}
-		fmt.Fprintln(h, "end")
 	}
-	const original = "4f9d299a2ad54b3ee5b6f0091165dfa91a40c3c83dbb363e84a5ddb6c15a259c"
-	if got := fmt.Sprintf("%x", h.Sum(nil)); got != original {
-		t.Fatalf("pre-extraction assignments changed: %s", got)
-	}
+
 }
 
 func testMatchingRPCClient(t *testing.T, handler http.Handler) *matchingRPCClient {
@@ -97,22 +89,31 @@ func TestMatchingRPCFailuresDoNotPublish(t *testing.T) {
 	}{
 		{"unavailable", ``, http.StatusServiceUnavailable},
 		{"malformed", `{`, http.StatusOK},
-		{"truncated", `{"c":[0,1]`, http.StatusOK},
-		{"trailing", `{"c":[0,1]}{}`, http.StatusOK},
-		{"missing-row", `{"c":[0]}`, http.StatusOK},
-		{"extra-row", `{"c":[0,1,2]}`, http.StatusOK},
-		{"duplicate", `{"c":[0,0]}`, http.StatusOK},
-		{"negative", `{"c":[-1,0]}`, http.StatusOK},
-		{"out-of-range", `{"c":[0,4]}`, http.StatusOK},
-		{"null-index", `{"c":[null,1]}`, http.StatusOK},
+		{"truncated", `{"r":[0,1],"c":[0,1]`, http.StatusOK},
+		{"trailing", `{"r":[0,1],"c":[0,1]}{}`, http.StatusOK},
+		{"missing-row", `{"r":[0,1],"c":[0]}`, http.StatusOK},
+		{"extra-row", `{"r":[0,1],"c":[0,1,2]}`, http.StatusOK},
+		{"ride-duplicate", `{"r":[0,0],"c":[0,1]}`, http.StatusOK},
+		{"rescue-omitted", `{"r":[1,2],"c":[0,1]}`, http.StatusOK},
+		{"ride-negative", `{"r":[-1,0],"c":[0,1]}`, http.StatusOK},
+		{"ride-range", `{"r":[0,3],"c":[0,1]}`, http.StatusOK},
+		{"ride-null", `{"r":[null,1],"c":[0,1]}`, http.StatusOK},
+		{"duplicate", `{"r":[0,1],"c":[0,0]}`, http.StatusOK},
+		{"negative", `{"r":[0,1],"c":[-1,0]}`, http.StatusOK},
+		{"out-of-range", `{"r":[0,1],"c":[0,4]}`, http.StatusOK},
+		{"null-index", `{"r":[0,1],"c":[null,1]}`, http.StatusOK},
 		{"null-response", `null`, http.StatusOK},
-		{"unknown-field", `{"c":[0,1],"unexpected":1}`, http.StatusOK},
-		{"oversized", `{"c":[0,1]}` + strings.Repeat(" ", matching.MaxResponseBytes), http.StatusOK},
+		{"unknown-field", `{"r":[0,1],"c":[0,1],"unexpected":1}`, http.StatusOK},
+		{"oversized", `{"r":[0,1],"c":[0,1]}` + strings.Repeat(" ", matching.MaxResponseBytes), http.StatusOK},
 		{"disconnect", ``, 0},
 		{"timeout", ``, -1},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			s := matchingBatchTestState(t, 2, 4)
+			rides, chairs := 2, 4
+			if test.name == "rescue-omitted" {
+				rides, chairs = 3, 2
+			}
+			s := matchingBatchTestState(t, rides, chairs)
 			good := s.matchingSolver
 			s.matchingSolver = testMatchingRPCClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				switch test.status {
@@ -127,7 +128,7 @@ func TestMatchingRPCFailuresDoNotPublish(t *testing.T) {
 					// Release a late response only after the client has timed out.
 					io.Copy(io.Discard, r.Body)
 					<-r.Context().Done()
-					io.WriteString(w, `{"c":[0,1]}`)
+					io.WriteString(w, `{"r":[0,1],"c":[0,1]}`)
 				default:
 					w.WriteHeader(test.status)
 					io.WriteString(w, test.body)
@@ -140,13 +141,16 @@ func TestMatchingRPCFailuresDoNotPublish(t *testing.T) {
 			if err == nil {
 				t.Fatal("invalid RPC was accepted")
 			}
+			if test.name == "rescue-omitted" && !strings.Contains(err.Error(), "required ride") {
+				t.Fatalf("rescue failed for wrong reason: %v", err)
+			}
 			if test.status == -1 {
 				var timeout interface{ Timeout() bool }
 				if !errors.As(err, &timeout) || !timeout.Timeout() {
 					t.Fatalf("want timeout, got %v", err)
 				}
 			}
-			if s.sequence != 0 || len(readTestWAL(t, s)) != 0 || len(s.waitingRides) != 2 || len(s.matchingChairs) != 4 {
+			if s.sequence != 0 || len(readTestWAL(t, s)) != 0 || len(s.waitingRides) != rides || len(s.matchingChairs) != chairs {
 				t.Fatal("failed RPC wrote WAL or changed assignment indexes")
 			}
 			for _, ride := range s.rides {
@@ -167,7 +171,7 @@ func TestMatchingRPCFailuresDoNotPublish(t *testing.T) {
 			if err := s.match(); err != nil {
 				t.Fatal(err)
 			}
-			if s.sequence != 1 || len(readTestWAL(t, s)) != 1 || len(s.waitingRides) != 0 {
+			if s.sequence != 1 || len(readTestWAL(t, s)) != 1 || len(s.waitingRides) != rides-min(rides, chairs) {
 				t.Fatal("next invocation did not recover")
 			}
 		})

@@ -9,7 +9,98 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/isucon/isucon14/webapp/go/internal/matching"
 )
+
+func TestMatchingJointRevalidatesOnlySelectedRowsAndKeepsMetricPopulation(t *testing.T) {
+	for _, change := range []string{"unselected", "selected"} {
+		t.Run(change, func(t *testing.T) {
+			s := memoryTestState(t)
+			s.metrics = newRideMetrics()
+			s.resetDispatchMetrics()
+			at := time.Now().UTC().Add(-time.Second)
+			for i := 0; i < 4; i++ {
+				addGeographicTestChair(s, fmt.Sprint(i), 0)
+			}
+			for i := 0; i < 12; i++ {
+				row := Ride{ID: fmt.Sprintf("ride-%02d", i), UserID: "u", CreatedAt: at, DestinationLatitude: i + 1}
+				s.addRide(row, calculateSale(row))
+				s.addStatus(RideStatus{ID: row.ID + "-matching", RideID: row.ID, Status: "MATCHING", CreatedAt: at})
+			}
+			timing := s.beginPlan()
+			plan, err := s.snapshotMatching("", 0, timing)
+			if err != nil {
+				t.Fatal(err)
+			}
+			plan.observation = timing
+			timing.rides, timing.candidates = plan.count, len(plan.chairs)
+			sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
+			assignments := assignMatchingPlan(plan)
+			if len(plan.rides) != 12 || plan.count != 4 || plan.required != 1 {
+				t.Fatal("invalid joint fixture")
+			}
+			selected := map[int]bool{}
+			for _, a := range assignments {
+				selected[a.rideIndex] = true
+			}
+			changed := assignments[0].rideIndex
+			if change == "unselected" {
+				for i := range plan.rides {
+					if !selected[i] {
+						changed = i
+						break
+					}
+				}
+			}
+			// Complete a candidate after the immutable snapshot. A selected
+			// change invalidates the whole plan; an omitted row is irrelevant.
+			s.addStatus(s.newStatus(s.rides[plan.rides[changed].ID], "COMPLETED", time.Now()))
+			retry, err := s.commitMatching(plan, assignments)
+			if err != nil || retry != (change == "selected") {
+				t.Fatalf("retry=%v err=%v", retry, err)
+			}
+			if change == "selected" {
+				if s.sequence != 0 || len(readTestWAL(t, s)) != 0 {
+					t.Fatal("conflict published a partial plan")
+				}
+			} else if s.sequence != 1 || s.metrics.series["dispatch_batch"].sum != 4 || s.metrics.stateSeries["match_rides"].sum != 4 {
+				t.Fatal("candidate count contaminated output metrics")
+			}
+		})
+	}
+}
+
+func TestMatchingJointSnapshotInputCaps(t *testing.T) {
+	s := memoryTestState(t)
+	at := time.Now().UTC()
+	for i := matching.MaxRides; i >= 0; i-- {
+		row := Ride{ID: fmt.Sprintf("r-%05d", i), UserID: "u", CreatedAt: at}
+		s.addRide(row, initialFare)
+		s.addStatus(RideStatus{ID: row.ID + "-matching", RideID: row.ID, Status: "MATCHING", CreatedAt: at})
+	}
+	for i := matching.MaxChairs; i >= 0; i-- {
+		s.addChair(Chair{ID: fmt.Sprintf("c-%05d", i), IsActive: true})
+	}
+	plan, err := s.snapshotMatching("", 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if plan.count != matchingPlanLimit || plan.required != matchingPlanLimit/4 || len(plan.rides) != matching.MaxRides || len(plan.chairs) != matching.MaxChairs {
+		t.Fatal("RPC snapshot limits lost")
+	}
+	for i, ride := range plan.rides {
+		if ride.ID != fmt.Sprintf("r-%05d", i) {
+			t.Fatal("bounded input lost FIFO")
+		}
+	}
+	sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
+	for i, chair := range plan.chairs {
+		if chair.ID != fmt.Sprintf("c-%05d", i) {
+			t.Fatal("supply cap is not stable")
+		}
+	}
+}
 
 func testMatchingPlan(t *testing.T, s *rideState) (matchingPlan, []matchingAssignment) {
 	t.Helper()
@@ -18,7 +109,7 @@ func testMatchingPlan(t *testing.T, s *rideState) (matchingPlan, []matchingAssig
 		t.Fatal(err)
 	}
 	sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
-	return plan, assignMatchingChairs(plan.rides, plan.chairs)
+	return plan, assignMatchingPlan(plan)
 }
 
 func TestMatchingPlanRevalidation(t *testing.T) {
@@ -72,7 +163,7 @@ func TestMatchingPlanConcurrentCommit(t *testing.T) {
 		s.addStatus(RideStatus{ID: row.ID + "-matching", RideID: row.ID, Status: "MATCHING", CreatedAt: row.CreatedAt})
 	}
 	plan, assignments := testMatchingPlan(t, s)
-	if plan.rides[32].ID != "near-000" {
+	if len(plan.rides) != 256 || plan.count != 128 || plan.required != 32 {
 		t.Fatal("fixture did not select rides behind the FIFO prefix")
 	}
 	var wg sync.WaitGroup
@@ -114,7 +205,7 @@ func TestMatchingSnapshotAllowsCoordinateUpdates(t *testing.T) {
 			t.Error(err)
 		}
 	}()
-	assignments := assignMatchingChairs(plan.rides, plan.chairs)
+	assignments := assignMatchingPlan(plan)
 	wg.Wait()
 	s.matchingMu.Unlock()
 	if plan.chairs[0].Latitude != 0 {

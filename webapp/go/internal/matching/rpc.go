@@ -2,44 +2,100 @@ package matching
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net"
 	"net/http"
 	"net/netip"
+	"time"
 )
 
 const (
 	PlanLimit        = 256
+	MaxRides         = 8192
+	MaxChairs        = 4096
+	SolveTimeout     = 1500 * time.Millisecond
 	MaxRequestBytes  = 16 << 20
 	MaxResponseBytes = 16 << 10
 )
 
 type Request struct {
-	Rides  []Ride  `json:"r"`
-	Chairs []Chair `json:"c"`
+	Rides    []Ride  `json:"r"`
+	Chairs   []Chair `json:"c"`
+	Count    int     `json:"n"`
+	Required int     `json:"f"`
 }
 
-// Response row i contains the chair index for request ride i. The HTTP request
-// and response identify a single immutable plan; no server state is retained.
+// Rides are FIFO ordered; the first Required indices must be assigned.
+func (r Request) Validate() error {
+	if r.Count <= 0 || r.Count > PlanLimit || len(r.Rides) < r.Count || len(r.Rides) > MaxRides ||
+		len(r.Chairs) < r.Count || len(r.Chairs) > MaxChairs || r.Required < (r.Count+3)/4 || r.Required > r.Count {
+		return errors.New("invalid matching dimensions or rescue quota")
+	}
+	validCoordinate := func(x int) bool { return x >= -2147483648 && x <= 2147483647 }
+	for _, ride := range r.Rides {
+		if !validCoordinate(ride.PickupLatitude) || !validCoordinate(ride.PickupLongitude) ||
+			!validCoordinate(ride.DestinationLatitude) || !validCoordinate(ride.DestinationLongitude) {
+			return errors.New("invalid ride coordinate")
+		}
+	}
+	for _, chair := range r.Chairs {
+		if !validCoordinate(chair.Latitude) || !validCoordinate(chair.Longitude) || chair.Speed < 0 || chair.Speed > 2147483647 {
+			return errors.New("invalid chair coordinate or speed")
+		}
+	}
+	return nil
+}
+
+// Explicit ride indices separate candidate pool size from output cardinality.
+// The request and response describe one immutable plan without identities.
 type Response struct {
+	Rides  []int `json:"r"`
 	Chairs []int `json:"c"`
 }
 
 func (r *Response) UnmarshalJSON(data []byte) error {
 	var wire struct {
+		Rides  []*int `json:"r"`
 		Chairs []*int `json:"c"`
 	}
 	if err := Decode(bytes.NewReader(data), &wire); err != nil {
 		return err
 	}
-	r.Chairs = make([]int, len(wire.Chairs))
-	for i, chair := range wire.Chairs {
-		if chair == nil {
+	r.Rides, r.Chairs = make([]int, len(wire.Rides)), make([]int, len(wire.Chairs))
+	for i, index := range wire.Rides {
+		if index == nil {
+			return errors.New("null ride index")
+		}
+		r.Rides[i] = *index
+	}
+	for i, index := range wire.Chairs {
+		if index == nil {
 			return errors.New("null chair index")
 		}
-		r.Chairs[i] = *chair
+		r.Chairs[i] = *index
+	}
+	return nil
+}
+
+func (r Response) Validate(request Request) error {
+	if len(r.Rides) != request.Count || len(r.Chairs) != request.Count {
+		return errors.New("matching response has wrong assignment count")
+	}
+	rides, chairs := make([]bool, len(request.Rides)), make([]bool, len(request.Chairs))
+	for i, ride := range r.Rides {
+		chair := r.Chairs[i]
+		if ride < 0 || ride >= len(rides) || rides[ride] || chair < 0 || chair >= len(chairs) || chairs[chair] {
+			return errors.New("matching response has invalid or duplicate index")
+		}
+		rides[ride], chairs[chair] = true, true
+	}
+	for _, assigned := range rides[:request.Required] {
+		if !assigned {
+			return errors.New("matching response omitted a required ride")
+		}
 	}
 	return nil
 }
@@ -85,18 +141,24 @@ func NewHandler(allowed netip.Addr) http.Handler {
 		}
 		r.Body = http.MaxBytesReader(w, r.Body, MaxRequestBytes)
 		var request Request
-		if err := Decode(r.Body, &request); err != nil || len(request.Rides) == 0 ||
-			len(request.Rides) > PlanLimit || len(request.Chairs) < len(request.Rides) {
+		if err := Decode(r.Body, &request); err != nil {
 			http.Error(w, "invalid solver input", http.StatusBadRequest)
 			return
 		}
-		assignments, err := assign(r.Context(), request.Rides, request.Chairs)
-		if err != nil {
+		if err := request.Validate(); err != nil {
+			http.Error(w, "invalid solver input", http.StatusBadRequest)
 			return
 		}
-		response := Response{Chairs: make([]int, len(assignments))}
-		for _, a := range assignments {
-			response.Chairs[a.RideIndex] = a.ChairIndex
+		ctx, cancel := context.WithTimeout(r.Context(), SolveTimeout)
+		defer cancel()
+		assignments, err := Solve(ctx, request)
+		if err != nil {
+			http.Error(w, "solver failed", http.StatusServiceUnavailable)
+			return
+		}
+		response := Response{Rides: make([]int, len(assignments)), Chairs: make([]int, len(assignments))}
+		for i, a := range assignments {
+			response.Rides[i], response.Chairs[i] = a.RideIndex, a.ChairIndex
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)

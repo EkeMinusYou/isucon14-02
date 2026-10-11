@@ -1,0 +1,206 @@
+2026-10-11T03:07:41.771259045Z	BENCHMARK_START
+time=12:07:42.827 level=INFO msg=負荷走行を開始します
+time=12:07:42.827 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=12:07:48.300 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=12:07:48.300 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5 score="[0 0 0 3 2]" criteria="[5 2 5 5]"
+time=12:07:50.073 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=1
+time=12:07:50.073 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=1
+time=12:07:50.073 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=12:07:50.073 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=2
+time=12:07:50.100 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=12:07:50.100 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=22 score="[0 0 0 12 10]" criteria="[22 10 22 22]"
+time=12:07:51.872 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=12:07:51.873 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=2
+time=12:07:51.873 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=1
+time=12:07:51.874 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=2
+time=12:07:51.874 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=2
+time=12:07:51.900 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で41人が新規登録しました
+time=12:07:51.900 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、70.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=12:07:51.900 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=12:07:51.900 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=41 score="[0 0 0 29 12]" criteria="[41 12 41 41]"
+time=12:07:53.673 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=2
+time=12:07:53.673 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=2
+time=12:07:53.673 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=3
+time=12:07:53.674 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=3
+time=12:07:53.674 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=2
+time=12:07:53.700 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=12:07:53.700 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=70 score="[0 0 1 42 27]" criteria="[70 27 70 69]"
+time=12:07:55.473 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=4
+time=12:07:55.473 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=4
+time=12:07:55.473 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=4
+time=12:07:55.474 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=2
+time=12:07:55.476 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=3
+time=12:07:55.500 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=12:07:55.500 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=118 score="[0 0 1 60 57]" criteria="[118 57 118 117]"
+time=12:07:57.274 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=5
+time=12:07:57.274 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=4
+time=12:07:57.277 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=4
+time=12:07:57.277 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=6
+time=12:07:57.277 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=4
+time=12:07:57.300 level=INFO msg=これまでに地域内の評判によって19人、既存ユーザーの招待経由で174人が新規登録しました
+time=12:07:57.300 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、40.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=12:07:57.300 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=12:07:57.300 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=184 score="[0 0 1 73 110]" criteria="[184 110 184 183]"
+time=12:07:58.886 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=12:07:59.074 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=7
+time=12:07:59.074 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=6
+time=12:07:59.076 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=7
+time=12:07:59.076 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=7
+time=12:07:59.076 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=6
+time=12:07:59.101 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=12:07:59.101 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=280 score="[0 0 10 92 178]" criteria="[263 189 280 276]"
+time=12:08:00.874 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=10
+time=12:08:00.878 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=9
+time=12:08:00.878 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=7
+time=12:08:00.880 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=7
+time=12:08:00.880 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=8
+time=12:08:00.900 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=12:08:00.900 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=430 score="[0 0 28 114 288]" criteria="[379 316 430 425]"
+time=12:08:02.678 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=8
+time=12:08:02.680 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=10
+time=12:08:02.681 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=11
+time=12:08:02.681 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=10
+time=12:08:02.681 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=12:08:02.700 level=INFO msg=これまでに地域内の評判によって32人、既存ユーザーの招待経由で514人が新規登録しました
+time=12:08:02.700 level=INFO msg=17.1%のライドは椅子がマッチされるまでの時間、23.4%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=12:08:02.700 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=12:08:02.700 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=642 score="[0 0 60 147 435]" criteria="[532 492 642 635]"
+time=12:08:04.475 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=11
+time=12:08:04.486 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=10
+time=12:08:04.500 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=12:08:04.500 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=903 score="[0 0 84 197 622]" criteria="[723 729 903 892]"
+time=12:08:04.505 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=10
+time=12:08:04.505 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=9
+time=12:08:04.505 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=12
+time=12:08:06.284 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=13
+time=12:08:06.286 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=12
+time=12:08:06.286 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=10
+time=12:08:06.286 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=12
+time=12:08:06.287 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=14
+time=12:08:06.300 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=12:08:06.300 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1261 score="[0 1 122 266 872]" criteria="[977 1049 1260 1245]"
+time=12:08:08.100 level=INFO msg=これまでに地域内の評判によって49人、既存ユーザーの招待経由で1285人が新規登録しました
+time=12:08:08.100 level=INFO msg=これまでに低評価なライドによって1人が利用をやめました
+time=12:08:08.100 level=INFO msg=24.6%のライドは椅子がマッチされるまでの時間、14.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.8%のライドは椅子の実移動時間に不満がありました
+time=12:08:08.101 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=15
+time=12:08:08.100 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=12:08:08.100 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1685 score="[0 2 156 368 1159]" criteria="[1270 1440 1684 1660]"
+time=12:08:08.103 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=15
+time=12:08:08.106 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=16
+time=12:08:08.106 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=12:08:08.107 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=13
+time=12:08:09.946 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=14
+time=12:08:09.947 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=18
+time=12:08:09.948 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=18
+time=12:08:09.950 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=14
+time=12:08:09.952 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=19
+time=12:08:09.960 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=12:08:09.960 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2162 score="[0 2 191 487 1482]" criteria="[1597 1883 2161 2132]"
+time=12:08:11.875 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=16
+time=12:08:11.877 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=19
+time=12:08:11.889 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=21
+time=12:08:11.889 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=21
+time=12:08:11.890 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=18
+time=12:08:11.880 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=12:08:11.880 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2705 score="[0 3 227 662 1813]" criteria="[1978 2397 2703 2617]"
+time=12:08:13.997 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=21
+time=12:08:13.999 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=17
+time=12:08:14.010 level=INFO msg=これまでに地域内の評判によって66人、既存ユーザーの招待経由で2495人が新規登録しました
+time=12:08:14.010 level=INFO msg=これまでに低評価なライドによって4人が利用をやめました
+time=12:08:14.010 level=INFO msg=28.1%のライドは椅子がマッチされるまでの時間、10.3%のライドはマッチされた椅子が乗車地点までに掛かる時間、5.8%のライドは椅子の実移動時間に不満がありました
+time=12:08:14.010 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=12:08:14.010 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3264 score="[0 13 304 984 1963]" criteria="[2346 2928 3259 2892]"
+time=12:08:14.018 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=21
+time=12:08:14.021 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=19
+time=12:08:14.021 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=22
+time=12:08:15.800 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=15
+time=12:08:15.801 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=20
+time=12:08:15.810 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=12:08:15.810 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3821 score="[2 26 391 1254 2148]" criteria="[2698 3455 3810 3199]"
+time=12:08:15.826 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=20
+time=12:08:15.832 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=19
+time=12:08:15.849 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=20
+time=12:08:17.933 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=18
+time=12:08:17.933 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=20
+time=12:08:17.940 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=12:08:17.940 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4423 score="[6 44 483 1593 2297]" criteria="[3062 4028 4395 3492]"
+time=12:08:17.971 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=23
+time=12:08:17.971 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=22
+time=12:08:17.993 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=20
+time=12:08:19.740 level=INFO msg=これまでに地域内の評判によって80人、既存ユーザーの招待経由で3431人が新規登録しました
+time=12:08:19.740 level=INFO msg=これまでに低評価なライドによって38人が利用をやめました
+time=12:08:19.740 level=INFO msg=31.9%のライドは椅子がマッチされるまでの時間、8.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、14.8%のライドは椅子の実移動時間に不満がありました
+time=12:08:19.740 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=12:08:19.740 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4960 score="[24 70 635 1903 2328]" criteria="[3376 4533 4891 3561]"
+time=12:08:21.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=36
+time=12:08:21.565 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=40
+time=12:08:21.566 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=40
+time=12:08:21.540 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=12:08:21.540 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5553 score="[38 94 804 2217 2400]" criteria="[3681 5091 5444 3737]"
+time=12:08:21.583 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=34
+time=12:08:21.585 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=40
+time=12:08:23.340 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=12:08:23.340 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6175 score="[64 138 998 2529 2446]" criteria="[3928 5673 6000 3904]"
+time=12:08:25.350 level=INFO msg=これまでに地域内の評判によって95人、既存ユーザーの招待経由で4392人が新規登録しました
+time=12:08:25.350 level=INFO msg=これまでに低評価なライドによって113人が利用をやめました
+time=12:08:25.350 level=INFO msg=39.2%のライドは椅子がマッチされるまでの時間、8.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、22.1%のライドは椅子の実移動時間に不満がありました
+time=12:08:25.350 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=12:08:25.350 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6825 score="[85 192 1242 2834 2472]" criteria="[4150 6276 6559 4081]"
+time=12:08:27.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=46
+time=12:08:27.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=57
+time=12:08:27.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=12:08:27.780 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7590 score="[115 241 1534 3212 2488]" criteria="[4368 6994 7233 4302]"
+time=12:08:27.936 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=57
+time=12:08:27.938 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=67
+time=12:08:27.940 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=64
+time=12:08:30.270 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=12:08:30.270 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8339 score="[122 280 1820 3606 2511]" criteria="[4540 7722 7928 4592]"
+time=12:08:32.220 level=INFO msg=これまでに地域内の評判によって107人、既存ユーザーの招待経由で5358人が新規登録しました
+time=12:08:32.220 level=INFO msg=これまでに低評価なライドによって216人が利用をやめました
+time=12:08:32.220 level=INFO msg=47.7%のライドは椅子がマッチされるまでの時間、7.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、27.4%のライドは椅子の実移動時間に不満がありました
+time=12:08:32.220 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=12:08:32.220 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9073 score="[130 428 2140 3857 2518]" criteria="[4748 8435 8466 4702]"
+time=12:08:34.440 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=12:08:34.440 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9886 score="[147 524 2576 4120 2519]" criteria="[4840 9225 9148 4899]"
+time=12:08:34.636 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=12:08:34.722 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=12:08:36.013 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=12:08:36.340 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=12:08:36.341 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10726 score="[160 638 2872 4512 2544]" criteria="[4932 10042 9804 5316]"
+time=12:08:38.251 level=INFO msg=これまでに地域内の評判によって119人、既存ユーザーの招待経由で6035人が新規登録しました
+time=12:08:38.251 level=INFO msg=これまでに低評価なライドによって381人が利用をやめました
+time=12:08:38.251 level=INFO msg=56.7%のライドは椅子がマッチされるまでの時間、6.1%のライドはマッチされた椅子が乗車地点までに掛かる時間、31.7%のライドは椅子の実移動時間に不満がありました
+time=12:08:38.251 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=12:08:38.251 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=11547 score="[174 848 3353 4628 2544]" criteria="[4999 10843 10341 5431]"
+time=12:08:38.271 level=WARN msg="取得したオーナーの売り上げ情報が想定しているものと異なります (CODE=24): salesが大きいデータがあります (id: 01M4MEXNC2VKWVFTVWH83X2FTY, got: 18400)"
+time=12:08:38.292 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="PreLoved Chairs" 増加数=109
+time=12:08:38.292 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=座り心地再生所 増加数=91
+time=12:08:40.200 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=12:08:40.200 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=12203 score="[182 989 3695 4793 2544]" criteria="[5011 11479 10789 5655]"
+time=12:08:40.252 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=レトロ椅子館 増加数=138
+time=12:08:40.252 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=つばさ交通 増加数=137
+time=12:08:40.282 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=快旅タクシー 増加数=123
+time=12:08:42.000 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=12:08:42.000 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=12803 score="[194 1011 4177 4877 2544]" criteria="[5017 12056 11357 5742]"
+time=12:08:44.012 level=INFO msg=これまでに地域内の評判によって134人、既存ユーザーの招待経由で6300人が新規登録しました
+time=12:08:44.012 level=INFO msg=これまでに低評価なライドによって618人が利用をやめました
+time=12:08:44.012 level=INFO msg=62.9%のライドは椅子がマッチされるまでの時間、5.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、34.9%のライドは椅子の実移動時間に不満がありました
+time=12:08:44.012 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=12:08:44.012 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=13604 score="[209 1257 4631 4963 2544]" criteria="[5041 12829 11823 5891]"
+time=12:08:51.503 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=4233 アクティブユーザー数=3822
+time=12:08:51.503 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=2502 アクティブユーザー数=2217
+time=12:08:51.503 level=INFO msg=最終オーナー情報 名前=快旅タクシー 売上=16999200 椅子数=381
+time=12:08:51.503 level=INFO msg=最終オーナー情報 名前=座り心地再生所 売上=14644800 椅子数=319
+time=12:08:51.503 level=INFO msg=最終オーナー情報 名前=つばさ交通 売上=19112900 椅子数=425
+time=12:08:51.503 level=INFO msg=最終オーナー情報 名前=レトロ椅子館 売上=19691800 椅子数=439
+time=12:08:51.503 level=INFO msg=最終オーナー情報 名前="PreLoved Chairs" 売上=18119800 椅子数=385
+time=12:08:51.503 level=INFO msg=66.1%のライドは椅子がマッチされるまでの時間、5.7%のライドはマッチされた椅子が乗車地点までに掛かる時間、36.0%のライドは椅子の実移動時間に不満がありました
+time=12:08:51.504 level=INFO msg=結果 pass=true スコア=926444 種別エラー数="map[17:4 24:1]"
+time=12:08:51.505 level=INFO msg=負荷走行が終了しました
+
+SCORE: 926444
+BENCHMARK_PASS
+2026-10-11T03:08:52.298978499Z	BENCHMARK_END
+
+SCORE: 926444
+BENCHMARK_PASS

@@ -39,6 +39,9 @@ func TestMatchingTravelTime(t *testing.T) {
 				seedMemoryRide(s, id, "", time.Unix(1700000000+int64(i), 0))
 				s.rides[id].PickupLatitude, s.rides[id].PickupLongitude = pickup.Latitude, pickup.Longitude
 				s.rides[id].DestinationLatitude, s.rides[id].DestinationLongitude = pickup.Latitude, pickup.Longitude
+				if test.name == "ManhattanFractionalTime" {
+					s.rides[id].DestinationLatitude++
+				}
 			}
 			// These fixtures mutate fixed pickup positions after seeding.
 			s.rebuildIndexes()

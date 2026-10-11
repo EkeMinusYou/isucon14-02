@@ -224,12 +224,12 @@ func TestPlanningMetricsReadinessAndReasons(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	timing.rides, timing.candidates = len(plan.rides), len(plan.chairs)
+	timing.rides, timing.candidates = plan.count, len(plan.chairs)
 	plan.observation = timing
 	if err := s.activity("chair-000", false); err != nil {
 		t.Fatal(err)
 	}
-	retry, err := s.commitMatching(plan, assignMatchingChairs(plan.rides, plan.chairs))
+	retry, err := s.commitMatching(plan, assignMatchingPlan(plan))
 	if err != nil || !retry || m.counters["match_conflict_chairs"] != 1 || m.opportunity.planning != 0 || m.counters["match_assigned"] != 0 || m.stateSeries["match_ready_wait"].sum < 100 {
 		t.Fatal("conflict/readiness populations")
 	}
@@ -241,10 +241,10 @@ func TestPlanningMetricsReadinessAndReasons(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	timing.rides, timing.candidates = len(plan.rides), len(plan.chairs)
+	timing.rides, timing.candidates = plan.count, len(plan.chairs)
 	plan.observation = timing
 	s.generation = "next"
-	retry, err = s.commitMatching(plan, assignMatchingChairs(plan.rides, plan.chairs))
+	retry, err = s.commitMatching(plan, assignMatchingPlan(plan))
 	if err != nil || retry || m.counters["match_generation"] != 1 || m.counters["match_ready_generation"] != 1 || !m.opportunity.pending {
 		t.Fatal("generation mixed with retry/old opportunity")
 	}
@@ -333,11 +333,11 @@ func TestPlanningMetricsEmptyAndNewEpoch(t *testing.T) {
 		t.Fatal(err)
 	}
 	plan.observation = timing
-	timing.rides, timing.candidates = len(plan.rides), len(plan.chairs)
+	timing.rides, timing.candidates = plan.count, len(plan.chairs)
 	old := s.metrics
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
-	assignments := assignMatchingChairs(plan.rides, plan.chairs)
+	assignments := assignMatchingPlan(plan)
 	if _, err := s.commitMatching(plan, assignments); err != nil {
 		t.Fatal(err)
 	}

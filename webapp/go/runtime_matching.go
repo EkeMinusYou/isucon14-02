@@ -1,16 +1,20 @@
 package main
 
 import (
+	"container/heap"
 	"database/sql"
 	"errors"
 	"sort"
 	"time"
+
+	"github.com/isucon/isucon14/webapp/go/internal/matching"
 )
 
 type matchingPlan struct {
 	observation        *planTiming
 	waiting, available int
 	generation         string
+	count, required    int
 	rides              []Ride
 	chairs             []matchingChair
 }
@@ -18,7 +22,7 @@ type matchingPlan struct {
 func (s *rideState) matchingChair(id string) matchingChair {
 	chair, d := s.chairs[id], s.chairDistance(id)
 	speed := s.modelSpeeds[chair.Model]
-	if !d.Latitude.Valid || !d.Longitude.Valid {
+	if speed <= 0 || !d.Latitude.Valid || !d.Longitude.Valid {
 		speed = 0
 	}
 	return matchingChair{ID: id, Latitude: int(d.Latitude.Int64), Longitude: int(d.Longitude.Int64), Speed: speed}
@@ -52,11 +56,32 @@ func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*
 	if n == 0 || n < minimum || (generation != "" && generation != s.generation) {
 		return plan, nil
 	}
-	plan.chairs = make([]matchingChair, 0, len(s.matchingChairs))
-	for id := range s.matchingChairs {
-		plan.chairs = append(plan.chairs, s.matchingChair(id))
+	plan.count = n
+	// Only copy bounded immutable values under the state lock. All spatial
+	// candidate construction and pair scoring run on the matching worker.
+	plan.rides = make([]Ride, min(len(s.waitingRides), matching.MaxRides))
+	for i := range plan.rides {
+		plan.rides[i] = s.waitingRides[i].Ride
 	}
-	plan.rides = s.selectWaitingRides(n, plan.chairs, time.Now())
+	plan.required = requiredMatchingRides(plan.rides, n, time.Now())
+	// Keep the smallest IDs if supply exceeds the RPC cap. Normally this is
+	// just a linear copy; the bounded heap is needed only above MaxChairs.
+	ids := make(chairIDHeap, 0, min(len(s.matchingChairs), matching.MaxChairs))
+	for id := range s.matchingChairs {
+		if len(ids) < matching.MaxChairs {
+			ids = append(ids, id)
+			if len(ids) == matching.MaxChairs {
+				heap.Init(&ids)
+			}
+		} else if id < ids[0] {
+			ids[0] = id
+			heap.Fix(&ids, 0)
+		}
+	}
+	plan.chairs = make([]matchingChair, len(ids))
+	for i, id := range ids {
+		plan.chairs[i] = s.matchingChair(id)
+	}
 	return plan, nil
 }
 
@@ -80,44 +105,44 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 		reason = "generation"
 		return false, nil
 	}
-	if len(s.waitingRides) < len(plan.rides) {
-		reason = "conflict_rides"
-		return true, nil
-	}
-	seenRides := make(map[string]bool, len(plan.rides))
-	for _, row := range plan.rides {
-		current := s.rides[row.ID]
-		if current == nil || current.ChairID.Valid || s.latest(current) != "MATCHING" || seenRides[row.ID] {
-			reason = "conflict_rides"
-			return true, nil
-		}
-		seenRides[row.ID] = true
-	}
-	if len(assignments) != len(plan.rides) {
+	if len(assignments) != plan.count || plan.required < (plan.count+3)/4 || plan.required > plan.count {
 		reason = "conflict_rides"
 		return true, nil
 	}
 	seenRows := make(map[int]bool, len(assignments))
+	seenRides := make(map[string]bool, len(assignments))
 	seenChairs := make(map[string]bool, len(assignments))
 	for _, assignment := range assignments {
 		if assignment.rideIndex < 0 || assignment.rideIndex >= len(plan.rides) || seenRows[assignment.rideIndex] {
 			reason = "conflict_rides"
 			return true, nil
 		}
-		seenRows[assignment.rideIndex] = true
+		row := plan.rides[assignment.rideIndex]
+		current := s.rides[row.ID]
+		if current == nil || current.ChairID.Valid || s.latest(current) != "MATCHING" || seenRides[row.ID] {
+			reason = "conflict_rides"
+			return true, nil
+		}
+		seenRows[assignment.rideIndex], seenRides[row.ID] = true, true
 		if assignment.chairIndex < 0 || assignment.chairIndex >= len(plan.chairs) {
 			reason = "conflict_chairs"
 			return true, nil
 		}
 		id := plan.chairs[assignment.chairIndex].ID
 		chair, exists := s.chairs[id]
-		current, queue := s.chairCurrent[id], s.chairEvents[id]
-		if !exists || !chair.IsActive || seenChairs[id] || (current != nil && len(current.unfinished) != 0) ||
+		currentChair, queue := s.chairCurrent[id], s.chairEvents[id]
+		if !exists || !chair.IsActive || seenChairs[id] || (currentChair != nil && len(currentChair.unfinished) != 0) ||
 			(queue != nil && queue.pending.Len() != 0) {
 			reason = "conflict_chairs"
 			return true, nil
 		}
 		seenChairs[id] = true
+	}
+	for i := 0; i < plan.required; i++ {
+		if !seenRows[i] {
+			reason = "conflict_rides"
+			return true, nil
+		}
 	}
 	record := stateRecord{Rides: make([]Ride, 0, len(assignments))}
 	for _, assignment := range assignments {
@@ -176,7 +201,7 @@ func (s *rideState) matchBatch(generation string, minimum int) (string, error) {
 		lastTiming = timing
 		plan, err := s.snapshotMatching(generation, minimum, timing)
 		plan.observation = timing
-		timing.rides, timing.candidates = len(plan.rides), len(plan.chairs)
+		timing.rides, timing.candidates = plan.count, len(plan.chairs)
 		if err != nil || len(plan.rides) == 0 {
 			reason := "below_min"
 			switch {
@@ -194,7 +219,7 @@ func (s *rideState) matchBatch(generation string, minimum int) (string, error) {
 		}
 		solving := time.Now()
 		sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
-		assignments, err := s.matchingSolver.solve(plan.rides, plan.chairs)
+		assignments, err := s.matchingSolver.solve(plan)
 		timing.solver = time.Since(solving)
 		if err != nil {
 			s.finishEmptyPlan(timing, "unavailable")
@@ -213,3 +238,12 @@ func (s *rideState) matchBatch(generation string, minimum int) (string, error) {
 	// Continued churn defers work to the next external matcher invocation.
 	return "", nil
 }
+
+// A max-heap bounds snapshot supply while preserving deterministic IDs.
+type chairIDHeap []string
+
+func (h chairIDHeap) Len() int           { return len(h) }
+func (h chairIDHeap) Less(i, j int) bool { return h[i] > h[j] }
+func (h chairIDHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *chairIDHeap) Push(x any)        { *h = append(*h, x.(string)) }
+func (h *chairIDHeap) Pop() any          { old := *h; x := old[len(old)-1]; *h = old[:len(old)-1]; return x }

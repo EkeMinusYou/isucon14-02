@@ -1,10 +1,9 @@
 package matching
 
 import (
-	"container/heap"
 	"context"
+	"errors"
 	"math"
-	"sort"
 )
 
 // Values contain no identities or mutable application state. Slice order is
@@ -68,110 +67,6 @@ func (h *matchingCandidates) Pop() any {
 	return x
 }
 
-// The caller selects rides. Each row retains its best n chairs: at most n-1
-// can be occupied, so an omitted chair can always be replaced without increasing
-// cost. Pruning preserves a global optimum.
-// Candidate extraction costs O(n*C*log(n)); the sparse graph has E <= n*n
-// assignment edges instead of a dense n-by-union matrix.
-func Assign(rides []Ride, chairs []Chair) []Assignment {
-	result, _ := assign(context.Background(), rides, chairs)
-	return result
-}
-
-func assign(ctx context.Context, rides []Ride, chairs []Chair) ([]Assignment, error) {
-	n := min(len(rides), len(chairs))
-	if n == 0 {
-		return nil, nil
-	}
-	rows := make([]matchingCandidates, n)
-	selected := make([]bool, len(chairs))
-	maxKnownCost := 0.0
-	for i, ride := range rides[:n] {
-		if err := ctx.Err(); err != nil {
-			return nil, err
-		}
-		best := make(matchingCandidates, 0, n)
-		for j, chair := range chairs {
-			if j%4096 == 0 {
-				if err := ctx.Err(); err != nil {
-					return nil, err
-				}
-			}
-			candidate := matchingCandidate{chairIndex: j, cost: TravelTime(ride, chair)}
-			if len(best) < n {
-				best = append(best, candidate)
-				if len(best) == n {
-					heap.Init(&best)
-				}
-			} else if candidate.cost < best[0].cost {
-				best[0] = candidate
-				heap.Fix(&best, 0)
-			}
-		}
-		// Stable adjacency order also makes equal-cost assignments reproducible.
-		sort.Slice(best, func(a, b int) bool { return best[a].chairIndex < best[b].chairIndex })
-		rows[i] = best
-		for _, candidate := range best {
-			selected[candidate.chairIndex] = true
-			if !math.IsInf(candidate.cost, 1) {
-				maxKnownCost = math.Max(maxKnownCost, candidate.cost)
-			}
-		}
-	}
-	indices := make([]int, 0, min(n*n, len(chairs)))
-	vertices := make([]int, len(chairs))
-	for j, included := range selected {
-		if included {
-			vertices[j] = n + len(indices)
-			indices = append(indices, j)
-		}
-	}
-	source, sink := n+len(indices), n+len(indices)+1
-	g := make(matchingGraph, sink+1)
-	degrees := make([]int, len(g))
-	degrees[source], degrees[sink] = n, len(indices)
-	for j := range indices {
-		degrees[n+j] = 1
-	}
-	for i, candidates := range rows {
-		degrees[i] = len(candidates) + 1
-		for _, candidate := range candidates {
-			degrees[vertices[candidate.chairIndex]]++
-		}
-	}
-	for v, degree := range degrees {
-		g[v] = make([]matchingEdge, 0, degree)
-	}
-	// Minimize fallback count first, then total known pickup + travel time.
-	fallbackCost := float64(n+1) * (maxKnownCost + 1)
-	for i, candidates := range rows {
-		g.add(source, i, 0)
-		for _, candidate := range candidates {
-			cost := candidate.cost
-			if math.IsInf(cost, 1) {
-				cost = fallbackCost
-			}
-			g.add(i, vertices[candidate.chairIndex], cost)
-		}
-	}
-	for j := range indices {
-		g.add(n+j, sink, 0)
-	}
-	if err := g.assign(ctx, source, sink, n); err != nil {
-		return nil, err
-	}
-	assignments := make([]Assignment, n)
-	for i := range rows {
-		for _, edge := range g[i] {
-			if edge.to >= n && edge.to < source && !edge.available {
-				assignments[i] = Assignment{RideIndex: i, ChairIndex: indices[edge.to-n]}
-				break
-			}
-		}
-	}
-	return assignments, nil
-}
-
 type matchingEdge struct {
 	to, reverse int
 	cost        float64
@@ -189,7 +84,7 @@ func (g matchingGraph) add(from, to int, cost float64) {
 
 // Successive shortest augmenting paths with potentials. Reverse edges can
 // change assignments across the entire plan. O(n*(E+V)*log(V)) time and
-// O(E+V) solver memory; V <= n + min(C,n*n) + 2. No shared state is accessed.
+// O(E+V) solver memory. No shared state is accessed.
 func (g matchingGraph) assign(ctx context.Context, source, sink, count int) error {
 	potential := make([]float64, len(g))
 	distance := make([]float64, len(g))
@@ -205,7 +100,14 @@ func (g matchingGraph) assign(ctx context.Context, source, sink, count int) erro
 		distance[source] = 0
 		queue = queue[:0]
 		queue.push(matchingPath{vertex: source})
+		visited := 0
 		for len(queue) > 0 {
+			if visited%1024 == 0 {
+				if err := ctx.Err(); err != nil {
+					return err
+				}
+			}
+			visited++
 			path := queue.pop()
 			v := path.vertex
 			if path.cost != distance[v] {
@@ -226,7 +128,10 @@ func (g matchingGraph) assign(ctx context.Context, source, sink, count int) erro
 				}
 			}
 		}
-		// Every row has n distinct neighbors, so all n rows have a matching.
+		if math.IsInf(distance[sink], 1) {
+			return errors.New("matching graph has insufficient capacity")
+		}
+		// The FIFO backbone guarantees the requested cardinality.
 		for v := range g {
 			potential[v] += math.Min(distance[v], distance[sink])
 		}
@@ -236,7 +141,7 @@ func (g matchingGraph) assign(ctx context.Context, source, sink, count int) erro
 			g[v][edge.reverse].available = true
 		}
 	}
-	return nil
+	return ctx.Err()
 }
 
 type matchingPath struct {
