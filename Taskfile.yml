@@ -356,6 +356,7 @@ tasks:
 
   build-proc-metrics:
     internal: true
+    silent: true
     dir: '{{.PROC_METRICS_DIR}}'
     sources: ['*.go', ../../go.mod, ../../go.sum]
     generates: [proc-metrics]
@@ -363,6 +364,7 @@ tasks:
 
   build-mysql-metrics:
     internal: true
+    silent: true
     dir: '{{.MYSQL_METRICS_DIR}}'
     sources: ['*.go', ../../go.mod, ../../go.sum]
     generates: [mysql-metrics]
@@ -370,6 +372,7 @@ tasks:
 
   build-nginx-oncpu-profiler:
     desc: optional nginx on-CPU profilerをTARGET_OS/TARGET_ARCHへビルド
+    silent: true
     dir: '{{.NGINX_ONCPU_PROFILER_DIR}}'
     sources: ['*.go', ../../go.mod, ../../go.sum]
     generates: [nginx-oncpu-profiler]
@@ -384,6 +387,7 @@ tasks:
 
   build-sql-pool-metrics:
     internal: true
+    silent: true
     dir: '{{.SQL_POOL_METRICS_DIR}}'
     sources: ['*.go', ../../go.mod, ../../go.sum]
     generates: [sql-pool-metrics]
@@ -398,6 +402,7 @@ tasks:
 
   build-nginx-backend-report:
     internal: true
+    silent: true
     dir: '{{.NGINX_BACKEND_REPORT_DIR}}'
     sources: ['*.go', go.mod]
     generates: [nginx-backend-report]
@@ -405,6 +410,7 @@ tasks:
 
   build-user-transition-metrics:
     desc: Cookie由来のユーザー遷移集計ツールをローカルでビルド
+    silent: true
     dir: '{{.USER_TRANSITION_METRICS_DIR}}'
     sources: ['*.go', go.mod]
     generates: [user-transition-metrics]
@@ -412,6 +418,7 @@ tasks:
 
   build-measurectl:
     internal: true
+    silent: true
     dir: '{{.MEASURECTL_DIR}}'
     sources: ['*.go', go.mod, go.sum, collectors.yaml, digesters.yaml]
     generates: [measurectl]
@@ -419,6 +426,7 @@ tasks:
 
   build-bench-output:
     desc: ベンチ結果の出力変換ツールをローカル向けにビルド
+    silent: true
     dir: tools/bench-output
     sources: ['*.go', go.mod]
     generates: [bench-output]
@@ -426,6 +434,7 @@ tasks:
 
   build-deployctl:
     internal: true
+    silent: true
     dir: '{{.DEPLOYCTL_DIR}}'
     sources: ['*.go', go.mod, go.sum, deployments.yaml]
     generates: [deployctl]
@@ -433,6 +442,7 @@ tasks:
 
   build-analysisctl:
     internal: true
+    silent: true
     dir: '{{.ANALYSISCTL_DIR}}'
     sources: ['*.go', internal/pprofimport/*.go, go.mod, go.sum, ../analysis/sources.yaml, ../analysis/schema/*.sql, ../contest/analysis-schema/*.sql]
     generates: [analysisctl]
@@ -859,6 +869,7 @@ tasks:
 
   after-bench:
     desc: 進行中RUNのcollector・ログ・集計・manifestを回収
+    silent: true
     deps: [build-measurectl, build-nginx-backend-report, build-user-transition-metrics, build-bench-output]
     vars:
       FINISH_RUN_ID:
@@ -878,6 +889,7 @@ tasks:
         -collector-flags '{{.MEASURECTL_FLAGS}} {{default "" .MEASURECTL_COLLECT_FLAGS}}'
         -digester-flags '{{.MEASURECTL_DIGEST_FLAGS}}' {{.MEASURECTL_REMOTE}}
       - task: q-sync
+        silent: true
       - '{{.MEASURECTL_DIR}}/measurectl artifacts -recorded -run-dir {{.RESULT_DIR}}/{{.FINISH_RUN_ID}}'
 
   profiles-collect:
