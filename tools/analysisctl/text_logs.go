@@ -10,9 +10,22 @@ import (
 
 // DuckDB read_text requires UTF-8. Stage only malformed benchmark logs and
 // link other artifacts, retaining RUN IDs in paths and the original evidence.
+// Zero-byte artifacts are left out of the stage: activeSources already treats
+// them as absent, and read_csv would otherwise infer a column0 from them and
+// change a view's columns.
 func (r runner) prepareBenchmarkLogs(tempDir, runGlob string, dirs []string) (string, error) {
 	invalid := make(map[string][]byte)
+	empty := false
 	for _, dir := range dirs {
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			return "", err
+		}
+		for _, entry := range entries {
+			if isEmptyArtifact(entry) {
+				empty = true
+			}
+		}
 		body, err := os.ReadFile(filepath.Join(dir, "bench.log"))
 		if os.IsNotExist(err) {
 			continue
@@ -24,7 +37,7 @@ func (r runner) prepareBenchmarkLogs(tempDir, runGlob string, dirs []string) (st
 			invalid[dir] = bytes.ToValidUTF8(body, []byte("\ufffd"))
 		}
 	}
-	if len(invalid) == 0 {
+	if len(invalid) == 0 && !empty {
 		return runGlob, nil
 	}
 	root := filepath.Join(tempDir, "runs")
@@ -38,6 +51,9 @@ func (r runner) prepareBenchmarkLogs(tempDir, runGlob string, dirs []string) (st
 			return "", err
 		}
 		for _, entry := range entries {
+			if isEmptyArtifact(entry) {
+				continue
+			}
 			target := filepath.Join(stage, entry.Name())
 			if body, ok := invalid[dir]; ok && entry.Name() == "bench.log" {
 				if err := os.WriteFile(target, body, 0o600); err != nil {
@@ -56,4 +72,12 @@ func (r runner) prepareBenchmarkLogs(tempDir, runGlob string, dirs []string) (st
 		}
 	}
 	return filepath.Join(root, "*"), nil
+}
+
+func isEmptyArtifact(entry os.DirEntry) bool {
+	if !entry.Type().IsRegular() {
+		return false
+	}
+	info, err := entry.Info()
+	return err == nil && info.Size() == 0
 }

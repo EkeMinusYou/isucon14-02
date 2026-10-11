@@ -76,7 +76,7 @@ var (
 )
 
 // Increment when persisted sources or analysis-window semantics change.
-const importSchemaVersion = "14"
+const importSchemaVersion = "15"
 
 func main() {
 	if err := runCLI(os.Args[1:], os.Stdout, os.Stderr); err != nil {
