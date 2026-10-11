@@ -198,3 +198,25 @@ func TestMatching(t *testing.T) {
 		}
 	})
 }
+
+func TestMatchingAnswersOKWhileManyRidesStillWait(t *testing.T) {
+	s := memoryTestState(t)
+	previous := runtimeState
+	runtimeState = s
+	t.Cleanup(func() { notifications.reset(); runtimeState = previous })
+	request := func() int {
+		res := httptest.NewRecorder()
+		internalGetMatching(res, httptest.NewRequest(http.MethodGet, "/api/internal/matching", nil))
+		return res.Code
+	}
+	for i := 0; i < matchingSaturatedWaiting; i++ {
+		seedMemoryRide(s, fmt.Sprintf("ride-%04d", i), "", time.Unix(1700000000+int64(i), 0))
+	}
+	if code := request(); code != http.StatusOK {
+		t.Fatalf("many waiting rides without supply must ask for a sooner plan: %d", code)
+	}
+	s.addChair(Chair{ID: "chair-0000", IsActive: true})
+	if code := request(); code != http.StatusNoContent {
+		t.Fatalf("below the threshold after matching the matcher keeps its cadence: %d", code)
+	}
+}

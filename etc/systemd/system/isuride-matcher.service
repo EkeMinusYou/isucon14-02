@@ -8,7 +8,8 @@ User=isucon
 Group=isucon
 EnvironmentFile=/home/isucon/env.sh
 
-ExecStart=/bin/sh -c "while true; do curl -s --resolve isuride.xiv.isucon.net:443:127.0.0.1 https://isuride.xiv.isucon.net/api/internal/matching; sleep 0.25; done"
+# The app answers 200 while many rides still wait; plan again sooner then.
+ExecStart=/bin/sh -c "while true; do code=$$(curl -s -o /dev/null -w %%{http_code} --resolve isuride.xiv.isucon.net:443:127.0.0.1 https://isuride.xiv.isucon.net/api/internal/matching); if [ \"$$code\" = 200 ]; then sleep 0.05; else sleep 0.25; fi; done"
 ExecStop=/bin/kill -s QUIT $MAINPID
 
 Restart=on-failure
