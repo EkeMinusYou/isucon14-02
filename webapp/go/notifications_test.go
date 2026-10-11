@@ -359,7 +359,7 @@ func TestUserStreamFinishesAfterLatestCompleted(t *testing.T) {
 	}
 	for i, event := range events {
 		if event.finishesStream != (i == len(events)-1) {
-			t.Fatalf("only the pending COMPLETED of the latest ride finishes the stream: %d %+v", i, event)
+			t.Fatalf("only the last pending event, COMPLETED here, finishes the stream: %d %+v", i, event)
 		}
 		if err := acknowledgeNotification(context.Background(), "app", event.statusID); err != nil {
 			t.Fatal(err)
@@ -368,5 +368,30 @@ func TestUserStreamFinishesAfterLatestCompleted(t *testing.T) {
 	replay, err := loadNotifications(context.Background(), "app", "u", "")
 	if err != nil || len(replay) != 1 || replay[0].finishesStream {
 		t.Fatalf("an already delivered COMPLETED on reconnect must keep the stream open: %v, %v", replay, err)
+	}
+}
+
+func TestUserStreamFinishesAfterLatestArrived(t *testing.T) {
+	notificationTestDB(t)
+	insertTestRide(t, "a", "2026-01-01", true)
+	for i, status := range []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED"} {
+		insertTestStatus("a", fmt.Sprintf("a%d", i), status)
+	}
+	startTestRuntime(t)
+	events, err := loadNotifications(context.Background(), "app", "u", "")
+	if err != nil || len(events) != 5 {
+		t.Fatalf("pending user events: %v, %v", events, err)
+	}
+	for i, event := range events {
+		if event.finishesStream != (i == len(events)-1) {
+			t.Fatalf("a pending ARRIVED of the latest ride frees the connection before evaluation: %d %+v", i, event)
+		}
+		if err := acknowledgeNotification(context.Background(), "app", event.statusID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	replay, err := loadNotifications(context.Background(), "app", "u", "")
+	if err != nil || len(replay) != 1 || replay[0].finishesStream {
+		t.Fatalf("an already delivered ARRIVED on reconnect must keep the stream open: %v, %v", replay, err)
 	}
 }

@@ -165,7 +165,7 @@ tasks:
         if [ "$ready" != 1 ]; then docker logs "$accounts_container"; exit 1; fi
         accounts_address=$(docker port "$accounts_container" 3306/tcp)
         export MYSQL_TEST_DSN="root:accounts-local-test@tcp($accounts_address)/isuride?parseTime=true&multiStatements=true"
-        go test -race -count=1 -v -run '^Test(RuntimeAccountsSQLCollationAndSeedReload|ConcurrentInvitationsAndCouponConsumption|NewRideAndCouponWithWALCompletion|SalesSQLAndWALRecovery|NearbyWhileEvaluationResponseIsBlocked|NotificationsHistoryAndStats|NotificationsFailedWrite|NotificationStreamWakeup|UserStreamFinishesAfterLatestCompleted|ChairStatsCompletionAndWALRecovery|RuntimeRecoveryFromWAL)$' .
+        go test -race -count=1 -v -run '^Test(RuntimeAccountsSQLCollationAndSeedReload|ConcurrentInvitationsAndCouponConsumption|NewRideAndCouponWithWALCompletion|SalesSQLAndWALRecovery|NearbyWhileEvaluationResponseIsBlocked|NotificationsHistoryAndStats|NotificationsFailedWrite|NotificationStreamWakeup|UserStreamFinishesAfterLatestCompleted|UserStreamFinishesAfterLatestArrived|ChairStatsCompletionAndWALRecovery|RuntimeRecoveryFromWAL)$' .
 
   check-chair-distance:
     desc: ローカルの一時MySQLでSQL照合・WAL復元・通知・距離集計・初期化の統合テストだけをrace検査
@@ -188,7 +188,7 @@ tasks:
         export CHAIR_DISTANCE_TEST_DSN="root:distance-local-test@tcp(127.0.0.1:$ISUCON_DB_PORT)/isuride?parseTime=true&multiStatements=true"
         export MYSQL_TEST_DSN="$CHAIR_DISTANCE_TEST_DSN"
         ../sql/init.sh
-        go test -race -count=1 -v -run '^Test(ChairDistance|NearbyWhileEvaluationResponseIsBlocked|ConcurrentInvitationsAndCouponConsumption|NotificationsHistoryAndStats|NotificationsFailedWrite|NotificationStreamWakeup|UserStreamFinishesAfterLatestCompleted|ChairStatsCompletionAndWALRecovery|RuntimeAccountsSQLCollationAndSeedReload|SalesSQLAndWALRecovery|RuntimeRecoveryFromWAL|NewRideAndCouponWithWALCompletion)$' .
+        go test -race -count=1 -v -run '^Test(ChairDistance|NearbyWhileEvaluationResponseIsBlocked|ConcurrentInvitationsAndCouponConsumption|NotificationsHistoryAndStats|NotificationsFailedWrite|NotificationStreamWakeup|UserStreamFinishesAfterLatestCompleted|UserStreamFinishesAfterLatestArrived|ChairStatsCompletionAndWALRecovery|RuntimeAccountsSQLCollationAndSeedReload|SalesSQLAndWALRecovery|RuntimeRecoveryFromWAL|NewRideAndCouponWithWALCompletion)$' .
 
   deploy-sql:
     desc: SQL初期化資材をAPP_HOSTSとMYSQL_HOSTSへ反映（DB再作成・サービス再起動なし）

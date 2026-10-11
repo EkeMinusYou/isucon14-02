@@ -151,10 +151,12 @@ func loadNotifications(ctx context.Context, kind, id, lastEventID string) ([]not
 		if !fallback {
 			event.statusID = status.ID
 			event.measureAssignment = status.Status == "MATCHING" && !ride.assignedAt.IsZero() && !ride.firstFlushed[flushIndex]
-			// Only a pending COMPLETED of the user's latest ride with nothing after it ends
-			// the stream. A replayed state on connect never does, avoiding reconnect loops.
-			event.finishesStream = kind == "app" && status.Status == "COMPLETED" && i == len(selected)-1 &&
-				len(rides) > 0 && rides[len(rides)-1] == ride.ID
+			// Only a pending ARRIVED or COMPLETED of the user's latest ride with nothing after
+			// it ends the stream. Ending at ARRIVED frees the connection before the client
+			// sends the evaluation; COMPLETED stays pending for the next connection. A
+			// replayed state on connect never ends the stream, avoiding reconnect loops.
+			event.finishesStream = kind == "app" && (status.Status == "ARRIVED" || status.Status == "COMPLETED") &&
+				i == len(selected)-1 && len(rides) > 0 && rides[len(rides)-1] == ride.ID
 		}
 		events = append(events, event)
 	}

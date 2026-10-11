@@ -77,8 +77,9 @@ func notifyRide(ride *Ride) {
 
 type notificationEvent struct {
 	measureAssignment bool
-	// The user stream ends after delivering this event so the client can send the
-	// evaluation on the same connection instead of opening a new TLS connection.
+	// The user stream ends after delivering this event so the client can send its
+	// next request, including the evaluation, on this connection instead of a new
+	// TLS connection.
 	finishesStream bool
 	statusID       string
 	generation     string
