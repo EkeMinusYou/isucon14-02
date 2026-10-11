@@ -878,7 +878,7 @@ tasks:
         -collector-flags '{{.MEASURECTL_FLAGS}} {{default "" .MEASURECTL_COLLECT_FLAGS}}'
         -digester-flags '{{.MEASURECTL_DIGEST_FLAGS}}' {{.MEASURECTL_REMOTE}}
       - task: q-sync
-      - '{{.MEASURECTL_DIR}}/measurectl artifacts -run-dir {{.RESULT_DIR}}/{{.FINISH_RUN_ID}}'
+      - '{{.MEASURECTL_DIR}}/measurectl artifacts -recorded -run-dir {{.RESULT_DIR}}/{{.FINISH_RUN_ID}}'
 
   profiles-collect:
     desc: 進行中RUNへ標準Go profileとfgprofを収集
