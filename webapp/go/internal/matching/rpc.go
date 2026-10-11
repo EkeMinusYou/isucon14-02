@@ -31,7 +31,7 @@ type Request struct {
 // Rides are FIFO ordered; the first Required indices must be assigned.
 func (r Request) Validate() error {
 	if r.Count <= 0 || r.Count > PlanLimit || len(r.Rides) < r.Count || len(r.Rides) > MaxRides ||
-		len(r.Chairs) < r.Count || len(r.Chairs) > MaxChairs || r.Required < (r.Count+3)/4 || r.Required > r.Count {
+		len(r.Chairs) < r.Count || len(r.Chairs) > MaxChairs || r.Required < 0 || r.Required > r.Count {
 		return errors.New("invalid matching dimensions or rescue quota")
 	}
 	validCoordinate := func(x int) bool { return x >= -2147483648 && x <= 2147483647 }

@@ -32,7 +32,7 @@ func TestMatchingWorkerRequestBoundaries(t *testing.T) {
 		{"output-cap", "172.31.0.126:1234", "POST", "/solve", string(tooManyOutputs), 400},
 		{"exact-input-caps", "172.31.0.126:1234", "POST", "/solve", string(atCaps), 200},
 		{"missing-count", "172.31.0.126:1234", "POST", "/solve", `{"f":1,"r":[{}],"c":[{}]}`, 400},
-		{"missing-rescue", "172.31.0.126:1234", "POST", "/solve", `{"n":1,"r":[{}],"c":[{}]}`, 400},
+		{"no-rescue", "172.31.0.126:1234", "POST", "/solve", `{"n":1,"r":[{}],"c":[{}]}`, 200},
 		{"excess-rescue", "172.31.0.126:1234", "POST", "/solve", `{"n":1,"f":2,"r":[{},{}],"c":[{}]}`, 400},
 		{"bad-speed", "172.31.0.126:1234", "POST", "/solve", `{"n":1,"f":1,"r":[{}],"c":[{"s":-1}]}`, 400},
 		{"bad-coordinate", "172.31.0.126:1234", "POST", "/solve", `{"n":1,"f":1,"r":[{"p":2147483648}],"c":[{}]}`, 400},

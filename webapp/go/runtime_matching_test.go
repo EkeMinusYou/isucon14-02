@@ -37,7 +37,7 @@ func TestMatchingJointRevalidatesOnlySelectedRowsAndKeepsMetricPopulation(t *tes
 			timing.rides, timing.candidates = plan.count, len(plan.chairs)
 			sort.Slice(plan.chairs, func(i, j int) bool { return plan.chairs[i].ID < plan.chairs[j].ID })
 			assignments := assignMatchingPlan(plan)
-			if len(plan.rides) != 12 || plan.count != 4 || plan.required != 1 {
+			if len(plan.rides) != 12 || plan.count != 4 || plan.required != 0 {
 				t.Fatal("invalid joint fixture")
 			}
 			selected := map[int]bool{}
@@ -86,7 +86,7 @@ func TestMatchingJointSnapshotInputCaps(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if plan.count != matchingPlanLimit || plan.required != matchingPlanLimit/4 || len(plan.rides) != matching.MaxRides || len(plan.chairs) != matching.MaxChairs {
+	if plan.count != matchingPlanLimit || plan.required != 0 || len(plan.rides) != matching.MaxRides || len(plan.chairs) != matching.MaxChairs {
 		t.Fatal("RPC snapshot limits lost")
 	}
 	for i, ride := range plan.rides {
@@ -163,7 +163,7 @@ func TestMatchingPlanConcurrentCommit(t *testing.T) {
 		s.addStatus(RideStatus{ID: row.ID + "-matching", RideID: row.ID, Status: "MATCHING", CreatedAt: row.CreatedAt})
 	}
 	plan, assignments := testMatchingPlan(t, s)
-	if len(plan.rides) != 256 || plan.count != 128 || plan.required != 32 {
+	if len(plan.rides) != 256 || plan.count != 128 || plan.required != 0 {
 		t.Fatal("fixture did not select rides behind the FIFO prefix")
 	}
 	var wg sync.WaitGroup

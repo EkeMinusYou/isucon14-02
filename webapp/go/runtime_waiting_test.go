@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func TestMatchingRescueThresholdAndQuarterQuota(t *testing.T) {
+func TestMatchingRescueThreshold(t *testing.T) {
 	now := time.Unix(1700000000, 0)
 	rides := make([]Ride, 12)
 	for i := range rides {
@@ -23,7 +23,7 @@ func TestMatchingRescueThresholdAndQuarterQuota(t *testing.T) {
 		at       time.Time
 		required int
 	}{
-		{0, now, 0}, {1, now, 1}, {8, now.Add(-time.Nanosecond), 2},
+		{0, now, 0}, {1, now, 1}, {8, now.Add(-time.Nanosecond), 0},
 		{8, now, 6}, {8, now.Add(time.Nanosecond), 6}, {4, now, 4}, {12, now, 6},
 	} {
 		if got := requiredMatchingRides(rides, test.n, test.at); got != test.required {
@@ -34,8 +34,8 @@ func TestMatchingRescueThresholdAndQuarterQuota(t *testing.T) {
 		rides[i].CreatedAt = now
 	}
 	for n := 1; n <= len(rides); n++ {
-		if got := requiredMatchingRides(rides, n, now); got != (n+3)/4 {
-			t.Fatalf("quarter quota n=%d got=%d", n, got)
+		if got := requiredMatchingRides(rides, n, now); got != 0 {
+			t.Fatalf("young rides must not be mandatory n=%d got=%d", n, got)
 		}
 	}
 }
@@ -76,8 +76,8 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 	}
 	for i, assignment := range assignments {
 		ride := plan.rides[assignment.rideIndex]
-		if i < 2 && ride.ID != fmt.Sprintf("far-%02d", i) || i >= 2 && ride.DestinationLatitude-ride.PickupLatitude != 100000 {
-			t.Fatalf("oldest rescue or geographic long-trip selection lost: %+v", plan.rides)
+		if ride.DestinationLatitude-ride.PickupLatitude != 100000 {
+			t.Fatalf("young distant rides must not displace nearby long trips at %d: %+v", i, plan.rides)
 		}
 	}
 	// A new earlier request changes FIFO but must not invalidate selected rows.
@@ -172,11 +172,11 @@ func TestMatchingGeographicRescue(t *testing.T) {
 	if a := assignMatchingPlan(plan); plan.rides[a[0].rideIndex].ID != "old-0" {
 		t.Fatal("single-chair plans must make FIFO progress")
 	}
-	// Sustained nearby arrivals cannot starve distant requests below the age
-	// threshold: each four-chair plan still commits at least one oldest request.
+	// Sustained nearby arrivals cannot starve distant requests past the age
+	// threshold: aged requests are mandatory in every plan.
 	s = memoryTestState(t)
 	for i := 0; i < 6; i++ {
-		createGeographicTestRide(t, s, fmt.Sprintf("far-%d", i), now.Add(-time.Second), 10000+i, 1)
+		createGeographicTestRide(t, s, fmt.Sprintf("far-%d", i), now.Add(-matchingRideRescueAge), 10000+i, 1)
 	}
 	for batch := 0; batch < 6; batch++ {
 		for i := 0; i < 4; i++ {
@@ -214,9 +214,8 @@ func TestMatchingGeographicLimitAndFallback(t *testing.T) {
 	}
 	for i, a := range assignments {
 		ride := plan.rides[a.rideIndex]
-		if i < matchingPlanLimit/4 && ride.ID != fmt.Sprintf("r-%03d", i) ||
-			i >= matchingPlanLimit/4 && ride.PickupLatitude != 0 {
-			t.Fatalf("quota or long-trip joint choice lost at %d: %+v", i, ride)
+		if ride.PickupLatitude != 0 {
+			t.Fatalf("long-trip joint choice lost at %d: %+v", i, ride)
 		}
 	}
 	// Unknown coordinates are usable but do not create nearby choices.

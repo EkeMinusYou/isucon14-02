@@ -141,7 +141,7 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 		reason = "generation"
 		return false, nil
 	}
-	if len(assignments) != plan.count || plan.required < (plan.count+3)/4 || plan.required > plan.count {
+	if len(assignments) != plan.count || plan.required < 0 || plan.required > plan.count {
 		reason = "conflict_rides"
 		return true, nil
 	}
