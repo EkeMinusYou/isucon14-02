@@ -37,6 +37,9 @@ vars:
   SETUP_SECRET_ALLOWLIST: ''
   # Services whose metrics and journals measurectl collects on every host.
   MANAGED_SERVICES: '{{.SERVICE}},nginx,mysql,isuride-matcher,isuride-payment_mock'
+  # Optional collectors enabled on every benchmark RUN. nginx-oncpu needs perf on
+  # NGINX_ONCPU_HOST (task deploy-nginx-oncpu-prereqs).
+  MEASURECTL_COLLECT_FLAGS: '-include nginx-oncpu'
   # <<< contest values <<<
 
   SSH_USER: ubuntu
@@ -837,7 +840,7 @@ tasks:
   before-bench:
     desc: 差分をcommitしてRUNを採番し、ログローテートとcollector起動を行う
     silent: true
-    deps: [build-measurectl, build-proc-metrics, build-mysql-metrics, build-sql-pool-metrics, build-deployctl]
+    deps: [build-measurectl, build-proc-metrics, build-mysql-metrics, build-sql-pool-metrics, build-nginx-oncpu-profiler, build-deployctl]
     cmds:
       # Measure only what this worktree deployed: other worktrees share the servers.
       - '{{.DEPLOYCTL_DIR}}/deployctl verify -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
