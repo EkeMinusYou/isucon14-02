@@ -19,7 +19,7 @@ func (s *rideState) resetCurrentIndexes() {
 	s.userActiveRides = map[string]int{}
 	s.chairCurrent = map[string]*chairCurrentState{}
 	s.matchingChairs = map[string]struct{}{}
-	s.nearbyChairs = map[string]struct{}{}
+	s.nearbyChairs = map[string]*coordinateCell{}
 	s.nearbyMissingStatus = map[string]struct{}{}
 }
 
@@ -99,7 +99,7 @@ func maxTime(a, b time.Time) time.Time {
 }
 
 func (s *rideState) refreshChairIndexes(id string) {
-	defer s.observeReusable(id)
+	defer func() { s.observeReusable(id); s.refreshCoordinateRoute(id) }()
 	delete(s.matchingChairs, id)
 	delete(s.nearbyChairs, id)
 	delete(s.nearbyMissingStatus, id)
@@ -115,7 +115,8 @@ func (s *rideState) refreshChairIndexes(id string) {
 	}
 	// Nearby publication does not require notification ACKs. Its time boundary
 	// is checked at read time, so no timer or mutation during reads is needed.
-	s.nearbyChairs[id] = struct{}{}
+	// Cells stay stable within a generation; reads load their latest snapshot.
+	s.nearbyChairs[id] = s.coordinateCell(id)
 	queue := s.chairEvents[id]
 	if queue == nil || queue.pending.Len() == 0 {
 		s.matchingChairs[id] = struct{}{}

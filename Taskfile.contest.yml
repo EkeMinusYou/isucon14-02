@@ -22,6 +22,21 @@ tasks:
     cmds:
       - '{{.DEPLOYCTL_DIR}}/deployctl apply nginx -dry-run -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
 
+  deploy-matcher-dry:
+    desc: matcherの配布先とservice操作を実行せず表示
+    deps: [build-deployctl]
+    cmds:
+      - '{{.DEPLOYCTL_DIR}}/deployctl apply matcher -dry-run -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
+
+  deploy-matcher:
+    desc: matcher unitをMATCHER_HOSTSへ配布・再起動
+    preconditions:
+      - sh: test ! -f '{{.RUN_STATE_FILE}}'
+        msg: active benchmark exists; run task after-bench or task abort-run
+    deps: [build-deployctl]
+    cmds:
+      - '{{.OPERATION_LOCK}} {{.DEPLOYCTL_DIR}}/deployctl apply matcher -config {{.DEPLOYCTL_CONFIG}} {{.DEPLOYCTL_COMMON}}'
+
   build-ride-metrics:
     desc: 計測対象Goアプリとsql-pool collectorを既存buildタスクでクロスコンパイル
     deps: [build, build-sql-pool-metrics]
@@ -55,6 +70,12 @@ tasks:
     dir: '{{.APP_DIR}}'
     cmds: [go test -race ./...]
 
+  test-coordinate-cells:
+    desc: 椅子セル・stripe WALの排他・到着順序・履歴復元をローカルで確認
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - go test -race -count=1 -timeout=60s -v -run '^Test(CoordinatePath|CoordinateRecovery|CoordinateControl|CoordinateWAL|CoordinateConcurrent|CoordinatesAndTransitionsWithoutDB|ConcurrentCoordinatesRetainOrderedHistory|FailedWALDoesNotPublish|CoordinateMetrics|FlowMetrics|RideMetricsSnapshot)' .
+
   test-runtime-accounts-mysql:
     desc: 一時MySQLでSQL照合・招待・クーポン・ライド・売上のWAL復元をrace検査
     dir: '{{.APP_DIR}}'
@@ -85,9 +106,10 @@ tasks:
         ready=0
         for attempt in $(seq 1 60); do
           if docker exec "$distance_container" mysqladmin --host=127.0.0.1 -uroot -pdistance-local-test ping --silent >/dev/null 2>&1; then ready=1; break; fi
+          if [ -z "$(docker ps -q --filter id="$distance_container")" ]; then break; fi
           sleep 1
         done
-        test "$ready" = 1
+        if [ "$ready" != 1 ]; then docker logs "$distance_container"; exit 1; fi
         distance_address=$(docker port "$distance_container" 3306/tcp)
         export ISUCON_DB_HOST=127.0.0.1 ISUCON_DB_PORT="${distance_address##*:}"
         export ISUCON_DB_USER=root ISUCON_DB_PASSWORD=distance-local-test ISUCON_DB_NAME=isuride

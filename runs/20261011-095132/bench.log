@@ -1,0 +1,226 @@
+2026-10-11T00:51:36.525368181Z	BENCHMARK_START
+time=09:51:37.312 level=INFO msg=負荷走行を開始します
+time=09:51:37.311 level=DEBUG source=/tmp/isucon14/bench/cmd/run.go:90 msg=target targetURL=https://isuride.xiv.isucon.net targetAddr=172.31.7.50:443 benchrun.GetTargetAddress()="" paymentURL=http://172.31.36.103:12345
+time=09:51:42.785 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=60
+time=09:51:42.785 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4 score="[0 0 0 3 1]" criteria="[4 1 4 4]"
+time=09:51:44.558 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=1
+time=09:51:44.558 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=1
+time=09:51:44.558 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=1
+time=09:51:44.558 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=09:51:44.585 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=120
+time=09:51:44.585 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=22 score="[0 0 0 14 8]" criteria="[22 8 22 22]"
+time=09:51:46.359 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=09:51:46.360 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=2
+time=09:51:46.360 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=09:51:46.360 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=09:51:46.360 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:51:46.386 level=INFO msg=これまでに地域内の評判によって7人、既存ユーザーの招待経由で41人が新規登録しました
+time=09:51:46.386 level=INFO msg=0.0%のライドは椅子がマッチされるまでの時間、58.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.0%のライドは椅子の実移動時間に不満がありました
+time=09:51:46.386 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=180
+time=09:51:46.386 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=41 score="[0 0 0 24 17]" criteria="[41 17 41 41]"
+time=09:51:48.158 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=3
+time=09:51:48.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=09:51:48.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=09:51:48.159 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=09:51:48.160 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:51:48.186 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=240
+time=09:51:48.186 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=67 score="[0 0 1 32 34]" criteria="[67 34 66 67]"
+time=09:51:49.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=09:51:49.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=3
+time=09:51:49.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=09:51:49.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=2
+time=09:51:49.961 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=1
+time=09:51:49.985 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=300
+time=09:51:49.985 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=101 score="[0 0 1 45 55]" criteria="[101 55 100 101]"
+time=09:51:51.758 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=4
+time=09:51:51.759 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=2
+time=09:51:51.759 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=2
+time=09:51:51.759 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=3
+time=09:51:51.761 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=3
+time=09:51:51.785 level=INFO msg=これまでに地域内の評判によって19人、既存ユーザーの招待経由で136人が新規登録しました
+time=09:51:51.785 level=INFO msg=3.4%のライドは椅子がマッチされるまでの時間、43.0%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.3%のライドは椅子の実移動時間に不満がありました
+time=09:51:51.785 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=360
+time=09:51:51.785 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=149 score="[0 0 4 62 83]" criteria="[144 85 148 149]"
+time=09:51:53.560 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=4
+time=09:51:53.561 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=3
+time=09:51:53.562 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=4
+time=09:51:53.562 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=2
+time=09:51:53.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=6
+time=09:51:53.585 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=420
+time=09:51:53.585 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=224 score="[0 0 13 90 121]" criteria="[203 132 222 223]"
+time=09:51:55.358 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=5
+time=09:51:55.359 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=6
+time=09:51:55.362 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=4
+time=09:51:55.362 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=4
+time=09:51:55.362 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=5
+time=09:51:55.385 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=480
+time=09:51:55.385 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=306 score="[0 1 25 119 161]" criteria="[257 187 304 304]"
+time=09:51:57.161 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=7
+time=09:51:57.161 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=8
+time=09:51:57.165 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=7
+time=09:51:57.167 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=5
+time=09:51:57.167 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=7
+time=09:51:57.185 level=INFO msg=これまでに地域内の評判によって32人、既存ユーザーの招待経由で361人が新規登録しました
+time=09:51:57.185 level=INFO msg=21.7%のライドは椅子がマッチされるまでの時間、34.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.4%のライドは椅子の実移動時間に不満がありました
+time=09:51:57.185 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=540
+time=09:51:57.185 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=446 score="[0 1 43 166 236]" criteria="[349 292 444 444]"
+time=09:51:58.960 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=9
+time=09:51:58.962 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=10
+time=09:51:58.964 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=8
+time=09:51:58.964 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=7
+time=09:51:58.964 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=10
+time=09:51:58.985 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=600
+time=09:51:58.985 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=640 score="[0 1 73 218 348]" criteria="[479 441 638 635]"
+time=09:52:00.760 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=11
+time=09:52:00.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=6
+time=09:52:00.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=8
+time=09:52:00.765 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=9
+time=09:52:00.766 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=8
+time=09:52:00.785 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=660
+time=09:52:00.785 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=885 score="[0 1 97 298 489]" criteria="[645 639 883 878]"
+time=09:52:02.563 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=9
+time=09:52:02.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=13
+time=09:52:02.564 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=8
+time=09:52:02.566 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=9
+time=09:52:02.568 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=9
+time=09:52:02.585 level=INFO msg=これまでに地域内の評判によって45人、既存ユーザーの招待経由で935人が新規登録しました
+time=09:52:02.585 level=INFO msg=29.0%のライドは椅子がマッチされるまでの時間、25.6%のライドはマッチされた椅子が乗車地点までに掛かる時間、0.5%のライドは椅子の実移動時間に不満がありました
+time=09:52:02.585 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=720
+time=09:52:02.585 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1197 score="[0 1 128 405 663]" criteria="[850 891 1195 1188]"
+time=09:52:04.369 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=10
+time=09:52:04.369 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=13
+time=09:52:04.370 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=12
+time=09:52:04.376 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=10
+time=09:52:04.377 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=9
+time=09:52:04.385 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=780
+time=09:52:04.385 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=1560 score="[0 1 153 542 864]" criteria="[1083 1198 1558 1550]"
+time=09:52:06.318 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=17
+time=09:52:06.324 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=15
+time=09:52:06.335 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=840
+time=09:52:06.335 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2016 score="[0 1 202 719 1094]" criteria="[1337 1592 2014 1995]"
+time=09:52:06.350 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=12
+time=09:52:06.350 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=11
+time=09:52:06.352 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=13
+time=09:52:08.121 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=18
+time=09:52:08.122 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=13
+time=09:52:08.122 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=13
+time=09:52:08.135 level=INFO msg=これまでに地域内の評判によって57人、既存ユーザーの招待経由で1856人が新規登録しました
+time=09:52:08.135 level=INFO msg=36.3%のライドは椅子がマッチされるまでの時間、19.2%のライドはマッチされた椅子が乗車地点までに掛かる時間、1.1%のライドは椅子の実移動時間に不満がありました
+time=09:52:08.135 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=900
+time=09:52:08.135 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=2466 score="[0 5 240 926 1295]" criteria="[1571 1993 2464 2415]"
+time=09:52:08.142 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=11
+time=09:52:08.143 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=12
+time=09:52:10.452 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=19
+time=09:52:10.456 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=17
+time=09:52:10.458 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=24
+time=09:52:10.475 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=960
+time=09:52:10.475 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3086 score="[0 14 353 1218 1501]" criteria="[1860 2552 3082 2884]"
+time=09:52:10.487 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=17
+time=09:52:10.488 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=15
+time=09:52:12.267 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=15
+time=09:52:12.268 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=11
+time=09:52:12.268 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=16
+time=09:52:12.275 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1020
+time=09:52:12.275 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=3522 score="[0 20 441 1434 1627]" criteria="[2070 2961 3515 3166]"
+time=09:52:12.288 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=11
+time=09:52:12.289 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=11
+time=09:52:13.765 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:52:14.056 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=20
+time=09:52:14.059 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=16
+time=09:52:14.060 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=15
+time=09:52:14.076 level=INFO msg=これまでに地域内の評判によって69人、既存ユーザーの招待経由で2834人が新規登録しました
+time=09:52:14.076 level=INFO msg=これまでに低評価なライドによって18人が利用をやめました
+time=09:52:14.076 level=INFO msg=43.2%のライドは椅子がマッチされるまでの時間、14.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、8.0%のライドは椅子の実移動時間に不満がありました
+time=09:52:14.076 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1080
+time=09:52:14.076 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4028 score="[4 33 602 1668 1721]" criteria="[2286 3427 4012 3400]"
+time=09:52:14.126 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=12
+time=09:52:14.129 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=15
+time=09:52:15.876 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1140
+time=09:52:15.876 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=4520 score="[20 50 814 1878 1758]" criteria="[2428 3870 4471 3575]"
+time=09:52:15.919 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=11
+time=09:52:15.922 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=13
+time=09:52:15.926 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=21
+time=09:52:15.933 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=13
+time=09:52:15.946 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=17
+time=09:52:17.655 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=22
+time=09:52:17.655 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=18
+time=09:52:17.657 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=21
+time=09:52:17.675 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1200
+time=09:52:17.675 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5143 score="[41 78 1089 2112 1823]" criteria="[2625 4441 5038 3780]"
+time=09:52:17.785 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=16
+time=09:52:17.786 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=14
+time=09:52:19.468 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=16
+time=09:52:19.476 level=INFO msg=これまでに地域内の評判によって82人、既存ユーザーの招待経由で3492人が新規登録しました
+time=09:52:19.476 level=INFO msg=これまでに低評価なライドによって57人が利用をやめました
+time=09:52:19.476 level=INFO msg=51.2%のライドは椅子がマッチされるまでの時間、12.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、16.3%のライドは椅子の実移動時間に不満がありました
+time=09:52:19.476 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1260
+time=09:52:19.476 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=5631 score="[54 95 1320 2306 1856]" criteria="[2749 4903 5492 3933]"
+time=09:52:19.485 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=11
+time=09:52:19.487 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=11
+time=09:52:21.275 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1320
+time=09:52:21.275 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6116 score="[68 124 1584 2462 1878]" criteria="[2861 5360 5924 4045]"
+time=09:52:21.308 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=30
+time=09:52:21.319 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=41
+time=09:52:21.320 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=17
+time=09:52:21.321 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=15
+time=09:52:21.322 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=13
+time=09:52:23.105 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1380
+time=09:52:23.105 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=6739 score="[92 169 1887 2684 1907]" criteria="[2971 5951 6464 4237]"
+time=09:52:23.125 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=16
+time=09:52:23.173 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=16
+time=09:52:24.905 level=INFO msg=これまでに地域内の評判によって96人、既存ユーザーの招待経由で3989人が新規登録しました
+time=09:52:24.905 level=INFO msg=これまでに低評価なライドによって110人が利用をやめました
+time=09:52:24.905 level=INFO msg=57.9%のライドは椅子がマッチされるまでの時間、10.9%のライドはマッチされた椅子が乗車地点までに掛かる時間、22.2%のライドは椅子の実移動時間に不満がありました
+time=09:52:24.905 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1440
+time=09:52:24.905 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7277 score="[95 179 2241 2844 1918]" criteria="[3060 6483 6990 4332]"
+time=09:52:25.022 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=15
+time=09:52:25.023 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=39
+time=09:52:25.023 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=31
+time=09:52:25.097 level=WARN msg="ユーザー登録に失敗しました (CODE=17): POST /api/app/usersへのリクエストに対して、期待されたHTTPステータスコードが確認できませんでした (expected:201, actual:500)"
+time=09:52:26.726 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=68
+time=09:52:26.735 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1500
+time=09:52:26.735 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=7932 score="[108 232 2635 3024 1933]" criteria="[3154 7112 7566 4474]"
+time=09:52:26.764 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=28
+time=09:52:26.764 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=16
+time=09:52:28.535 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1560
+time=09:52:28.535 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8373 score="[121 252 2905 3158 1937]" criteria="[3183 7537 7973 4591]"
+time=09:52:28.541 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=30
+time=09:52:30.425 level=INFO msg=これまでに地域内の評判によって114人、既存ユーザーの招待経由で4460人が新規登録しました
+time=09:52:30.425 level=INFO msg=これまでに低評価なライドによって172人が利用をやめました
+time=09:52:30.425 level=INFO msg=63.6%のライドは椅子がマッチされるまでの時間、9.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、26.0%のライドは椅子の実移動時間に不満がありました
+time=09:52:30.425 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1620
+time=09:52:30.425 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=8964 score="[132 317 3187 3371 1957]" criteria="[3262 8111 8473 4786]"
+time=09:52:30.508 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=29
+time=09:52:32.945 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1680
+time=09:52:32.945 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=9688 score="[150 510 3590 3475 1963]" criteria="[3326 8808 8933 4900]"
+time=09:52:32.990 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=和やか交通 増加数=39
+time=09:52:33.004 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子工藝舎 増加数=78
+time=09:52:33.007 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=街のりタクシー 増加数=41
+time=09:52:34.745 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1740
+time=09:52:34.745 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10198 score="[173 630 3881 3550 1964]" criteria="[3353 9291 9218 5036]"
+time=09:52:34.775 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前="Orbit Taxi" 増加数=32
+time=09:52:36.755 level=INFO msg=これまでに地域内の評判によって132人、既存ユーザーの招待経由で4722人が新規登録しました
+time=09:52:36.755 level=INFO msg=これまでに低評価なライドによって367人が利用をやめました
+time=09:52:36.755 level=INFO msg=68.8%のライドは椅子がマッチされるまでの時間、8.8%のライドはマッチされた椅子が乗車地点までに掛かる時間、32.7%のライドは椅子の実移動時間に不満がありました
+time=09:52:36.755 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1800
+time=09:52:36.755 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=10827 score="[207 929 4136 3589 1966]" criteria="[3381 9874 9393 5184]"
+time=09:52:36.763 level=INFO msg=一定の売上が立ったためオーナーの椅子が増加します 名前=椅子と暮らし舎 増加数=110
+time=09:52:38.555 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:315 msg=時間経過 tick=1860
+time=09:52:38.555 level=DEBUG source=/tmp/isucon14/bench/benchmarker/scenario/scenario.go:317 msg=eval reqs=11459 score="[245 1138 4411 3699 1966]" criteria="[3411 10457 9706 5347]"
+time=09:52:45.986 level=INFO msg=最終地域情報 名前=チェアタウン ユーザー登録数=3848 アクティブユーザー数=3498
+time=09:52:45.986 level=INFO msg=最終地域情報 名前=コシカケシティ ユーザー登録数=1205 アクティブユーザー数=1050
+time=09:52:45.986 level=INFO msg=最終オーナー情報 名前=街のりタクシー 売上=13867100 椅子数=292
+time=09:52:45.986 level=INFO msg=最終オーナー情報 名前=和やか交通 売上=11723800 椅子数=250
+time=09:52:45.986 level=INFO msg=最終オーナー情報 名前=椅子工藝舎 売上=15925200 椅子数=337
+time=09:52:45.986 level=INFO msg=最終オーナー情報 名前=椅子と暮らし舎 売上=18969500 椅子数=440
+time=09:52:45.986 level=INFO msg=最終オーナー情報 名前="Orbit Taxi" 売上=13282200 椅子数=293
+time=09:52:45.986 level=INFO msg=72.4%のライドは椅子がマッチされるまでの時間、8.5%のライドはマッチされた椅子が乗車地点までに掛かる時間、37.3%のライドは椅子の実移動時間に不満がありました
+time=09:52:45.987 level=INFO msg=結果 pass=true スコア=784884 種別エラー数=map[17:2]
+time=09:52:45.987 level=INFO msg=負荷走行が終了しました
+
+SCORE: 784884
+BENCHMARK_PASS
+2026-10-11T00:52:46.618680771Z	BENCHMARK_END
+
+SCORE: 784884
+BENCHMARK_PASS

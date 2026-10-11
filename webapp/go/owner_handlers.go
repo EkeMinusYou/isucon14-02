@@ -147,7 +147,7 @@ func ownerGetChairs(w http.ResponseWriter, r *http.Request) {
 		if chair.OwnerID != owner.ID {
 			continue
 		}
-		d := s.distances[chair.ID]
+		d := s.chairDistance(chair.ID)
 		c := ownerGetChairResponseChair{ID: chair.ID, Name: chair.Name, Model: chair.Model, Active: chair.IsActive, RegisteredAt: chair.CreatedAt.UnixMilli(), TotalDistance: d.TotalDistance}
 		if d.UpdatedAt.Valid {
 			at := d.UpdatedAt.Time.UnixMilli()

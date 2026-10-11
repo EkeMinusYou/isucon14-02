@@ -222,11 +222,19 @@ deployments:
           set -eu
           case ',{var:matcher_hosts},' in
             *',{host},'*) ;;
-            *) sudo systemctl disable --now isuride-matcher ;;
+            *)
+              if sudo systemctl cat isuride-matcher >/dev/null 2>&1; then
+                sudo systemctl disable --now isuride-matcher
+              fi
+              ;;
           esac
           case ',{var:payment_mock_hosts},' in
             *',{host},'*) ;;
-            *) sudo systemctl disable --now isuride-payment_mock ;;
+            *)
+              if sudo systemctl cat isuride-payment_mock >/dev/null 2>&1; then
+                sudo systemctl disable --now isuride-payment_mock
+              fi
+              ;;
           esac
           case ',{var:tls_forward_hosts},' in
             *',{host},'*) ;;

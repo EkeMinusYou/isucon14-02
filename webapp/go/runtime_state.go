@@ -50,13 +50,16 @@ type memoryRide struct {
 // of nearby listings; coordinate writes and matching do not wait here.
 const nearbyCompletionGrace = 100 * time.Millisecond
 
-// The single application owner serializes validation, WAL append and publication.
-// SQL and external payment calls never hold mu.
+// Control mutations serialize validation, WAL append and publication under mu.
+// Ordinary coordinates use chair cells and striped WALs; SQL/payment stay outside mu.
 type rideState struct {
 	accountState
 	// Immutable after initial startup; request normalization does not hold mu.
 	collationWeights []uint16
 	coordinateCalls  atomic.Uint64
+	coordinateReady  atomic.Bool
+	coordinateFailed atomic.Pointer[coordinateFailure]
+	coordinates      *coordinateState
 	metrics          *rideMetrics
 	dispatch         *dispatchMetrics
 	mu               sync.RWMutex
@@ -71,7 +74,6 @@ type rideState struct {
 	chairs           map[string]Chair
 	modelSpeeds      map[string]int
 	chairTokens      map[string]string
-	distances        map[string]distanceTotal
 	stats            map[string]chairStatsTotal
 	rides            map[string]*memoryRide
 	statuses         map[string]RideStatus
@@ -88,7 +90,7 @@ type rideState struct {
 	userActiveRides     map[string]int
 	chairCurrent        map[string]*chairCurrentState
 	matchingChairs      map[string]struct{}
-	nearbyChairs        map[string]struct{}
+	nearbyChairs        map[string]*coordinateCell
 	nearbyMissingStatus map[string]struct{}
 }
 
@@ -103,9 +105,15 @@ func newRideState(ctx context.Context, database *sqlx.DB, directory string) (*ri
 	if err != nil {
 		return nil, err
 	}
-	s := &rideState{database: database, wal: f}
+	coordinates, err := openCoordinateState(directory)
+	if err != nil {
+		f.Close()
+		return nil, err
+	}
+	s := &rideState{database: database, wal: f, coordinates: coordinates}
 	if err := s.restore(ctx); err != nil {
 		f.Close()
+		coordinates.close()
 		return nil, err
 	}
 	return s, nil
@@ -113,6 +121,8 @@ func newRideState(ctx context.Context, database *sqlx.DB, directory string) (*ri
 
 func (s *rideState) restore(ctx context.Context) error {
 	s.ready = false
+	s.coordinateReady.Store(false)
+	s.coordinates.reset()
 	s.metrics = nil
 	s.dispatch = nil
 	if err := s.loadCollation(ctx); err != nil {
@@ -164,7 +174,7 @@ func (s *rideState) restore(ctx context.Context) error {
 	for _, model := range models {
 		s.modelSpeeds[model.Name] = model.Speed
 	}
-	s.distances, s.stats = map[string]distanceTotal{}, map[string]chairStatsTotal{}
+	s.stats = map[string]chairStatsTotal{}
 	s.rides, s.statuses = map[string]*memoryRide{}, map[string]RideStatus{}
 	s.userRides, s.chairRides = map[string][]string{}, map[string][]string{}
 	// Build sales once from the final SQL and WAL state, in timestamp order.
@@ -177,7 +187,7 @@ func (s *rideState) restore(ctx context.Context) error {
 		s.addChair(c)
 	}
 	for _, d := range distances {
-		s.distances[d.ChairID] = d
+		s.seedCoordinateDistance(d.ChairID, d)
 	}
 	for _, stats := range stats {
 		s.stats[stats.ChairID] = stats
@@ -191,11 +201,16 @@ func (s *rideState) restore(ctx context.Context) error {
 	if err := s.recoverWAL(); err != nil {
 		return err
 	}
+	if err := s.recoverCoordinates(); err != nil {
+		return err
+	}
 	// Rebuild ordered recipient queues and current indexes after replay.
 	s.rebuildIndexes()
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
 	s.ready = true
+	s.coordinateFailed.Store(nil)
+	s.coordinateReady.Store(true)
 	s.observeOpportunity(time.Now())
 	return nil
 }
@@ -258,6 +273,7 @@ func (s *rideState) rebuildIndexes() {
 
 func (s *rideState) addChair(c Chair) {
 	s.chairs[c.ID], s.chairTokens[s.accountKey(c.AccessToken)] = c, c.ID
+	s.publishCoordinateChair(c)
 	if s.dispatch != nil {
 		s.dispatch.changeChair(c.ID, func(state *chairMetricState) { state.active = c.IsActive })
 	}
@@ -333,9 +349,8 @@ func (s *rideState) apply(record stateRecord) {
 			s.addRide(seed.Ride, seed.Fare)
 		}
 	}
-	if record.Distance != nil {
-		s.observeAcceptedDistance(*record.Distance)
-		s.distances[record.Distance.ChairID] = *record.Distance
+	if record.Coordinate != nil && !s.ready {
+		s.coordinates.arrivals[*record.Coordinate] = false
 	}
 	if record.Chair != nil {
 		s.addChair(*record.Chair)
@@ -438,56 +453,6 @@ func (s *rideState) continuingRide(userID string) bool {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.userActiveRides[userID] != 0
-}
-
-func (s *rideState) coordinate(chairID string, coordinate Coordinate) (time.Time, error) {
-	var timing *coordinateTiming
-	if s.coordinateCalls.Add(1)%coordinateSampleEvery == 1 {
-		timing = &coordinateTiming{started: time.Now()}
-	}
-	s.mu.Lock()
-	success := false
-	if timing != nil {
-		timing.locked = time.Now()
-		timing.elapsed[0] = timing.locked.Sub(timing.started)
-	}
-	defer func() { s.finishCoordinate(timing, success); s.mu.Unlock() }()
-	if _, ok := s.chairs[chairID]; !ok {
-		return time.Time{}, sql.ErrNoRows
-	}
-	d := s.distances[chairID]
-	d.ChairID = chairID
-	at := time.Now().UTC().Truncate(time.Microsecond)
-	if d.UpdatedAt.Valid && !at.After(d.UpdatedAt.Time) {
-		at = d.UpdatedAt.Time.Add(time.Microsecond)
-	}
-	if d.Latitude.Valid {
-		d.TotalDistance += calculateDistance(int(d.Latitude.Int64), int(d.Longitude.Int64), coordinate.Latitude, coordinate.Longitude)
-	}
-	d.Latitude, d.Longitude = sql.NullInt64{Int64: int64(coordinate.Latitude), Valid: true}, sql.NullInt64{Int64: int64(coordinate.Longitude), Valid: true}
-	d.UpdatedAt = sql.NullTime{Time: at, Valid: true}
-	record := stateRecord{Location: &ChairLocation{ID: ulid.Make().String(), ChairID: chairID, Latitude: coordinate.Latitude, Longitude: coordinate.Longitude, CreatedAt: at}, Distance: &d}
-	ids := s.chairRides[chairID]
-	var changed *memoryRide
-	if len(ids) != 0 {
-		ride := s.rides[ids[len(ids)-1]]
-		status := s.latest(ride)
-		if status == "ENROUTE" && coordinate.Latitude == ride.PickupLatitude && coordinate.Longitude == ride.PickupLongitude {
-			record.Statuses = []RideStatus{s.newStatus(ride, "PICKUP", at)}
-			changed = ride
-		} else if status == "CARRYING" && coordinate.Latitude == ride.DestinationLatitude && coordinate.Longitude == ride.DestinationLongitude {
-			record.Statuses = []RideStatus{s.newStatus(ride, "ARRIVED", at)}
-			changed = ride
-		}
-	}
-	if err := s.commitCoordinate(record, timing); err != nil {
-		return time.Time{}, err
-	}
-	if changed != nil {
-		notifyRide(&changed.Ride)
-	}
-	success = true
-	return at, nil
 }
 
 type stateHTTPError struct {
@@ -610,7 +575,7 @@ func (s *rideState) finishCompletionResponse(rideID string) {
 func (s *rideState) checkReady() error {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	if !s.ready || s.failed != nil {
+	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
 		return fmt.Errorf("runtime state is unavailable: %v", s.failed)
 	}
 	return nil

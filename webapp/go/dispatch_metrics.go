@@ -80,7 +80,11 @@ func (s *rideState) resetDispatchMetrics() {
 		s.metrics.register(name, durationLimits)
 	}
 	s.metrics.register("dispatch_batch", [4]float64{1, 8, 32, 64})
+	s.resetCoordinateMetrics()
 	s.resetFlow()
+	for id := range s.chairs {
+		s.refreshCoordinateRoute(id)
+	}
 	s.observeOpportunity(s.metrics.started)
 }
 

@@ -15,7 +15,7 @@ func matchingBatchTestState(t *testing.T, rides, chairs int) *rideState {
 	for i := 0; i < chairs; i++ {
 		id := fmt.Sprintf("chair-%03d", i)
 		s.addChair(Chair{ID: id, Model: "model", IsActive: true})
-		s.distances[id] = distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: 1000, Valid: true}, Longitude: sql.NullInt64{Int64: 1000, Valid: true}}
+		s.seedCoordinateDistance(id, distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: 1000, Valid: true}, Longitude: sql.NullInt64{Int64: 1000, Valid: true}})
 	}
 	// Arrival order differs from FIFO order.
 	for i := rides - 1; i >= 0; i-- {

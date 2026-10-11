@@ -41,9 +41,9 @@ func TestChairDistance(t *testing.T) {
 		if err := db.Select(&locations, "SELECT * FROM chair_locations"); err != nil {
 			t.Fatal(err)
 		}
-		for _, record := range readTestWAL(t, runtimeState) {
-			if record.Location != nil {
-				locations = append(locations, *record.Location)
+		for _, record := range readTestCoordinates(t, runtimeState) {
+			if record.Location.ID != "" {
+				locations = append(locations, record.Location)
 			}
 		}
 		sort.Slice(locations, func(i, j int) bool {
@@ -69,7 +69,7 @@ func TestChairDistance(t *testing.T) {
 		t.Helper()
 		expected := historyTotals()
 		for id := range runtimeState.chairs {
-			d, e := runtimeState.distances[id], expected[id]
+			d, e := runtimeState.chairDistance(id), expected[id]
 			if d.TotalDistance != e.TotalDistance || d.Latitude != e.Latitude || d.Longitude != e.Longitude || d.UpdatedAt.Valid != e.UpdatedAt.Valid || (d.UpdatedAt.Valid && !d.UpdatedAt.Time.Equal(e.UpdatedAt.Time)) {
 				t.Fatalf("distance differs from SQL seed + WAL for %s: %+v != %+v", id, d, e)
 			}
@@ -195,8 +195,8 @@ func TestChairDistance(t *testing.T) {
 			}
 		}
 		var locations int
-		for _, record := range readTestWAL(t, runtimeState) {
-			if record.Location != nil && record.Location.ChairID == registered.ID {
+		for _, record := range readTestCoordinates(t, runtimeState) {
+			if record.Location.ID != "" && record.Location.ChairID == registered.ID {
 				locations++
 			}
 		}

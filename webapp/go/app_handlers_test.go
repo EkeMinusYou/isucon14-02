@@ -20,7 +20,7 @@ func TestAppGetNearbyChairs(t *testing.T) {
 	t.Cleanup(func() { runtimeState, db = previousState, previousDB })
 	chair := func(id string, active bool, latitude, longitude int) {
 		s.addChair(Chair{ID: id, Name: "name-" + id, Model: "model", IsActive: active})
-		s.distances[id] = distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: int64(latitude), Valid: true}, Longitude: sql.NullInt64{Int64: int64(longitude), Valid: true}, UpdatedAt: sql.NullTime{Time: time.Date(2026, 1, 1, 0, 0, 1, 0, time.UTC), Valid: true}}
+		s.seedCoordinateDistance(id, distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: int64(latitude), Valid: true}, Longitude: sql.NullInt64{Int64: int64(longitude), Valid: true}, UpdatedAt: sql.NullTime{Time: time.Date(2026, 1, 1, 0, 0, 1, 0, time.UTC), Valid: true}})
 	}
 	coordinate := func(id string, latitude, longitude int) {
 		t.Helper()
@@ -67,6 +67,70 @@ func TestAppGetNearbyChairs(t *testing.T) {
 		}
 	}
 
+	t.Run("concurrent coordinates and recovered candidates", func(t *testing.T) {
+		directory := t.TempDir()
+		state := memoryTestStateIn(t, directory, "nearby-generation", nil)
+		runtimeState = state
+		defer func() { runtimeState = s }()
+		chair := Chair{ID: "idle", Name: "name-idle", Model: "model", IsActive: true}
+		if err := state.commit(stateRecord{Chair: &chair}); err != nil {
+			t.Fatal(err)
+		}
+		coordinate("idle", 0, 0)
+
+		done := make(chan struct{})
+		var updateErr error
+		go func() {
+			defer close(done)
+			for i := 1; i <= 128; i++ {
+				if _, err := state.coordinate("idle", Coordinate{i, -i}); err != nil {
+					updateErr = err
+					return
+				}
+			}
+		}()
+		defer func() { <-done }()
+		for i := 0; i < 128; i++ {
+			response := httptest.NewRecorder()
+			appGetNearbyChairs(response, httptest.NewRequest(http.MethodGet, "/api/app/nearby-chairs?latitude=0&longitude=0&distance=1000", nil))
+			var result appGetNearbyChairsResponse
+			if response.Code != http.StatusOK || json.Unmarshal(response.Body.Bytes(), &result) != nil || len(result.Chairs) != 1 {
+				t.Fatalf("concurrent nearby: %d %s", response.Code, response.Body.String())
+			}
+			position := result.Chairs[0].CurrentCoordinate
+			if position.Latitude < 0 || position.Latitude > 128 || position.Longitude != -position.Latitude {
+				t.Fatalf("inconsistent coordinate snapshot: %+v", position)
+			}
+		}
+		<-done
+		if updateErr != nil {
+			t.Fatal(updateErr)
+		}
+		query := "latitude=128&longitude=-128&distance=0"
+		want := map[string]Coordinate{"idle": {128, -128}}
+		check(query, http.StatusOK, want)
+		if err := state.activity("idle", false); err != nil {
+			t.Fatal(err)
+		}
+		check(query, http.StatusOK, map[string]Coordinate{})
+		if err := state.activity("idle", true); err != nil {
+			t.Fatal(err)
+		}
+		check(query, http.StatusOK, want)
+		if err := state.close(); err != nil {
+			t.Fatal(err)
+		}
+		state = memoryTestStateIn(t, directory, "nearby-generation", nil)
+		runtimeState = state
+		check(query, http.StatusOK, want)
+		coordinate("idle", 129, -129)
+		check("latitude=129&longitude=-129&distance=0", http.StatusOK, map[string]Coordinate{"idle": {129, -129}})
+		if err := state.close(); err != nil {
+			t.Fatal(err)
+		}
+		runtimeState = memoryTestStateIn(t, directory, "next-generation", nil)
+		check(query, http.StatusOK, map[string]Coordinate{})
+	})
 	t.Run("availability and latest coordinates", func(t *testing.T) {
 		chair("idle", true, 0, 0)
 		chair("boundary", true, -20, 30)

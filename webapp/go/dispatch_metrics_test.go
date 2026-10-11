@@ -19,7 +19,7 @@ func TestDispatchMetricsTransitionsAndFirstFlush(t *testing.T) {
 	s.resetDispatchMetrics()
 	s.addChair(Chair{ID: "c", IsActive: true, Model: "fast"})
 	s.modelSpeeds["fast"] = 2
-	s.distances["c"] = distanceTotal{Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}}
+	s.seedCoordinateDistance("c", distanceTotal{Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}})
 	seedMemoryRide(s, "r", "", time.Now().Add(-2*time.Second))
 	check := func(wait, available, blocked int) {
 		t.Helper()

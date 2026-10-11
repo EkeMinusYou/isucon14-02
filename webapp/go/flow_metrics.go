@@ -69,6 +69,9 @@ func flowStage(status string) int {
 // These aggregates live under s.mu and only touch the affected chair. Snapshot
 // derives active ages and integrated chair-ms without scanning ride history.
 func (s *rideState) startFlow(r *memoryRide, at time.Time, full bool) {
+	if r.ChairID.Valid {
+		defer s.refreshCoordinateRoute(r.ChairID.String)
+	}
 	if s.metrics == nil || s.dispatch == nil || !r.ChairID.Valid {
 		return
 	}
@@ -162,32 +165,6 @@ func (s *rideState) resetFlow() {
 			m.counters["flow_restored_chairs"]++
 			s.changeFlow(c, flowReuse, m.started, false)
 		}
-	}
-}
-
-func (s *rideState) observeAcceptedDistance(next distanceTotal) {
-	if s.metrics == nil || s.dispatch == nil {
-		return
-	}
-	m := s.metrics
-	previous := s.distances[next.ChairID]
-	if !previous.Latitude.Valid || !previous.Longitude.Valid {
-		m.counters["flow_coord_first"]++
-		return
-	}
-	delta := max(0, next.TotalDistance-previous.TotalDistance)
-	if delta == 0 {
-		m.counters["flow_coord_zero"]++
-	}
-	c := s.dispatch.chair[next.ChairID]
-	if c == nil || c.flow.stage == flowNone {
-		m.counters["flow_coord_no_ride"]++
-		return
-	}
-	if c.flow.stage == flowEnroute || c.flow.stage == flowCarrying {
-		m.observeState("flow_dist_"+flowNames[c.flow.stage], float64(delta))
-	} else {
-		m.counters["flow_coord_other"]++
 	}
 }
 

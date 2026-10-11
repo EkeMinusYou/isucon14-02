@@ -75,24 +75,42 @@ var testAccountWeights = func() []uint16 {
 }()
 
 func memoryTestState(t *testing.T) *rideState {
+	return memoryTestStateIn(t, t.TempDir(), "test", nil)
+}
+
+func memoryTestStateIn(t *testing.T, directory, generation string, seed func(*rideState)) *rideState {
 	t.Helper()
-	f, err := openStateWAL(t.TempDir())
+	f, err := openStateWAL(directory)
 	if err != nil {
 		t.Fatal(err)
 	}
-	s := &rideState{wal: f, generation: "test", ready: true,
-		chairs: map[string]Chair{}, modelSpeeds: map[string]int{}, chairTokens: map[string]string{}, distances: map[string]distanceTotal{}, stats: map[string]chairStatsTotal{},
-		rides: map[string]*memoryRide{}, statuses: map[string]RideStatus{}, userRides: map[string][]string{}, chairRides: map[string][]string{},
-		appEvents: map[string]*notificationQueue{}, chairEvents: map[string]*notificationQueue{},
-		sales: map[string][]salesPoint{},
-	}
-	s.collationWeights = testAccountWeights
-	s.resetAccounts()
-	s.resetCurrentIndexes()
-	if err := writeWALRecord(f, stateRecord{Version: 1, Generation: s.generation}); err != nil {
+	coordinates, err := openCoordinateState(directory)
+	if err != nil {
+		f.Close()
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { f.Close() })
+	s := &rideState{wal: f, coordinates: coordinates, generation: generation,
+		chairs: map[string]Chair{}, modelSpeeds: map[string]int{}, chairTokens: map[string]string{}, stats: map[string]chairStatsTotal{},
+		rides: map[string]*memoryRide{}, statuses: map[string]RideStatus{}, userRides: map[string][]string{}, chairRides: map[string][]string{},
+		appEvents: map[string]*notificationQueue{}, chairEvents: map[string]*notificationQueue{}, sales: map[string][]salesPoint{},
+	}
+	t.Cleanup(func() { s.close() })
+	s.collationWeights = testAccountWeights
+	s.resetAccounts()
+	s.coordinates.reset()
+	s.resetCurrentIndexes()
+	if seed != nil {
+		seed(s)
+	}
+	if err := s.recoverWAL(); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.recoverCoordinates(); err != nil {
+		t.Fatal(err)
+	}
+	s.rebuildIndexes()
+	s.ready = true
+	s.coordinateReady.Store(true)
 	return s
 }
 
@@ -142,12 +160,12 @@ func TestCoordinatesAndTransitionsWithoutDB(t *testing.T) {
 	if !reflect.DeepEqual(statuses, []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED", "COMPLETED"}) {
 		t.Fatal(statuses)
 	}
-	if s.distances["c"].TotalDistance != 70 || s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 5 {
+	if s.chairDistance("c").TotalDistance != 70 || s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 5 {
 		t.Fatal("incorrect distance or stats")
 	}
 	var locations int
-	for _, record := range readTestWAL(t, s) {
-		if record.Location != nil {
+	for _, record := range readTestCoordinates(t, s) {
+		if record.Location.ID != "" {
 			locations++
 		}
 	}
@@ -170,7 +188,7 @@ func TestConcurrentCoordinatesRetainOrderedHistory(t *testing.T) {
 		}(i)
 	}
 	wg.Wait()
-	records := readTestWAL(t, s)
+	records := readTestCoordinates(t, s)
 	if len(records) != 64 {
 		t.Fatal("accepted history missing")
 	}
@@ -187,7 +205,7 @@ func TestConcurrentCoordinatesRetainOrderedHistory(t *testing.T) {
 			distance += calculateDistance(prev.Latitude, prev.Longitude, record.Location.Latitude, record.Location.Longitude)
 		}
 	}
-	if s.distances["c"].TotalDistance != distance {
+	if s.chairDistance("c").TotalDistance != distance {
 		t.Fatal("distance disagrees with accepted history")
 	}
 }
@@ -195,13 +213,13 @@ func TestConcurrentCoordinatesRetainOrderedHistory(t *testing.T) {
 func TestFailedWALDoesNotPublish(t *testing.T) {
 	s := memoryTestState(t)
 	s.addChair(Chair{ID: "c"})
-	if err := s.wal.Close(); err != nil {
+	if err := s.coordinates.stripes[coordinateStripeIndex("c")].wal.Close(); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := s.coordinate("c", Coordinate{1, 2}); err == nil {
 		t.Fatal("closed WAL accepted a coordinate")
 	}
-	if s.sequence != 0 || s.distances["c"].UpdatedAt.Valid {
+	if s.sequence != 0 || s.chairDistance("c").UpdatedAt.Valid {
 		t.Fatal("failed append changed memory")
 	}
 }
@@ -211,7 +229,7 @@ func TestWALFramingAndRecovery(t *testing.T) {
 		t.Run(damaged, func(t *testing.T) {
 			s := memoryTestState(t)
 			s.addChair(Chair{ID: "c"})
-			if _, err := s.coordinate("c", Coordinate{1, 2}); err != nil {
+			if err := s.commit(stateRecord{Chair: &Chair{ID: "c", IsActive: true}}); err != nil {
 				t.Fatal(err)
 			}
 			end, _ := s.wal.Seek(0, io.SeekCurrent)
@@ -226,14 +244,14 @@ func TestWALFramingAndRecovery(t *testing.T) {
 				writeWALRecord(s.wal, stateRecord{Version: 1, Generation: "test", Sequence: 3})
 			}
 			s.sequence = 0
-			s.distances = map[string]distanceTotal{}
+			s.seedCoordinateDistance("c", distanceTotal{})
 			err := s.recoverWAL()
 			if damaged == "checksum" || damaged == "sequence" {
 				if err == nil {
 					t.Fatal("corrupt WAL accepted")
 				}
 			} else {
-				if err != nil || s.sequence != 1 || !s.distances["c"].UpdatedAt.Valid {
+				if err != nil || s.sequence != 1 || !s.chairs["c"].IsActive {
 					t.Fatalf("recovery: %v", err)
 				}
 				info, _ := s.wal.Stat()
@@ -315,7 +333,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if s.sequence != sequence || s.latest(s.rides["a"]) != "COMPLETED" || s.distances["c"].TotalDistance != 20 || s.stats["c"].Count != 1 || !s.chairs["c"].IsActive || s.rides["a"].ChairID.String != "c" {
+	if s.sequence != sequence || s.latest(s.rides["a"]) != "COMPLETED" || s.chairDistance("c").TotalDistance != 20 || s.stats["c"].Count != 1 || !s.chairs["c"].IsActive || s.rides["a"].ChairID.String != "c" {
 		t.Fatal("unprojected state not recovered")
 	}
 	replay, err := loadNotifications(context.Background(), "chair", "c", events[3].eventID)
@@ -351,7 +369,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if _, reusable := s.matchingChairs["c"]; s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 4 || s.distances["c"].TotalDistance != 20 || !reusable {
+	if _, reusable := s.matchingChairs["c"]; s.stats["c"].Count != 1 || s.stats["c"].Evaluation != 4 || s.chairDistance("c").TotalDistance != 20 || !reusable {
 		t.Fatal("full WAL replay duplicated totals")
 	}
 	if err := s.close(); err != nil {
@@ -364,7 +382,7 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 		t.Fatal(err)
 	}
 	runtimeState = s
-	if s.sequence != 0 || s.latest(s.rides["a"]) != "MATCHING" || s.distances["c"].UpdatedAt.Valid {
+	if s.sequence != 0 || s.latest(s.rides["a"]) != "MATCHING" || s.chairDistance("c").UpdatedAt.Valid {
 		t.Fatal("old generation replayed")
 	}
 	if err := acknowledgeNotificationGeneration(context.Background(), "chair", events[0].statusID, events[0].generation); err == nil {
@@ -372,6 +390,29 @@ func TestRuntimeRecoveryFromWAL(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(directory, "state.wal")); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestWALAcceptsBeyondFormerProjectionLimit(t *testing.T) {
+	s := memoryTestState(t)
+	s.addChair(Chair{ID: "c"})
+	for i := 0; i < 32769; i++ {
+		if _, err := s.coordinate("c", Coordinate{i, i}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if s.sequence != 0 || s.coordinateCell("c").snapshot.Load().sequence != 32769 || s.chairDistance("c").TotalDistance != 65536 {
+		t.Fatal("accepted history missing")
+	}
+	s.seedCoordinateDistance("c", distanceTotal{})
+	for i := range s.coordinates.stripes {
+		s.coordinates.stripes[i].sequence = 0
+	}
+	if err := s.recoverCoordinates(); err != nil {
+		t.Fatal(err)
+	}
+	if s.sequence != 0 || s.coordinateCell("c").snapshot.Load().sequence != 32769 || s.chairDistance("c").TotalDistance != 65536 {
+		t.Fatal("long WAL not recovered")
 	}
 }
 

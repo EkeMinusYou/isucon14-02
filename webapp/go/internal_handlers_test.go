@@ -32,7 +32,7 @@ func TestMatchingTravelTime(t *testing.T) {
 			s.modelSpeeds = map[string]int{"model": 1, "fast": 4, "stopped": 0}
 			for _, c := range test.chairs {
 				s.addChair(Chair{ID: c.id, Model: c.model, IsActive: true})
-				s.distances[c.id] = distanceTotal{ChairID: c.id, Latitude: sql.NullInt64{Int64: c.latitude, Valid: c.positioned}, Longitude: sql.NullInt64{Int64: c.longitude, Valid: c.positioned}}
+				s.seedCoordinateDistance(c.id, distanceTotal{ChairID: c.id, Latitude: sql.NullInt64{Int64: c.latitude, Valid: c.positioned}, Longitude: sql.NullInt64{Int64: c.longitude, Valid: c.positioned}})
 			}
 			for i, pickup := range test.pickups {
 				id := fmt.Sprintf("ride-%d", i)
@@ -60,7 +60,7 @@ func TestMatching(t *testing.T) {
 		s.modelSpeeds = map[string]int{"fast": 10, "slow": 2}
 		for _, model := range []string{"fast", "slow"} {
 			s.addChair(Chair{ID: model, Model: model, IsActive: true})
-			s.distances[model] = distanceTotal{ChairID: model, Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}}
+			s.seedCoordinateDistance(model, distanceTotal{ChairID: model, Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}})
 		}
 		seedMemoryRide(s, "short", "", time.Unix(1700000000, 0))
 		seedMemoryRide(s, "long", "", time.Unix(1700000001, 0))

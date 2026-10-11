@@ -98,7 +98,7 @@ func TestMatchingSnapshotAllowsCoordinateUpdates(t *testing.T) {
 	s.resetDispatchMetrics()
 	s.modelSpeeds["model"] = 2
 	s.addChair(Chair{ID: "c", Model: "model", IsActive: true})
-	s.distances["c"] = distanceTotal{Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}}
+	s.seedCoordinateDistance("c", distanceTotal{Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}})
 	seedMemoryRide(s, "r", "", time.Unix(1700000000, 0))
 	plan, err := s.snapshotMatching("", 0)
 	if err != nil {
@@ -139,7 +139,7 @@ func TestLargeMatchingWALReplayAndMetricContract(t *testing.T) {
 			state.modelSpeeds["model"] = 2
 			seedMemoryRide(state, id, "", time.Unix(1700000000+int64(i), 0))
 			if i != 0 {
-				state.distances[id] = distanceTotal{Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}}
+				state.seedCoordinateDistance(id, distanceTotal{Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}})
 			}
 		}
 	}

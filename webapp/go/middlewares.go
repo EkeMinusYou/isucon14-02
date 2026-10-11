@@ -71,11 +71,23 @@ func chairAuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		accessToken := runtimeState.accountKey(c.Value)
-		runtimeState.mu.RLock()
-		chairID, ok := runtimeState.chairTokens[accessToken]
-		chair := runtimeState.chairs[chairID]
-		ready := runtimeState.ready
-		runtimeState.mu.RUnlock()
+		var chair Chair
+		var ok, ready bool
+		if r.URL.Path == "/api/chair/coordinate" {
+			ready = runtimeState.coordinateAvailable() == nil
+			if id, found := runtimeState.coordinates.tokens.Load(accessToken); found {
+				if cell := runtimeState.coordinateCell(id.(string)); cell != nil {
+					if snapshot := cell.chair.Load(); snapshot != nil {
+						chair, ok = *snapshot, true
+					}
+				}
+			}
+		} else {
+			runtimeState.mu.RLock()
+			chairID, found := runtimeState.chairTokens[accessToken]
+			chair, ok, ready = runtimeState.chairs[chairID], found, runtimeState.ready
+			runtimeState.mu.RUnlock()
+		}
 		if !ready {
 			writeError(w, http.StatusServiceUnavailable, errors.New("runtime state is unavailable"))
 			return
@@ -100,7 +112,13 @@ func runtimeStateMiddleware(next http.Handler) http.Handler {
 		}
 		stateLifecycle.RLock()
 		defer stateLifecycle.RUnlock()
-		if err := runtimeState.checkReady(); err != nil {
+		var err error
+		if r.URL.Path == "/api/chair/coordinate" {
+			err = runtimeState.coordinateAvailable()
+		} else {
+			err = runtimeState.checkReady()
+		}
+		if err != nil {
 			writeError(w, http.StatusServiceUnavailable, err)
 			return
 		}

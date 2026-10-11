@@ -367,7 +367,7 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, sql.ErrNoRows)
 		return
 	}
-	for id := range s.nearbyChairs {
+	for id, cell := range s.nearbyChairs {
 		chair := s.chairs[id]
 		available, err := s.nearbyAvailable(id, snapshotAt)
 		if err != nil {
@@ -378,7 +378,14 @@ func appGetNearbyChairs(w http.ResponseWriter, r *http.Request) {
 		if !available {
 			continue
 		}
-		d := s.distances[id]
+		if cell == nil {
+			continue
+		}
+		snapshot := cell.snapshot.Load()
+		if snapshot == nil {
+			continue
+		}
+		d := snapshot.distance
 		if !d.Latitude.Valid || !d.Longitude.Valid {
 			continue
 		}

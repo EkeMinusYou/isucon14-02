@@ -181,6 +181,7 @@ func postInitialize(w http.ResponseWriter, r *http.Request) {
 	defer stateLifecycle.Unlock()
 	runtimeState.mu.Lock()
 	runtimeState.ready = false
+	runtimeState.coordinateReady.Store(false)
 	runtimeState.mu.Unlock()
 	notifications.reset()
 

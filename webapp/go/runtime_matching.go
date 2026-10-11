@@ -16,7 +16,7 @@ type matchingPlan struct {
 }
 
 func (s *rideState) matchingChair(id string) matchingChair {
-	chair, d := s.chairs[id], s.distances[id]
+	chair, d := s.chairs[id], s.chairDistance(id)
 	speed := s.modelSpeeds[chair.Model]
 	if !d.Latitude.Valid || !d.Longitude.Valid {
 		speed = 0
@@ -44,7 +44,7 @@ func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*
 		}
 		s.mu.RUnlock()
 	}()
-	if !s.ready || s.failed != nil {
+	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
 		return matchingPlan{}, errors.New("state WAL is unavailable")
 	}
 	n := min(len(s.waitingRides), len(s.matchingChairs), matchingPlanLimit)
@@ -72,7 +72,7 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 		s.finishPlan(plan.observation, reason, acquired.Sub(started), time.Since(acquired), true)
 		s.mu.Unlock()
 	}()
-	if !s.ready || s.failed != nil {
+	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
 		reason = "unavailable"
 		return false, errors.New("state WAL is unavailable")
 	}

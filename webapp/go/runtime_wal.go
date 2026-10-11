@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"errors"
@@ -18,18 +19,17 @@ const maxWALRecordBytes = 1 << 20
 
 // Records contain immutable after-images. History rows are never coalesced.
 type stateRecord struct {
-	Accounts    *accountRecord   `json:"accounts,omitempty"`
-	Version     int              `json:"v"`
-	Generation  string           `json:"g"`
-	Sequence    uint64           `json:"s"`
-	Location    *ChairLocation   `json:"l,omitempty"`
-	Distance    *distanceTotal   `json:"d,omitempty"`
-	Rides       []Ride           `json:"r,omitempty"`
-	CreatedRide *createdRide     `json:"n,omitempty"`
-	Statuses    []RideStatus     `json:"t,omitempty"`
-	Chair       *Chair           `json:"c,omitempty"`
-	Stats       *chairStatsTotal `json:"e,omitempty"`
-	Ack         *notificationAck `json:"a,omitempty"`
+	Accounts    *accountRecord       `json:"accounts,omitempty"`
+	Version     int                  `json:"v"`
+	Generation  string               `json:"g"`
+	Sequence    uint64               `json:"s"`
+	Coordinate  *coordinateReference `json:"coordinate,omitempty"`
+	Rides       []Ride               `json:"r,omitempty"`
+	CreatedRide *createdRide         `json:"n,omitempty"`
+	Statuses    []RideStatus         `json:"t,omitempty"`
+	Chair       *Chair               `json:"c,omitempty"`
+	Stats       *chairStatsTotal     `json:"e,omitempty"`
+	Ack         *notificationAck     `json:"a,omitempty"`
 }
 
 type createdRide struct {
@@ -120,7 +120,9 @@ func readWALRecord(f *os.File) (stateRecord, error) {
 	if crc32.ChecksumIEEE(payload) != binary.LittleEndian.Uint32(header[4:]) {
 		return record, errors.New("state WAL checksum mismatch")
 	}
-	if err := json.Unmarshal(payload, &record); err != nil {
+	decoder := json.NewDecoder(bytes.NewReader(payload))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&record); err != nil {
 		return record, err
 	}
 	if record.Version != 1 {
@@ -180,25 +182,18 @@ func (s *rideState) recoverWAL() error {
 }
 
 // Called with s.mu held; no memory state is published before a complete write.
-func (s *rideState) commit(record stateRecord) error { return s.commitMeasured(record, nil, false) }
-func (s *rideState) commitCoordinate(record stateRecord, timing *coordinateTiming) error {
-	return s.commitMeasured(record, timing, true)
-}
-func (s *rideState) commitMeasured(record stateRecord, timing *coordinateTiming, coordinate bool) error {
-	if !s.ready || s.failed != nil {
+func (s *rideState) commit(record stateRecord) error { return s.commitMeasured(record, nil) }
+
+func (s *rideState) commitMeasured(record stateRecord, timing *coordinateTiming) error {
+	if !s.ready || s.failed != nil || s.coordinateFailed.Load() != nil {
 		return errors.New("state WAL is unavailable")
 	}
 	record.Version, record.Generation, record.Sequence = 1, s.generation, s.sequence+1
 	if err := writeWALRecordMeasured(s.wal, record, timing); err != nil {
-		if coordinate && s.metrics != nil {
-			s.metrics.counters["coord_wal_fail"]++
-		}
 		s.failed = err
+		s.failCoordinates(err)
 		s.observeOpportunity(time.Now())
 		return err
-	}
-	if coordinate && s.metrics != nil {
-		s.metrics.counters["coord_wal_ok"]++
 	}
 	s.sequence = record.Sequence
 	var started time.Time
@@ -208,9 +203,6 @@ func (s *rideState) commitMeasured(record stateRecord, timing *coordinateTiming,
 	s.apply(record)
 	if timing != nil {
 		timing.elapsed[5], timing.visited[5], timing.ok[5] = time.Since(started), true, true
-	}
-	if coordinate && s.metrics != nil {
-		s.metrics.counters["coord_apply_ok"]++
 	}
 	if s.metrics != nil && (record.CreatedRide != nil || record.Chair != nil || len(record.Rides) > 0 || len(record.Statuses) > 0 || record.Ack != nil) {
 		s.observeOpportunity(time.Now())
@@ -231,9 +223,11 @@ func (s *rideState) start() {
 			case <-syncTicker.C:
 				stateLifecycle.RLock()
 				// Sync does not hold the mutation mutex or wait in request handlers.
-				if err := s.wal.Sync(); err != nil {
+				if err := errors.Join(s.coordinates.sync(), s.wal.Sync()); err != nil {
 					s.mu.Lock()
 					s.failed = err
+					s.failCoordinates(err)
+					s.observeOpportunity(time.Now())
 					s.mu.Unlock()
 					slog.Error("sync runtime WAL", "error", err)
 				}
@@ -249,12 +243,11 @@ func (s *rideState) close() error {
 		<-s.done
 		s.stop = nil
 	}
+	stateLifecycle.Lock()
+	defer stateLifecycle.Unlock()
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.ready = false
-	if err := s.wal.Sync(); err != nil {
-		s.wal.Close()
-		return err
-	}
-	return s.wal.Close()
+	s.coordinateReady.Store(false)
+	return errors.Join(s.coordinates.close(), s.wal.Sync(), s.wal.Close())
 }

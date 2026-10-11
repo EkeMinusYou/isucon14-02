@@ -30,27 +30,27 @@ func TestCoordinateMetricsSamplingAndFailedWrite(t *testing.T) {
 		}
 	}
 	m := s.metrics
-	if m.counters["coord_calls_ok"] != 129 || m.counters["coord_samples_ok"] != 3 || m.counters["coord_wal_ok"] != 129 || m.counters["coord_apply_ok"] != 129 {
+	if coordinateCounter(t, s, "coord_calls_ok") != 129 || coordinateCounter(t, s, "coord_samples_ok") != 3 || coordinateCounter(t, s, "coord_wal_ok") != 129 || coordinateCounter(t, s, "coord_apply_ok") != 129 {
 		t.Fatalf("coordinate populations: %v", m.counters)
 	}
 	for _, stage := range coordinateStages {
-		h := m.stateSeries["coord_"+stage+"_ok"]
+		h := coordinateHistogram(t, s, "coord_"+stage+"_ok")
 		if h.count != 3 || h.buckets[4] != 3 {
 			t.Fatalf("stage %s: %+v", stage, h)
 		}
 	}
-	if m.counters["flow_coord_first"] != 1 || m.counters["flow_coord_no_ride"] != 128 {
+	if coordinateCounter(t, s, "flow_coord_first") != 1 || coordinateCounter(t, s, "flow_coord_no_ride") != 128 {
 		t.Fatal("first/no-ride boundary")
 	}
-	before, seq := s.distances["c"], s.sequence
-	if err := s.wal.Close(); err != nil {
+	before, seq := s.chairDistance("c"), s.sequence
+	if err := s.coordinates.stripes[coordinateStripeIndex("c")].wal.Close(); err != nil {
 		t.Fatal(err)
 	}
 	s.coordinateCalls.Store(192) // The next call is sampled, independent of success.
 	if _, err := s.coordinate("c", Coordinate{999, 999}); err == nil {
 		t.Fatal("closed WAL accepted")
 	}
-	if s.distances["c"] != before || s.sequence != seq || m.counters["coord_apply_ok"] != 129 || m.stateSeries["coord_write_fail"].count != 1 || m.stateSeries["coord_apply_fail"].count != 0 || m.counters["coord_wal_fail"] != 1 {
+	if s.chairDistance("c") != before || s.sequence != seq || coordinateCounter(t, s, "coord_apply_ok") != 129 || coordinateHistogram(t, s, "coord_write_fail").count != 1 || coordinateHistogram(t, s, "coord_apply_fail").count != 0 || coordinateCounter(t, s, "coord_wal_fail") != 1 {
 		t.Fatal("failed WAL published or unreachable apply counted")
 	}
 	values := rideMeasurementSnapshot().Metrics
@@ -60,7 +60,7 @@ func TestCoordinateMetricsSamplingAndFailedWrite(t *testing.T) {
 	if _, err := s.coordinate("missing", Coordinate{}); err == nil {
 		t.Fatal("missing chair accepted")
 	}
-	if m.counters["coord_calls_fail"] != 2 || m.counters["coord_wal_fail"] != 1 {
+	if coordinateCounter(t, s, "coord_calls_fail") != 2 || coordinateCounter(t, s, "coord_wal_fail") != 1 {
 		t.Fatal("validation failure mixed with WAL attempt")
 	}
 	wal, err := os.ReadFile(s.wal.Name())
@@ -108,10 +108,10 @@ func TestFlowMetricsStagesDistanceAndReuse(t *testing.T) {
 		t.Fatal(err)
 	}
 	m := s.metrics
-	if h := m.stateSeries["flow_dist_enroute"]; h.count != 1 || h.sum != 30 {
+	if h := coordinateHistogram(t, s, "flow_dist_enroute"); h.count != 1 || h.sum != 30 {
 		t.Fatalf("pickup endpoint omitted: %+v", h)
 	}
-	if h := m.stateSeries["flow_dist_carrying"]; h.count != 1 || h.sum != 40 {
+	if h := coordinateHistogram(t, s, "flow_dist_carrying"); h.count != 1 || h.sum != 40 {
 		t.Fatalf("arrival endpoint omitted: %+v", h)
 	}
 	for _, name := range []string{"assigned", "enroute", "pickup", "carrying", "arrived"} {
@@ -161,13 +161,13 @@ func TestFlowMetricsResetAndOccupancy(t *testing.T) {
 	s.metrics = newRideMetrics()
 	s.resetDispatchMetrics()
 	m := s.metrics
-	if epoch == m.epoch || m.flow.known != 0 || m.flow.restored != 1 || m.flow.stage[flowEnroute].chairs != 1 || m.counters["coord_calls_ok"] != 0 || !s.rides["r"].assignedAt.IsZero() {
+	if epoch == m.epoch || m.flow.known != 0 || m.flow.restored != 1 || m.flow.stage[flowEnroute].chairs != 1 || coordinateCounter(t, s, "coord_calls_ok") != 0 || !s.rides["r"].assignedAt.IsZero() {
 		t.Fatal("reset replayed complete observations")
 	}
 	if _, err := s.coordinate("c", Coordinate{10, 20}); err != nil {
 		t.Fatal(err)
 	}
-	if m.stateSeries["flow_dist_enroute"].count != 0 || m.counters["flow_coord_first"] != 1 || m.stateSeries["flow_enroute"].count != 0 || m.counters["flow_enroute_partial"] != 1 {
+	if coordinateHistogram(t, s, "flow_dist_enroute").count != 0 || coordinateCounter(t, s, "flow_coord_first") != 1 || m.stateSeries["flow_enroute"].count != 0 || m.counters["flow_enroute_partial"] != 1 {
 		t.Fatal("first coordinate or restored stage treated as full")
 	}
 	if err := s.chairStatus("c", "r", "CARRYING"); err != nil {
@@ -280,7 +280,14 @@ func TestRideMetricsSnapshotMissingAndConcurrent(t *testing.T) {
 		t.Fatal("initialize boundary missing")
 	}
 	s.addChair(Chair{ID: "c", IsActive: true})
-	s.distances["c"] = distanceTotal{ChairID: "c", Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}}
+	stripe := &s.coordinates.stripes[coordinateStripeIndex("c")]
+	stripe.mu.Lock()
+	v = rideMeasurementSnapshot().Metrics
+	stripe.mu.Unlock()
+	if v["snapshot_status"] != 4 || v["ride_metrics_ready"] != 0 {
+		t.Fatal("busy stripe returned partial/zero-filled metrics")
+	}
+	s.seedCoordinateDistance("c", distanceTotal{ChairID: "c", Latitude: sql.NullInt64{Valid: true}, Longitude: sql.NullInt64{Valid: true}})
 	var wg sync.WaitGroup
 	wg.Add(3)
 	go func() {
@@ -305,7 +312,7 @@ func TestRideMetricsSnapshotMissingAndConcurrent(t *testing.T) {
 		}
 	}()
 	wg.Wait()
-	if s.metrics.counters["coord_calls_ok"] != 128 {
+	if coordinateCounter(t, s, "coord_calls_ok") != 128 {
 		t.Fatal("concurrent aggregation lost coordinates")
 	}
 }

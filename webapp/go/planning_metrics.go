@@ -53,7 +53,7 @@ func (s *rideState) observeOpportunity(at time.Time) {
 		}
 		o.generation, o.ready, o.pending = s.generation, false, false
 	}
-	ready := s.ready && s.failed == nil && len(s.waitingRides) > 0 && len(s.matchingChairs) > 0
+	ready := s.ready && s.failed == nil && s.coordinateFailed.Load() == nil && len(s.waitingRides) > 0 && len(s.matchingChairs) > 0
 	if ready == o.ready {
 		return
 	}

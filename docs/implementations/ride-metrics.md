@@ -1,6 +1,6 @@
 # ライド・座標・配車の計測契約
 
-Goアプリの既存`/debug/sql-pools`から固定名の集計値を公開し、既存sql-pool collector、TSV importer、`tools/contest/analysis-schema/ride-metrics.sql`で取得・分析する。IDラベル、リクエスト単位ログ、観測値のWAL保存は追加しない。割当方式、費用式、呼出頻度、WAL形式・確定条件、通知順序、ACK・再利用条件を維持する。
+Goアプリの既存`/debug/sql-pools`から固定名の集計値を公開し、既存sql-pool collector、TSV importer、`tools/contest/analysis-schema/ride-metrics.sql`で取得・分析する。IDラベル、リクエスト単位ログ、観測値のWAL保存は追加しない。計測自体は割当方式、費用式、呼出頻度、WAL確定条件、通知順序、ACK・再利用条件を変更しない。
 
 ## epoch・snapshot・欠損
 
@@ -8,11 +8,11 @@ Goアプリの既存`/debug/sql-pools`から固定名の集計値を公開し、
 
 `ride_metrics_epoch`はプロセス起動・restore/initialize成功時のUnixマイクロ秒由来tokenで、同一プロセス内では必ず前回より大きい。WALのgenerationとは別物。通常再起動でも履歴を観測counterへ再加算せず、新しいepochの0から始める。復元時のゲージは現在状態から一度だけ構築する。
 
-snapshotはlifecycle→共通状態→既存評価集計mutexの順序で取得する。状態ロックはTryRLockを500µs間隔で試し、開始から20msを期限にする（OS schedulingによる超過は取得時間へ記録）。取得後は固定サイズのhistogram/counter・占有集計だけをコピーし、ロックを解放してからscalar mapを展開する。過去履歴・椅子全件の毎秒走査や、バックグラウンドのsnapshot再生成は行わない。
+snapshotはlifecycle→共通状態→既存評価集計mutex→座標WAL stripeの順序で取得する。座標集計は8本全てのstripeをTryLockで一時的に固定し、同じ観測時刻でコピーする。途中で取得できなければ取得済みstripeを全て解放して500µs後に再試行し、同じ開始時刻から20msの期限を使う。状態ロックはTryRLockを500µs間隔で試し、開始から20msを期限にする（OS schedulingによる超過は取得時間へ記録）。取得後は固定サイズのhistogram/counter・占有集計だけをコピーし、ロックを解放してからscalar mapを展開する。過去履歴・椅子全件の毎秒走査や、バックグラウンドのsnapshot再生成は行わない。
 
 | snapshot項目 | 契約 |
 | --- | --- |
-| `snapshot_status` | 0=整合した取得、1=lifecycle混雑、2=restore未完了/metricsなし、3=状態ロック取得期限、4=既存評価集計mutex混雑 |
+| `snapshot_status` | 0=整合した取得、1=lifecycle混雑、2=restore未完了/metricsなし、3=状態ロック取得期限、4=既存評価集計mutexまたは座標集計stripe混雑 |
 | `ride_metrics_ready` | 1=このepochの整合した集計値を今回取得。0の場合、epoch・業務counter/gaugeを出さない |
 | `ride_state_available` | metricsを取得できた場合のWAL利用可否。WAL失敗後もready=1で失敗counterを観測でき、available=0となる |
 | `snapshot_observed_us` | 成功時は固定集計をコピーする直前のUnix µs。失敗時は取得断念時刻。キャッシュ値を新しい時刻で再公開しない |
@@ -35,17 +35,17 @@ busy/unavailableは取得失敗の新しい境界であり、0件の観測では
 | `coord_wal_ok/fail` | 座標レコードの完全なWAL書込み成功/書込み・生成エラー数。WAL利用不能の事前拒否、存在しない椅子はWAL試行に含めない |
 | `coord_apply_ok` | 書込み成功後の状態適用回数 |
 | `coord_samples_ok/fail` | sampled呼出しの関数結果別件数。`coord_sample_every=64`も公開 |
-| `coord_wait_ok/fail` | Lock直前→取得直後。分類はcoordinate関数全体の結果 |
-| `coord_hold_ok/fail` | 取得直後→return直前。検証、レコード生成、WAL、適用、通知publishを含む。観測集計自体とUnlockを除く |
+| `coord_wait_ok/fail` | 椅子操作mutex・routing読取り・到着時の制御ロック・WAL stripeの取得待ち合計。分類はcoordinate関数全体の結果 |
+| `coord_hold_ok/fail` | 椅子/routing（到着時は制御も）取得後→return直前から、途中のstripe取得待ちを除く。検証、レコード生成、WAL、適用、通知publishを含む。観測集計自体とUnlockを除く |
 | `coord_json_ok/fail` | JSON marshalとレコードサイズ検査。分類はこの段階の結果 |
 | `coord_frame_ok/fail` | frame確保、長さ・CRC・本文の構築 |
 | `coord_write_ok/fail` | File.Writeの呼出しとshort write検査。background fsyncや応答送信は含めない |
-| `coord_apply_ok/fail` histogram | 完全書込み後のapply呼出し。現在applyはerrorを返さないためfailは0。事前拒否・書込み失敗で未到達なら標本を追加しない |
+| `coord_apply_ok/fail` histogram | 完全書込み後の位置/距離snapshot公開と、到着時の制御apply呼出しの合計。現在applyはerrorを返さないためfailは0。事前拒否・書込み失敗で未到達なら標本を追加しない |
 | `coord_sample_bytes` | sampled File.Writeが実際に返した書込みbyte数の合計。失敗時の部分書込みを含む |
 
-時間seriesは`_n/_sum/_b0/_b1/_b2/_b3/_inf`、境界0.1/1/10/100ms/+∞。stage成功の後に別stageが失敗しても先行stageのokを取り消さない。各stageの母数が異なり、JSON以降の時間はhold内に重複する。平均値同士を加算して全HTTP時間としない。
+時間seriesは`_n/_sum/_b0/_b1/_b2/_b3/_inf`、境界0.1/1/10/100ms/+∞。stage成功の後に別stageが失敗しても先行stageのokを取り消さない。各stageの母数が異なり、JSON以降の時間はhold内に重複する。到着座標のjson/frame/writeは座標WALと制御WALの両方を合計し、呼出しあたり1標本とする。両WALの完全書込みが成功した場合だけcoord_wal_okとする。平均値同士を加算して全HTTP時間としない。
 
-状態所有の固定histogram/counterを既に保持中の共通状態ロック内で更新する。座標hot pathに新しい共通集計mutexを加えない。WALの内容・順序は変えず、完全なFile.Writeの後だけ距離・状態を適用する。background fsyncの周期と通常再起動時の復元処理も維持する。
+座標と受理済み距離の固定histogram/counterは椅子IDから選ぶWAL stripe内で更新し、snapshotで合算する。通常座標は共通状態ロック・sequence・commit/apply・distances mapを使わず、stripeの完全なFile.Write後だけ椅子snapshotを公開する。到着座標は椅子操作mutex→制御の順に同期し、座標WALと制御WAL参照の両方を確定してから状態・通知・位置を公開する。routing読取りlockは制御取得前に解放し、制御側や位置読取りは椅子操作mutexを取得しない。通常座標の集計は書込み・公開と同じstripe lock内で完結し、新しい共通集計mutexを加えない。background fsyncは両WALを既存の500ms周期で同期し、initialize generationと通常再起動の復元で全座標履歴を保持する。
 
 ## ② 実測段階・占有・受理済み距離
 

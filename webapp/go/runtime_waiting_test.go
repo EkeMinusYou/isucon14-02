@@ -60,7 +60,7 @@ func TestMatchingPickupIndexAgainstFullScan(t *testing.T) {
 func addGeographicTestChair(s *rideState, id string, latitude int) {
 	s.modelSpeeds["model"] = 2
 	s.addChair(Chair{ID: id, Model: "model", IsActive: true})
-	s.distances[id] = distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: int64(latitude), Valid: true}, Longitude: sql.NullInt64{Valid: true}}
+	s.seedCoordinateDistance(id, distanceTotal{ChairID: id, Latitude: sql.NullInt64{Int64: int64(latitude), Valid: true}, Longitude: sql.NullInt64{Valid: true}})
 }
 
 func createGeographicTestRide(t *testing.T, s *rideState, id string, at time.Time, pickup, trip int) {
@@ -113,7 +113,7 @@ func TestMatchingGeographicSelectionAndRecovery(t *testing.T) {
 	restored := memoryTestState(t)
 	for id, chair := range s.chairs {
 		restored.addChair(chair)
-		restored.distances[id] = s.distances[id]
+		restored.seedCoordinateDistance(id, s.chairDistance(id))
 	}
 	restored.modelSpeeds = s.modelSpeeds
 	restored.wal.Close()
@@ -234,7 +234,9 @@ func TestMatchingGeographicLimitAndFallback(t *testing.T) {
 	}
 	// Missing metadata must fill capacity from FIFO rather than locating a
 	// nonexistent position at the origin or silently dropping available chairs.
-	s.distances = map[string]distanceTotal{}
+	for id := range s.chairs {
+		s.seedCoordinateDistance(id, distanceTotal{})
+	}
 	plan, err = s.snapshotMatching("", 0)
 	if err != nil || len(plan.rides) != matchingPlanLimit {
 		t.Fatal("unknown positions lost capacity")

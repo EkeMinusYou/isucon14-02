@@ -165,18 +165,7 @@ func TestRuntimeAccountsAtomicConcurrencyAndReplay(t *testing.T) {
 	if err := s.close(); err != nil {
 		t.Fatal(err)
 	}
-	recovered := memoryTestState(t)
-	recovered.wal.Close()
-	var err error
-	recovered.wal, err = openStateWAL(directory)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer recovered.close()
-	if err := recovered.recoverWAL(); err != nil {
-		t.Fatal(err)
-	}
-	recovered.rebuildIndexes()
+	recovered := memoryTestStateIn(t, directory, s.generation, nil)
 	runtimeState = recovered
 	if len(recovered.users) != 4 || len(recovered.owners) != 1 || len(recovered.chairs) != 1 || recovered.rides[rideID].Fare != 1500 || len(recovered.unusedCoupons[u.ID]) != 3 || recovered.paymentTokens[u.ID].Token != "payment" {
 		t.Fatal("account/coupon/ride after-images lost after restart")

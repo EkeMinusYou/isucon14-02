@@ -145,11 +145,15 @@ func rideMeasurementSnapshot() measurement.Snapshot {
 			return
 		}
 		defer m.mu.Unlock()
-		at := time.Now()
+		at, ok := s.copyCoordinateMetrics(&histograms, &counters, deadline)
+		if !ok {
+			values["snapshot_status"] = 4
+			return
+		}
 		observed = at
 		values["snapshot_observed_us"] = at.UnixMicro()
 		values["ride_state_available"] = 0
-		if s.failed == nil {
+		if s.failed == nil && s.coordinateFailed.Load() == nil {
 			values["ride_state_available"] = 1
 		}
 		values["ride_metrics_ready"], values["snapshot_status"] = 1, 0
@@ -159,9 +163,15 @@ func rideMeasurementSnapshot() measurement.Snapshot {
 			histograms = append(histograms, histogramSample{name, *h})
 		}
 		for name, h := range m.stateSeries {
+			if coordinateOwnedMetric(name) {
+				continue
+			}
 			histograms = append(histograms, histogramSample{name, *h})
 		}
 		for name, count := range m.counters {
+			if coordinateOwnedMetric(name) {
+				continue
+			}
 			counters = append(counters, counterSample{name, count})
 		}
 		if s.dispatch != nil {
