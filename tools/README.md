@@ -179,8 +179,8 @@ nginxの`flush=1s`でバッファに残る末尾の行が書き出されるの�
 4. 読み込みschemaとsemantic view
 5. 必要ならdashboardのAPIと表示
 
-ベンチ出力に独自のスコア内訳やシナリオ結果がある場合は、保存するmarker形式を先に固定してから
-`analysis/schema/bench-summary.sql`を拡張する。
+ベンチ出力の結果・内訳・進捗は形式が競技ごとに違うので、汎用の`analysis/schema/bench-summary.sql`は拡張せず、
+`tools/contest/analysis-schema/`にviewとして作る。詳細は[tools/contest/README.md](contest/README.md)。
 
 ### Go profileのDuckDB閲覧
 

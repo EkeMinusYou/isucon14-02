@@ -136,10 +136,6 @@ sources:
     schema: schema/bench-summary.sql
     match: bench.log
     view: bench_summaries_raw
-  - table: bench_scenarios
-    schema: schema/bench-summary.sql
-    match: bench.log
-    view: bench_scenarios_raw
   # Add per-operation score breakdowns for the contest's own bench.log here,
   # with their schema under ../contest/analysis-schema/. Saved reports cite the
   # table names, so keep them stable within a contest.

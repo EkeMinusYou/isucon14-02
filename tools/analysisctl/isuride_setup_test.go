@@ -54,7 +54,7 @@ func TestISURIDESetupSmokeDuckDB(t *testing.T) {
 		t.Fatalf("decode DuckDB output: %v\n%s", err, output)
 	}
 	for _, row := range rows {
-		if row.Rows == 0 && row.Measurement != "bench_scenarios_raw" {
+		if row.Rows == 0 {
 			t.Fatalf("measurement %s has no analyzed smoke rows", row.Measurement)
 		}
 		t.Logf("%s: %d rows", row.Measurement, row.Rows)
