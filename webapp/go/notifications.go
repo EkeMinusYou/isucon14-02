@@ -77,10 +77,13 @@ func notifyRide(ride *Ride) {
 
 type notificationEvent struct {
 	measureAssignment bool
-	statusID          string
-	generation        string
-	eventID           string
-	data              any
+	// The user stream ends after delivering this event so the client can send the
+	// evaluation on the same connection instead of opening a new TLS connection.
+	finishesStream bool
+	statusID       string
+	generation     string
+	eventID        string
+	data           any
 }
 
 func serveNotifications(w http.ResponseWriter, r *http.Request, kind, id string) {
@@ -136,6 +139,9 @@ func serveNotifications(w http.ResponseWriter, r *http.Request, kind, id string)
 					slog.Error("acknowledge notification", "error", err)
 					return
 				}
+			}
+			if event.finishesStream {
+				return
 			}
 		}
 		select {

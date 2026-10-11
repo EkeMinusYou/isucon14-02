@@ -336,3 +336,37 @@ func getLatestRideStatus(ctx context.Context, tx executableGet, rideID string) (
 	}
 	return status, nil
 }
+
+func TestUserStreamFinishesAfterLatestCompleted(t *testing.T) {
+	notificationTestDB(t)
+	insertTestRide(t, "a", "2026-01-01", true)
+	for i, status := range []string{"MATCHING", "ENROUTE", "PICKUP", "CARRYING", "ARRIVED", "COMPLETED"} {
+		insertTestStatus("a", fmt.Sprintf("a%d", i), status)
+	}
+	startTestRuntime(t)
+	chair, err := loadNotifications(context.Background(), "chair", "c", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, event := range chair {
+		if event.finishesStream {
+			t.Fatalf("chair streams never finish: %+v", event)
+		}
+	}
+	events, err := loadNotifications(context.Background(), "app", "u", "")
+	if err != nil || len(events) != 6 {
+		t.Fatalf("pending user events: %v, %v", events, err)
+	}
+	for i, event := range events {
+		if event.finishesStream != (i == len(events)-1) {
+			t.Fatalf("only the pending COMPLETED of the latest ride finishes the stream: %d %+v", i, event)
+		}
+		if err := acknowledgeNotification(context.Background(), "app", event.statusID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	replay, err := loadNotifications(context.Background(), "app", "u", "")
+	if err != nil || len(replay) != 1 || replay[0].finishesStream {
+		t.Fatalf("an already delivered COMPLETED on reconnect must keep the stream open: %v, %v", replay, err)
+	}
+}

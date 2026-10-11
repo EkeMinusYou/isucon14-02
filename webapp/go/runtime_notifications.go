@@ -144,13 +144,17 @@ func loadNotifications(ctx context.Context, kind, id, lastEventID string) ([]not
 		flushIndex = 1
 	}
 	events := make([]notificationEvent, 0, len(selected))
-	for _, statusID := range selected {
+	for i, statusID := range selected {
 		status := s.statuses.get(statusID)
 		ride := s.rides.get(status.RideID)
 		event := notificationEvent{eventID: status.ID, generation: s.generation, data: s.notificationData(kind, ride, status.Status)}
 		if !fallback {
 			event.statusID = status.ID
 			event.measureAssignment = status.Status == "MATCHING" && !ride.assignedAt.IsZero() && !ride.firstFlushed[flushIndex]
+			// Only a pending COMPLETED of the user's latest ride with nothing after it ends
+			// the stream. A replayed state on connect never does, avoiding reconnect loops.
+			event.finishesStream = kind == "app" && status.Status == "COMPLETED" && i == len(selected)-1 &&
+				len(rides) > 0 && rides[len(rides)-1] == ride.ID
 		}
 		events = append(events, event)
 	}
