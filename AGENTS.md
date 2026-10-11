@@ -7,6 +7,7 @@
 ### Evidenceに基づいて判断する
 
 - 時間・処理量・待ち・capacityを同じ単位・母数で比較し、同一RUN・時間窓のEvidenceで判断する。割合だけで律速を決めない
+- 時間窓は、分析DBが入口のリクエスト数の推移から決めた負荷区間（`load_windows`）を既定とする
 - 得点の伸び方は、参加者向けベンチ出力が負荷中に定期的に出す進捗（負荷の増減とその理由など）の推移で把握し、資源の律速と併せて改善の優先度を決める。進捗行の解釈ビューは`tools/contest/analysis-schema/`に置く
 - 欠損成果物を0扱いせず、`run.json`のartifact statusと`missing`を確認する。失敗RUNもfinalizeし、成果物全体は`task artifacts-run`で確認する
 - 数値集計・時系列結合・RUN横断解析は既存DuckDB（`task q -- "SQL"`）を優先し、`tools/analysis/sources.yaml`・`tools/analysis/schema/`・既存ビューを使う。未対応処理や単純確認は別手段可。DuckDB利用のために計測基盤を変更しない
