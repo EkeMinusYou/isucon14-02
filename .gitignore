@@ -9,8 +9,7 @@
 raw/
 /raw
 
-# Contest application build artifacts
-webapp/go/default.pgo
+# Contest application build artifacts (default.pgo is a tracked build input)
 # contest: executable rebuilt locally for the confirmed target architecture.
 webapp/go/isuride
 

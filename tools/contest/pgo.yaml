@@ -1,0 +1,19 @@
+# Provenance of the tracked Go PGO build input. Copy the saved CPU profile
+# unchanged to input when updating it, and update this metadata in the same commit.
+input: webapp/go/default.pgo
+sha256: e2b5c19c1c1202caeff85f2ef6851f323d376a52cada369b8f02c7d940bc6444
+source:
+  run_id: 20261011-105810
+  profile: runs/20261011-105810/isucon-1-go-cpu.pprof
+  manifest: runs/20261011-105810/run.json
+  commit: 69184f9e87585f609bfbe8c9c59838497eda3ac3
+  app_tree: 2ac16ead6e8697e554112894cc2bfec64ce40b20
+  host: isucon-1
+  binary_build_id: 23809ae439db7c64593ca47064b10476e9ba493d
+# task build uses Go's default -pgo=auto; task build-pgo specifies it explicitly.
+# deploy, deploy-app and deploy-all all rebuild this input into the same binary.
+# Keep default.pgo excluded from app uploads: it is not a runtime asset.
+output: webapp/go/isuride
+target: linux/amd64
+deployment: app
+service: isuride-go
