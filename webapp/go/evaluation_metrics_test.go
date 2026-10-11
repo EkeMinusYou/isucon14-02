@@ -21,7 +21,7 @@ func TestEvaluationMetricsHandlerStages(t *testing.T) {
 		{name: "missing payment configuration", failMetadata: true, paymentStatus: 204},
 		{name: "invalid payment", paymentStatus: 400},
 		{name: "expired key", paymentStatus: 422},
-		{name: "still processing", paymentStatus: 409, retries: 20},
+		{name: "still processing", paymentStatus: 409, retries: 10},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var payments atomic.Int32

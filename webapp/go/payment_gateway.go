@@ -58,9 +58,9 @@ func requestPaymentGatewayPostPayment(ctx context.Context, paymentGatewayURL str
 		}()
 		if err != nil {
 			// Keep up to 500 ms of fixed waits, excluding request duration.
-			if retryable && ctx.Err() == nil && retry < 20 {
+			if retryable && ctx.Err() == nil && retry < 10 {
 				retry++
-				time.Sleep(25 * time.Millisecond)
+				time.Sleep(50 * time.Millisecond)
 				continue
 			} else {
 				return retry, err
