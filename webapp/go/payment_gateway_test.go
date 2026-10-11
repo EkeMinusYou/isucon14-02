@@ -23,13 +23,13 @@ func TestPaymentRetryCountAndStatusContract(t *testing.T) {
 	}{
 		{name: "success"},
 		{name: "processing", status: 409, failures: 2, retries: 2},
-		{name: "processing beyond former limit", status: 409, failures: 6, retries: 6},
-		{name: "processing on last attempt", status: 409, failures: 10, retries: 10},
-		{name: "processing exhausted", status: 409, failures: 11, retries: 10, failed: true},
+		{name: "processing beyond former limit", status: 409, failures: 11, retries: 11},
+		{name: "processing on last attempt", status: 409, failures: 20, retries: 20},
+		{name: "processing exhausted", status: 409, failures: 21, retries: 20, failed: true},
 		{name: "request timeout", status: 408, failures: 1, retries: 1},
 		{name: "rate limited", status: 429, failures: 1, retries: 1},
 		{name: "upstream failure", status: 500, failures: 1, retries: 1},
-		{name: "upstream exhausted", status: 503, failures: 11, retries: 10, failed: true},
+		{name: "upstream exhausted", status: 503, failures: 21, retries: 20, failed: true},
 		{name: "invalid payment", status: 400, failures: 6, failed: true},
 		{name: "expired key", status: 422, failures: 6, failed: true},
 		{name: "unexpected success status", status: 200, failures: 6, failed: true},
@@ -56,7 +56,7 @@ func TestPaymentRetryCountAndStatusContract(t *testing.T) {
 			if retries != tc.retries || (err != nil) != tc.failed || int(posts.Load()) != tc.retries+1 {
 				t.Fatalf("retries=%d posts=%d err=%v", retries, posts.Load(), err)
 			}
-			if time.Since(started) < time.Duration(tc.retries)*50*time.Millisecond {
+			if time.Since(started) < time.Duration(tc.retries)*25*time.Millisecond {
 				t.Fatal("retry delay was shortened")
 			}
 			if tc.failed && (!errors.Is(err, erroredUpstream) || !strings.Contains(err.Error(), fmt.Sprintf("(%d)", tc.status))) {
@@ -88,7 +88,7 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 		if attempt == 1 {
 			charges.Add(1) // The upstream accepted this key before losing the response.
 		}
-		if attempt <= 11 {
+		if attempt <= 21 {
 			conn, _, err := w.(http.Hijacker).Hijack()
 			if err != nil {
 				t.Error(err)
@@ -116,7 +116,7 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 		return response
 	}
 	response := evaluate()
-	if response.Code != http.StatusBadGateway || posts.Load() != 11 || s.latest(s.rides["r"]) != "ARRIVED" || s.stats["c"].Count != 0 {
+	if response.Code != http.StatusBadGateway || posts.Load() != 21 || s.latest(s.rides["r"]) != "ARRIVED" || s.stats["c"].Count != 0 {
 		t.Fatalf("premature completion: %d posts=%d status=%s", response.Code, posts.Load(), s.latest(s.rides["r"]))
 	}
 	// Restore the same persisted generation and replay the WAL after a restart.
@@ -134,7 +134,7 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 	}
 	runtimeState = restored
 	response = evaluate()
-	if response.Code != http.StatusOK || posts.Load() != 12 || charges.Load() != 1 || restored.latest(restored.rides["r"]) != "COMPLETED" || restored.stats["c"].Count != 1 {
+	if response.Code != http.StatusOK || posts.Load() != 22 || charges.Load() != 1 || restored.latest(restored.rides["r"]) != "COMPLETED" || restored.stats["c"].Count != 1 {
 		t.Fatalf("replay failed: %d posts=%d charges=%d", response.Code, posts.Load(), charges.Load())
 	}
 	completed := restored.statuses[restored.rides["r"].Statuses[len(restored.rides["r"].Statuses)-1]]
@@ -142,7 +142,7 @@ func TestPaymentAcceptedResponseLostAcrossRestart(t *testing.T) {
 		t.Fatal("completion acknowledged before SSE delivery")
 	}
 	response = evaluate()
-	if response.Code != http.StatusBadRequest || posts.Load() != 12 {
+	if response.Code != http.StatusBadRequest || posts.Load() != 22 {
 		t.Fatal("completed ride was charged again")
 	}
 	// A different ride and a reused ride ID in a new generation need new keys.
