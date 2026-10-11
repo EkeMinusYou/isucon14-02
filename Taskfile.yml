@@ -40,6 +40,9 @@ vars:
   # Optional collectors enabled on every benchmark RUN. nginx-oncpu needs perf on
   # NGINX_ONCPU_HOST (task deploy-nginx-oncpu-prereqs).
   MEASURECTL_COLLECT_FLAGS: '-include nginx-oncpu'
+  # Idle nginx->app connections kept per worker, and requests before each is recycled.
+  UPSTREAM_KEEPALIVE: '1024'
+  UPSTREAM_KEEPALIVE_REQUESTS: '100000'
   # <<< contest values <<<
 
   SSH_USER: ubuntu
@@ -667,7 +670,8 @@ tasks:
           {{range (splitList " " .APP_TRAFFIC_HOSTS)}}
           echo "  server {{index $.IP .}}:{{$.LISTEN_PORT}};"
           {{end}}
-          echo "  keepalive 60;"
+          echo "  keepalive {{default "60" .UPSTREAM_KEEPALIVE}};"
+          echo "  keepalive_requests {{default "1000" .UPSTREAM_KEEPALIVE_REQUESTS}};"
           echo "}"
         } > nginx/conf.d/upstream.conf
       # Contest hook; appends solution-specific upstreams and generated per-host files.
