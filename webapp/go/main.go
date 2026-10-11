@@ -116,7 +116,6 @@ func setup() http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(runtimeStateMiddleware)
 	mux.Use(measurementSessionMiddleware)
-	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
 	mux.HandleFunc("POST /api/initialize", postInitialize)
 
