@@ -79,3 +79,41 @@ select count(*) from (
 		t.Fatalf("traffic aggregate differs from expected rows: %s", output)
 	}
 }
+
+func TestHTTPTrafficCountsConnectionsAndClientGaps(t *testing.T) {
+	duckdb, err := exec.LookPath("duckdb")
+	if err != nil {
+		t.Skip("duckdb is not installed")
+	}
+	schema, err := os.ReadFile("../analysis/schema/access-log.sql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	requests := strings.Index(string(schema), "\nrequests as ")
+	if requests < 0 {
+		t.Fatal("access log schema has no requests CTE")
+	}
+	schema = []byte("create or replace view http_traffic_buckets as\nwith routes as (select ['^/a$'] as patterns)," + string(schema[requests:]))
+	runDir := filepath.Join(t.TempDir(), "runs", "20260901-120000")
+	// Connection 7 carries two requests; connection 8 resumes TLS; the last line
+	// predates the connection fields and must not join any connection.
+	writeTestFile(t, runDir, "raw/access-entry-a.log", `{"msec":"1800000000.1","response_time":0.1,"method":"GET","uri":"/a","status":200,"connection":"7","connection_requests":"1","ssl_session_reused":"."}
+{"msec":"1800000000.5","response_time":0.2,"method":"GET","uri":"/a","status":200,"connection":"7","connection_requests":"2","ssl_session_reused":"."}
+{"msec":"1800000001","response_time":0.1,"method":"GET","uri":"/a","status":200,"connection":"8","connection_requests":"1","ssl_session_reused":"r"}
+{"msec":"1800000002","response_time":0.1,"method":"GET","uri":"/a","status":200}
+`)
+	query := "set variable run_glob = " + sqlString(filepath.ToSlash(runDir)) + ";\n" + string(schema) + `
+select requests, connection_samples, new_connections, resumed_tls_connections,
+       round(sum_client_gap_sec, 6), client_gap_samples
+from http_traffic_buckets;
+`
+	cmd := exec.Command(duckdb, "-noheader", "-list")
+	cmd.Stdin = strings.NewReader(query)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("aggregate access logs: %v: %s", err, output)
+	}
+	if got := strings.TrimSpace(string(output)); got != "4|3|2|1|0.2|1" {
+		t.Fatalf("connection aggregate = %q, want 4|3|2|1|0.2|1", got)
+	}
+}

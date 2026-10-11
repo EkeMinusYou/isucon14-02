@@ -109,6 +109,10 @@ sources:
     schema: schema/access-log.sql
     match: "raw/access-*.log*"
     view: http_traffic_buckets
+  - table: nginx_oncpu
+    schema: schema/nginx-oncpu.sql
+    match: "*-nginx-oncpu.folded"
+    view: nginx_oncpu_stacks
   - table: user_transition_edges
     schema: schema/user-transitions.sql
     match: user-transitions.json
