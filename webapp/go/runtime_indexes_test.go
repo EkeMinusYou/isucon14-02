@@ -37,6 +37,25 @@ func assertCurrentIndexes(t *testing.T, s *rideState, at time.Time) {
 			t.Fatal("waiting FIFO differs from history")
 		}
 	}
+	indexed := map[string]bool{}
+	var visit func(*waitingPickupNode)
+	visit = func(node *waitingPickupNode) {
+		if node == nil {
+			return
+		}
+		for _, ride := range node.rides {
+			if indexed[ride.ID] || ride.ChairID.Valid || pickupOf(ride) != node.point || s.rides[ride.ID] != ride {
+				t.Fatal("pickup index contains a duplicate, assigned or misplaced ride")
+			}
+			indexed[ride.ID] = true
+		}
+		visit(node.left)
+		visit(node.right)
+	}
+	visit(s.waitingPickups)
+	if len(indexed) != len(waiting) {
+		t.Fatal("pickup index count differs from waiting history")
+	}
 	for id := range s.userRides {
 		if s.userActiveRides[id] != users[id] || s.continuingRide(id) != (users[id] != 0) {
 			t.Fatal("active user rides differ from history")

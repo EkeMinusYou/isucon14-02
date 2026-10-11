@@ -64,9 +64,9 @@ func (h *matchingCandidates) Pop() any {
 	return x
 }
 
-// FIFO selects the rides, independently of trip length. Each row retains its
-// best n chairs: at most n-1 can be occupied, so an omitted chair can always
-// be replaced without increasing cost. Pruning preserves a global optimum.
+// The caller selects rides. Each row retains its best n chairs: at most n-1
+// can be occupied, so an omitted chair can always be replaced without increasing
+// cost. Pruning preserves a global optimum.
 // Candidate extraction costs O(n*C*log(n)); the sparse graph has E <= n*n
 // assignment edges instead of a dense n-by-union matrix.
 func assignMatchingChairs(rides []Ride, chairs []matchingChair) []matchingAssignment {

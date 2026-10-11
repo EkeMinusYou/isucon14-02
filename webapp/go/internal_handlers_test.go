@@ -40,6 +40,8 @@ func TestMatchingTravelTime(t *testing.T) {
 				s.rides[id].PickupLatitude, s.rides[id].PickupLongitude = pickup.Latitude, pickup.Longitude
 				s.rides[id].DestinationLatitude, s.rides[id].DestinationLongitude = pickup.Latitude, pickup.Longitude
 			}
+			// These fixtures mutate fixed pickup positions after seeding.
+			s.rebuildIndexes()
 			if err := s.match(); err != nil {
 				t.Fatal(err)
 			}
@@ -66,6 +68,7 @@ func TestMatching(t *testing.T) {
 		s.rides["short"].Ride.DestinationLatitude, s.rides["short"].Ride.DestinationLongitude = 1, 1
 		s.rides["long"].Ride.PickupLatitude, s.rides["long"].Ride.PickupLongitude = 0, 0
 		s.rides["long"].Ride.DestinationLatitude, s.rides["long"].Ride.DestinationLongitude = 100, 0
+		s.rebuildIndexes()
 		beforeShort, beforeLong := s.rides["short"].Ride, s.rides["long"].Ride
 		if err := s.match(); err != nil {
 			t.Fatal(err)

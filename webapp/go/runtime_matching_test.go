@@ -22,7 +22,7 @@ func testMatchingPlan(t *testing.T, s *rideState) (matchingPlan, []matchingAssig
 }
 
 func TestMatchingPlanRevalidation(t *testing.T) {
-	for _, reason := range []string{"Generation", "OlderRide", "Inactive", "Unfinished", "PendingACK", "AlreadyAssigned"} {
+	for _, reason := range []string{"Generation", "Inactive", "Unfinished", "PendingACK", "AlreadyAssigned"} {
 		t.Run(reason, func(t *testing.T) {
 			s := memoryTestState(t)
 			s.addChair(Chair{ID: "c", IsActive: true})
@@ -31,8 +31,6 @@ func TestMatchingPlanRevalidation(t *testing.T) {
 			switch reason {
 			case "Generation":
 				s.generation = "new"
-			case "OlderRide":
-				seedMemoryRide(s, "older", "", time.Unix(1699999999, 0))
 			case "Inactive":
 				if err := s.activity("c", false); err != nil {
 					t.Fatal(err)
@@ -58,23 +56,25 @@ func TestMatchingPlanRevalidation(t *testing.T) {
 			if reason != "AlreadyAssigned" && s.rides["r"].ChairID.Valid {
 				t.Fatal("stale plan published an assignment")
 			}
-			if reason == "OlderRide" {
-				if err := s.match(); err != nil || !s.rides["older"].ChairID.Valid || s.rides["r"].ChairID.Valid {
-					t.Fatal("replanning did not preserve FIFO")
-				}
-			}
 		})
 	}
 }
 
 func TestMatchingPlanConcurrentCommit(t *testing.T) {
 	s := memoryTestState(t)
+	at := time.Now().UTC().Add(-time.Second)
 	for i := 0; i < 128; i++ {
 		id := fmt.Sprintf("%03d", i)
-		s.addChair(Chair{ID: id, IsActive: true})
-		seedMemoryRide(s, id, "", time.Unix(1700000000+int64(i), 0))
+		addGeographicTestChair(s, id, 0)
+		seedMemoryRide(s, id, "", at.Add(time.Duration(i)*time.Microsecond))
+		row := Ride{ID: "near-" + id, UserID: "u", CreatedAt: at.Add(time.Millisecond), DestinationLatitude: 1000}
+		s.addRide(row, calculateSale(row))
+		s.addStatus(RideStatus{ID: row.ID + "-matching", RideID: row.ID, Status: "MATCHING", CreatedAt: row.CreatedAt})
 	}
 	plan, assignments := testMatchingPlan(t, s)
+	if plan.rides[32].ID != "near-000" {
+		t.Fatal("fixture did not select rides behind the FIFO prefix")
+	}
 	var wg sync.WaitGroup
 	for i := 0; i < 2; i++ {
 		wg.Add(1)
@@ -86,9 +86,10 @@ func TestMatchingPlanConcurrentCommit(t *testing.T) {
 		}()
 	}
 	wg.Wait()
-	if s.sequence != 1 || len(readTestWAL(t, s)) != 1 || len(s.waitingRides) != 0 {
+	if s.sequence != 1 || len(readTestWAL(t, s)) != 1 || len(s.waitingRides) != 128 {
 		t.Fatal("overlapping plans committed twice or lost assignments")
 	}
+	assertCurrentIndexes(t, s, time.Now())
 }
 
 func TestMatchingSnapshotAllowsCoordinateUpdates(t *testing.T) {

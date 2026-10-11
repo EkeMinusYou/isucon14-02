@@ -24,8 +24,8 @@ func (s *rideState) matchingChair(id string) matchingChair {
 	return matchingChair{ID: id, Latitude: int(d.Latitude.Int64), Longitude: int(d.Longitude.Int64), Speed: speed}
 }
 
-// Copy values under mu; sorting, candidate extraction and solving use only
-// this snapshot. Coordinates can continue changing while the solver runs.
+// Extract ride candidates and copy values under mu. Chair pruning and solving
+// use only this snapshot; coordinates can continue changing during the solver.
 func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*planTiming) (matchingPlan, error) {
 	var t *planTiming
 	var started, acquired time.Time
@@ -52,19 +52,16 @@ func (s *rideState) snapshotMatching(generation string, minimum int, timing ...*
 	if n == 0 || n < minimum || (generation != "" && generation != s.generation) {
 		return plan, nil
 	}
-	plan.rides = make([]Ride, n)
-	for i, ride := range s.waitingRides[:n] {
-		plan.rides[i] = ride.Ride
-	}
 	plan.chairs = make([]matchingChair, 0, len(s.matchingChairs))
 	for id := range s.matchingChairs {
 		plan.chairs = append(plan.chairs, s.matchingChair(id))
 	}
+	plan.rides = s.selectWaitingRides(n, plan.chairs, time.Now())
 	return plan, nil
 }
 
 // A conflict invalidates the entire plan: accepting only its surviving pairs
-// could skip an older ride or retain choices that depended on a lost chair.
+// could drop a rescued ride or retain choices that depended on a lost chair.
 // Return retry only for conflicts within the same initialization generation.
 func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssignment) (retry bool, err error) {
 	started := time.Now()
@@ -87,22 +84,40 @@ func (s *rideState) commitMatching(plan matchingPlan, assignments []matchingAssi
 		reason = "conflict_rides"
 		return true, nil
 	}
-	for i, row := range plan.rides {
+	seenRides := make(map[string]bool, len(plan.rides))
+	for _, row := range plan.rides {
 		current := s.rides[row.ID]
-		if current == nil || current.ChairID.Valid || s.waitingRides[i].ID != row.ID {
+		if current == nil || current.ChairID.Valid || s.latest(current) != "MATCHING" || seenRides[row.ID] {
 			reason = "conflict_rides"
 			return true, nil
 		}
+		seenRides[row.ID] = true
 	}
+	if len(assignments) != len(plan.rides) {
+		reason = "conflict_rides"
+		return true, nil
+	}
+	seenRows := make(map[int]bool, len(assignments))
+	seenChairs := make(map[string]bool, len(assignments))
 	for _, assignment := range assignments {
+		if assignment.rideIndex < 0 || assignment.rideIndex >= len(plan.rides) || seenRows[assignment.rideIndex] {
+			reason = "conflict_rides"
+			return true, nil
+		}
+		seenRows[assignment.rideIndex] = true
+		if assignment.chairIndex < 0 || assignment.chairIndex >= len(plan.chairs) {
+			reason = "conflict_chairs"
+			return true, nil
+		}
 		id := plan.chairs[assignment.chairIndex].ID
 		chair, exists := s.chairs[id]
 		current, queue := s.chairCurrent[id], s.chairEvents[id]
-		if !exists || !chair.IsActive || (current != nil && len(current.unfinished) != 0) ||
+		if !exists || !chair.IsActive || seenChairs[id] || (current != nil && len(current.unfinished) != 0) ||
 			(queue != nil && queue.pending.Len() != 0) {
 			reason = "conflict_chairs"
 			return true, nil
 		}
+		seenChairs[id] = true
 	}
 	record := stateRecord{Rides: make([]Ride, 0, len(assignments))}
 	for _, assignment := range assignments {
@@ -147,7 +162,7 @@ func (s *rideState) match() error {
 		return err
 	}
 	// Preserve main's saturation rule: a second complete plan only when both
-	// FIFO demand and ACK-gated supply can fill another planning horizon.
+	// waiting demand and ACK-gated supply can fill another planning horizon.
 	_, err = s.matchBatch(generation, matchingPlanLimit)
 	return err
 }

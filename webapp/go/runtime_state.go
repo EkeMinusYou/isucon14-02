@@ -84,6 +84,7 @@ type rideState struct {
 	done             chan struct{}
 
 	waitingRides        []*memoryRide
+	waitingPickups      *waitingPickupNode
 	userActiveRides     map[string]int
 	chairCurrent        map[string]*chairCurrentState
 	matchingChairs      map[string]struct{}
@@ -359,6 +360,7 @@ func (s *rideState) apply(record stateRecord) {
 			}
 			s.chairRides[row.ChairID.String] = append(s.chairRides[row.ChairID.String], row.ID)
 			s.waitingRides = removeCurrentRide(s.waitingRides, ride)
+			s.waitingPickups = removeWaitingPickup(s.waitingPickups, ride)
 			for _, id := range ride.Statuses {
 				s.appendNotification("chair", row.ChairID.String, s.statuses[id])
 			}

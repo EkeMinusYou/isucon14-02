@@ -15,6 +15,7 @@ type chairCurrentState struct {
 
 func (s *rideState) resetCurrentIndexes() {
 	s.waitingRides = nil
+	s.waitingPickups = nil
 	s.userActiveRides = map[string]int{}
 	s.chairCurrent = map[string]*chairCurrentState{}
 	s.matchingChairs = map[string]struct{}{}
@@ -60,6 +61,7 @@ func (s *rideState) currentChair(id string) *chairCurrentState {
 func (s *rideState) indexRide(ride *memoryRide) {
 	if !ride.ChairID.Valid {
 		s.waitingRides = insertCurrentRide(s.waitingRides, ride)
+		s.waitingPickups = insertWaitingPickup(s.waitingPickups, ride)
 	}
 	if s.latest(ride) != "COMPLETED" {
 		s.userActiveRides[ride.UserID]++
